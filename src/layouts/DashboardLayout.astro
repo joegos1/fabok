@@ -20,9 +20,18 @@ const currentPath = Astro.url.pathname;
 const isAdmin = profile.role === 'admin';
 const isLandingPageEditor = profile.role === 'landingpage_editor' || isAdmin;
 const isProjectEditor = profile.role === 'project_editor' || isAdmin;
+
+// Nederlandse vertalingen voor rollen
+const roleLabels: Record<string, string> = {
+  admin: 'Beheerder',
+  landingpage_editor: 'Landingspagina beheerder',
+  project_editor: 'Projectbeheerder',
+  viewer: 'Bekijker',
+};
+const roleLabel = roleLabels[profile.role] || profile.role;
 ---
 
-<Layout title={title}>
+<Layout title={title} profile={profile}>
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="flex flex-col lg:flex-row gap-8">
       <!-- Sidebar -->
@@ -142,6 +151,16 @@ const isProjectEditor = profile.role === 'project_editor' || isAdmin;
 
       <!-- Main content area -->
       <div class="flex-1">
+        <!-- User info header -->
+        <div class="flex justify-end items-center mb-4 bg-white rounded-xl shadow-sm px-4 py-3">
+          <div class="flex items-center gap-3">
+            <span class="text-sm text-firda-gray-600">{profile.email}</span>
+            <span class="inline-block px-2 py-1 text-xs font-medium rounded-full bg-firda-blue-100 text-firda-blue-700">
+              {roleLabel}
+            </span>
+          </div>
+        </div>
+        
         <div class="bg-white rounded-xl shadow-sm p-6 lg:p-8">
           <slot />
         </div>

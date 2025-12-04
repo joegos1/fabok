@@ -5,12 +5,24 @@
  * Basis layout met navigatie voor alle pagina's
  */
 
+import type { Profile } from '../lib/database.types';
+
 interface Props {
   title: string;
   description?: string;
+  profile?: Profile;
 }
 
-const { title, description = 'VABOK - Versterken van de Aansluiting in de Beroepskolom' } = Astro.props;
+const { title, description = 'VABOK - Versterken van de Aansluiting in de Beroepskolom', profile } = Astro.props;
+
+// Nederlandse vertalingen voor rollen
+const roleLabels: Record<string, string> = {
+  admin: 'Beheerder',
+  landingpage_editor: 'Landingspaginabeheerder',
+  project_editor: 'Projectbeheerder ',
+  viewer: 'Bezoeker',
+};
+const roleLabel = profile ? (roleLabels[profile.role] || profile.role) : '';
 
 // Check of gebruiker ingelogd is (via cookie)
 const cookies = Astro.request.headers.get('cookie') || '';
@@ -52,6 +64,14 @@ const isLoggedIn = cookies.includes('sb-access-token');
               <a href="/dashboard" class="hover:text-firda-green-300 transition font-medium">
                 Dashboard
               </a>
+              {profile && (
+                <div class="flex items-center gap-2 px-3 py-1 bg-firda-blue-700/50 rounded-lg">
+                  <span class="text-sm text-firda-blue-100">{profile.email}</span>
+                  <span class="inline-block px-2 py-0.5 text-xs font-medium rounded-full bg-firda-green-500 text-white">
+                    {roleLabel}
+                  </span>
+                </div>
+              )}
               <a 
                 href="/api/auth/logout" 
                 class="bg-firda-blue-700 hover:bg-firda-blue-800 px-4 py-2 rounded-lg transition font-medium"
@@ -92,6 +112,14 @@ const isLoggedIn = cookies.includes('sb-access-token');
           </a>
           {isLoggedIn ? (
             <>
+              {profile && (
+                <div class="flex items-center justify-between px-3 py-2 bg-firda-blue-700/50 rounded-lg mb-2">
+                  <span class="text-sm text-firda-blue-100 truncate">{profile.email}</span>
+                  <span class="inline-block px-2 py-0.5 text-xs font-medium rounded-full bg-firda-green-500 text-white ml-2">
+                    {roleLabel}
+                  </span>
+                </div>
+              )}
               <a href="/dashboard" class="hover:bg-firda-blue-700 px-3 py-2 rounded-lg transition">
                 Dashboard
               </a>
