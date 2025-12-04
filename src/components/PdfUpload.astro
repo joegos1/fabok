@@ -1,0 +1,248 @@
+---
+/**
+ * PDF Upload Component (Server-side form)
+ * =======================================
+ * Upload formulier voor PDF bestanden
+ * Valideert bestandstype (alleen .pdf toegestaan)
+ */
+
+interface Props {
+  projectId?: string;  // Als undefined, dan voor landing page
+  uploadUrl: string;
+}
+
+const { projectId, uploadUrl } = Astro.props;
+---
+
+<div class="bg-firda-gray-50 rounded-lg p-4">
+  <h3 class="font-semibold text-firda-gray-800 mb-3 flex items-center">
+    <svg class="w-5 h-5 mr-2 text-firda-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+    </svg>
+    PDF Uploaden
+  </h3>
+
+  <form 
+    id="pdf-upload-form" 
+    action={uploadUrl} 
+    method="POST" 
+    enctype="multipart/form-data"
+    class="space-y-4"
+  >
+    {projectId && (
+      <input type="hidden" name="projectId" value={projectId} />
+    )}
+    
+    <div 
+      id="drop-zone"
+      class="border-2 border-dashed border-firda-gray-300 rounded-lg p-6 text-center hover:border-firda-blue-400 transition cursor-pointer"
+    >
+      <svg class="mx-auto h-12 w-12 text-firda-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+      </svg>
+      <p class="mt-2 text-sm text-firda-gray-600">
+        <label for="pdf-file" class="font-medium text-firda-blue-600 hover:text-firda-blue-500 cursor-pointer">
+          Klik om te uploaden
+        </label>
+        <span class="text-firda-gray-500"> of sleep hier een PDF</span>
+      </p>
+      <p class="mt-1 text-xs text-firda-gray-500">
+        Alleen PDF bestanden toegestaan
+      </p>
+      <input 
+        id="pdf-file" 
+        name="pdfFile" 
+        type="file" 
+        accept=".pdf,application/pdf" 
+        class="hidden"
+        required
+      />
+    </div>
+
+    <!-- Geselecteerd bestand -->
+    <div id="selected-file" class="hidden">
+      <div class="flex items-center p-3 bg-white rounded-lg border border-firda-gray-200">
+        <svg class="w-8 h-8 text-red-500 mr-3" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M14,2H6A2,2 0 0,0 4,4V20A2,2 0 0,0 6,22H18A2,2 0 0,0 20,20V8L14,2M18,20H6V4H13V9H18V20M10.92,12.31C10.68,11.54 10.15,9.08 11.55,9.04C12.95,9 12.03,12.16 12.03,12.16C12.42,13.65 14.05,14.72 14.05,14.72C14.55,14.57 17.4,14.24 17,15.72C16.57,17.2 13.5,15.81 13.5,15.81C11.55,15.95 10.09,16.47 10.09,16.47C8.96,18.58 7.64,19.5 7.1,18.61C6.43,17.5 9.23,16.07 9.23,16.07C10.68,13.72 10.9,12.35 10.92,12.31Z" />
+        </svg>
+        <div class="flex-1">
+          <p id="file-name" class="text-sm font-medium text-firda-gray-800"></p>
+          <p id="file-size" class="text-xs text-firda-gray-500"></p>
+        </div>
+        <button 
+          type="button" 
+          id="remove-file" 
+          class="text-firda-gray-400 hover:text-red-500 transition"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Error message -->
+    <div id="upload-error" class="hidden p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+      <p id="error-message"></p>
+    </div>
+
+    <!-- Submit button -->
+    <button 
+      type="submit" 
+      id="submit-btn"
+      class="w-full bg-firda-green-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-firda-green-600 disabled:bg-firda-gray-300 disabled:cursor-not-allowed transition"
+      disabled
+    >
+      <span id="btn-text">Uploaden</span>
+      <span id="btn-loading" class="hidden">
+        <svg class="animate-spin h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </span>
+    </button>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('pdf-upload-form') as HTMLFormElement;
+  const fileInput = document.getElementById('pdf-file') as HTMLInputElement;
+  const dropZone = document.getElementById('drop-zone') as HTMLDivElement;
+  const selectedFile = document.getElementById('selected-file') as HTMLDivElement;
+  const fileName = document.getElementById('file-name') as HTMLParagraphElement;
+  const fileSize = document.getElementById('file-size') as HTMLParagraphElement;
+  const removeFile = document.getElementById('remove-file') as HTMLButtonElement;
+  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
+  const btnText = document.getElementById('btn-text') as HTMLSpanElement;
+  const btnLoading = document.getElementById('btn-loading') as HTMLSpanElement;
+  const errorDiv = document.getElementById('upload-error') as HTMLDivElement;
+  const errorMessage = document.getElementById('error-message') as HTMLParagraphElement;
+
+  // Helper: format file size
+  function formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} bytes`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  // Helper: validate PDF
+  function isValidPdf(file: File): boolean {
+    const validTypes = ['application/pdf'];
+    const validExtension = file.name.toLowerCase().endsWith('.pdf');
+    return validTypes.includes(file.type) && validExtension;
+  }
+
+  // Helper: show error
+  function showError(message: string) {
+    errorMessage.textContent = message;
+    errorDiv.classList.remove('hidden');
+  }
+
+  // Helper: hide error
+  function hideError() {
+    errorDiv.classList.add('hidden');
+  }
+
+  // Helper: update file display
+  function updateFileDisplay(file: File | null) {
+    if (file && isValidPdf(file)) {
+      fileName.textContent = file.name;
+      fileSize.textContent = formatFileSize(file.size);
+      selectedFile.classList.remove('hidden');
+      dropZone.classList.add('hidden');
+      submitBtn.disabled = false;
+      hideError();
+    } else if (file) {
+      showError('Alleen PDF bestanden zijn toegestaan.');
+      resetFileInput();
+    } else {
+      selectedFile.classList.add('hidden');
+      dropZone.classList.remove('hidden');
+      submitBtn.disabled = true;
+    }
+  }
+
+  // Helper: reset file input
+  function resetFileInput() {
+    fileInput.value = '';
+    updateFileDisplay(null);
+  }
+
+  // Event: file input change
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files?.[0] || null;
+    updateFileDisplay(file);
+  });
+
+  // Event: click on drop zone
+  dropZone.addEventListener('click', () => {
+    fileInput.click();
+  });
+
+  // Event: drag and drop
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-firda-blue-400', 'bg-firda-blue-50');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-firda-blue-400', 'bg-firda-blue-50');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-firda-blue-400', 'bg-firda-blue-50');
+    
+    const files = e.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(files[0]);
+      fileInput.files = dataTransfer.files;
+      updateFileDisplay(files[0]);
+    }
+  });
+
+  // Event: remove file
+  removeFile.addEventListener('click', () => {
+    resetFileInput();
+  });
+
+  // Event: form submit
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const file = fileInput.files?.[0];
+    if (!file || !isValidPdf(file)) {
+      showError('Selecteer een geldig PDF bestand.');
+      return;
+    }
+
+    // Show loading state
+    submitBtn.disabled = true;
+    btnText.classList.add('hidden');
+    btnLoading.classList.remove('hidden');
+    hideError();
+
+    try {
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        // Reload page to show new PDF
+        window.location.reload();
+      } else {
+        const data = await response.json();
+        showError(data.error || 'Er is een fout opgetreden bij het uploaden.');
+      }
+    } catch (error) {
+      showError('Er is een fout opgetreden bij het uploaden.');
+    } finally {
+      submitBtn.disabled = false;
+      btnText.classList.remove('hidden');
+      btnLoading.classList.add('hidden');
+    }
+  });
+</script>

@@ -1,0 +1,145 @@
+---
+/**
+ * Projecten Overzichtspagina
+ * ==========================
+ * Lijst met alle actieve VABOK projecten
+ */
+
+import Layout from '../../layouts/Layout.astro';
+import ProjectCard from '../../components/ProjectCard.astro';
+import { supabaseAdmin } from '../../lib/supabaseClient';
+
+// Haal alle actieve projecten op
+const { data: projects, error } = await supabaseAdmin
+  .from('projects')
+  .select('*')
+  .eq('status', 'active')
+  .order('created_at', { ascending: false });
+
+if (error) {
+  console.error('Error fetching projects:', error);
+}
+
+// Haal unieke tags op voor filtering
+const allTags = projects?.flatMap(p => p.tags || []) || [];
+const uniqueTags = [...new Set(allTags)].sort();
+---
+
+<Layout title="Projecten">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+    <!-- Header -->
+    <div class="mb-8">
+      <h1 class="text-3xl lg:text-4xl font-bold text-firda-gray-900 mb-4">
+        VABOK Projecten
+      </h1>
+      <p class="text-lg text-firda-gray-600 max-w-3xl">
+        Ontdek alle VABOK-projecten die gericht zijn op het versterken van de aansluiting 
+        in de beroepskolom. Klik op een project voor meer details.
+      </p>
+    </div>
+
+    <!-- Filter op tags (als er tags zijn) -->
+    {uniqueTags.length > 0 && (
+      <div class="mb-8">
+        <h2 class="text-sm font-semibold text-firda-gray-700 mb-3">Filter op tags:</h2>
+        <div class="flex flex-wrap gap-2">
+          <button 
+            data-filter="all" 
+            class="filter-btn active px-3 py-1 text-sm font-medium rounded-full bg-firda-blue-600 text-white"
+          >
+            Alles
+          </button>
+          {uniqueTags.map(tag => (
+            <button 
+              data-filter={tag}
+              class="filter-btn px-3 py-1 text-sm font-medium rounded-full bg-firda-gray-200 text-firda-gray-700 hover:bg-firda-gray-300 transition"
+            >
+              {tag}
+            </button>
+          ))}
+        </div>
+      </div>
+    )}
+
+    <!-- Projecten grid -->
+    {!projects || projects.length === 0 ? (
+      <div class="text-center py-16 bg-white rounded-xl shadow-sm">
+        <svg class="mx-auto h-16 w-16 text-firda-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+        </svg>
+        <h3 class="text-lg font-semibold text-firda-gray-900 mb-2">
+          Nog geen projecten
+        </h3>
+        <p class="text-firda-gray-600">
+          Er zijn momenteel geen actieve projecten om weer te geven.
+        </p>
+      </div>
+    ) : (
+      <div id="projects-grid" class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {projects.map(project => (
+          <div class="project-item" data-tags={JSON.stringify(project.tags || [])}>
+            <ProjectCard project={project} />
+          </div>
+        ))}
+      </div>
+    )}
+
+    <!-- Geen resultaten na filtering -->
+    <div id="no-results" class="hidden text-center py-16 bg-white rounded-xl shadow-sm">
+      <svg class="mx-auto h-16 w-16 text-firda-gray-400 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+      </svg>
+      <h3 class="text-lg font-semibold text-firda-gray-900 mb-2">
+        Geen projecten gevonden
+      </h3>
+      <p class="text-firda-gray-600">
+        Er zijn geen projecten met de geselecteerde tag.
+      </p>
+    </div>
+  </div>
+</Layout>
+
+<script>
+  // Tag filtering
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const projectItems = document.querySelectorAll('.project-item');
+  const projectsGrid = document.getElementById('projects-grid');
+  const noResults = document.getElementById('no-results');
+
+  filterBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const filter = btn.getAttribute('data-filter');
+      
+      // Update active state
+      filterBtns.forEach(b => {
+        b.classList.remove('active', 'bg-firda-blue-600', 'text-white');
+        b.classList.add('bg-firda-gray-200', 'text-firda-gray-700');
+      });
+      btn.classList.add('active', 'bg-firda-blue-600', 'text-white');
+      btn.classList.remove('bg-firda-gray-200', 'text-firda-gray-700');
+
+      // Filter projects
+      let visibleCount = 0;
+      projectItems.forEach(item => {
+        const tags = JSON.parse(item.getAttribute('data-tags') || '[]');
+        const show = filter === 'all' || tags.includes(filter);
+        
+        if (show) {
+          item.classList.remove('hidden');
+          visibleCount++;
+        } else {
+          item.classList.add('hidden');
+        }
+      });
+
+      // Show/hide no results message
+      if (visibleCount === 0) {
+        projectsGrid?.classList.add('hidden');
+        noResults?.classList.remove('hidden');
+      } else {
+        projectsGrid?.classList.remove('hidden');
+        noResults?.classList.add('hidden');
+      }
+    });
+  });
+</script>

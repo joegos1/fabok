@@ -1,0 +1,86 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Base styles */
+@layer base {
+  html {
+    @apply scroll-smooth;
+  }
+  
+  body {
+    @apply min-h-screen flex flex-col;
+  }
+}
+
+/* Custom utilities */
+@layer utilities {
+  .line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+  
+  .line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+}
+
+/* Prose styles for content */
+.prose p {
+  @apply mb-4 leading-relaxed;
+}
+
+.prose h2 {
+  @apply text-xl font-bold mb-4 mt-6;
+}
+
+.prose h3 {
+  @apply text-lg font-semibold mb-3 mt-4;
+}
+
+.prose ul {
+  @apply list-disc list-inside mb-4 space-y-2;
+}
+
+.prose ol {
+  @apply list-decimal list-inside mb-4 space-y-2;
+}
+
+.prose a {
+  @apply text-firda-blue-600 hover:text-firda-blue-700 underline;
+}
+
+/* Custom scrollbar for PDF lists */
+.overflow-y-auto::-webkit-scrollbar {
+  width: 6px;
+}
+
+.overflow-y-auto::-webkit-scrollbar-track {
+  @apply bg-firda-gray-100 rounded;
+}
+
+.overflow-y-auto::-webkit-scrollbar-thumb {
+  @apply bg-firda-gray-300 rounded hover:bg-firda-gray-400;
+}
+
+/* Form focus styles */
+input:focus,
+textarea:focus,
+select:focus {
+  @apply outline-none;
+}
+
+/* Button disabled state */
+button:disabled {
+  @apply opacity-50 cursor-not-allowed;
+}
+
+/* Transition defaults */
+a, button {
+  @apply transition-colors duration-200;
+}
