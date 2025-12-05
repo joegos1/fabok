@@ -6,15 +6,19 @@
  */
 
 import Layout from '../layouts/Layout.astro';
+import { getCurrentUser } from '../lib/auth';
 
-// Check of gebruiker al ingelogd is
+// Check of gebruiker al ingelogd is met een geldige token
 const cookies = Astro.request.headers.get('cookie') || '';
 const accessTokenMatch = cookies.match(/sb-access-token=([^;]+)/);
 const accessToken = accessTokenMatch ? accessTokenMatch[1] : null;
-const isLoggedIn = accessToken && accessToken.length > 0;
 
-if (isLoggedIn) {
-  return Astro.redirect('/dashboard');
+// Only redirect if we have a valid token AND the user exists
+if (accessToken && accessToken.length > 0) {
+  const user = await getCurrentUser(accessToken);
+  if (user) {
+    return Astro.redirect('/dashboard');
+  }
 }
 
 // Check voor error/success message in URL

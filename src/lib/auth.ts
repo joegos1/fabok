@@ -178,9 +178,12 @@ function getCookieValue(cookies: string, name: string): string | null {
  */
 export function createAuthCookies(accessToken: string, refreshToken: string): string[] {
   const maxAge = 60 * 60 * 24 * 7; // 7 dagen
+  const isProduction = import.meta.env.PROD;
+  const secure = isProduction ? 'Secure;' : '';
+  
   return [
-    `sb-access-token=${accessToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`,
-    `sb-refresh-token=${refreshToken}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${maxAge}`,
+    `sb-access-token=${accessToken}; Path=/; HttpOnly; ${secure} SameSite=Lax; Max-Age=${maxAge}`,
+    `sb-refresh-token=${refreshToken}; Path=/; HttpOnly; ${secure} SameSite=Lax; Max-Age=${maxAge}`,
   ];
 }
 
@@ -188,8 +191,11 @@ export function createAuthCookies(accessToken: string, refreshToken: string): st
  * Verwijder auth cookies
  */
 export function clearAuthCookies(): string[] {
+  const isProduction = import.meta.env.PROD;
+  const secure = isProduction ? 'Secure;' : '';
+  
   return [
-    `sb-access-token=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`,
-    `sb-refresh-token=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0`,
+    `sb-access-token=; Path=/; HttpOnly; ${secure} SameSite=Lax; Max-Age=0`,
+    `sb-refresh-token=; Path=/; HttpOnly; ${secure} SameSite=Lax; Max-Age=0`,
   ];
 }
