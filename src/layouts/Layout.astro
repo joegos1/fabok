@@ -6,7 +6,7 @@
  */
 
 import type { Profile } from '../types/database';
-import { getCurrentUser, getUserProfile } from '../lib/auth';
+import { requireAuth } from '../lib/auth';
 
 interface Props {
   title: string;
@@ -15,21 +15,9 @@ interface Props {
 
 const { title, description = 'VABOK - Versterken van de Aansluiting in de Beroepskolom' } = Astro.props;
 
-// Check of gebruiker ingelogd is en haal profiel op
-const cookies = Astro.request.headers.get('cookie') || '';
-const accessTokenMatch = cookies.match(/sb-access-token=([^;]+)/);
-const accessToken = accessTokenMatch ? accessTokenMatch[1] : null;
-
-let profile: Profile | null = null;
-let isLoggedIn = false;
-
-if (accessToken) {
-  const user = await getCurrentUser(accessToken);
-  if (user) {
-    isLoggedIn = true;
-    profile = await getUserProfile(user.id);
-  }
-}
+// Haal gebruiker en profiel op (redirect wordt genegeerd voor publieke pagina's)
+const { user, profile } = await requireAuth(Astro.request);
+const isLoggedIn = !!user;
 
 // Nederlandse vertalingen voor rollen
 const roleLabels: Record<string, string> = {
