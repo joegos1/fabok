@@ -38,7 +38,9 @@ const roleLabels: Record<string, string> = {
   project_editor: 'Projectbeheerder',
   viewer: 'Bezoeker',
 };
-const roleLabel = profile ? (roleLabels[profile.role] || profile.role) : '';
+const roleLabel = profile 
+  ? `${profile.full_name || profile.email} - ${roleLabels[profile.role] || profile.role}` 
+  : '';
 ---
 
 <!DOCTYPE html
@@ -73,9 +75,11 @@ const roleLabel = profile ? (roleLabels[profile.role] || profile.role) : '';
           </a>
           {isLoggedIn ? (
             <>
-              <a href="/dashboard" class="hover:text-firda-green-300 transition font-medium">
-                Dashboard
-              </a>
+              {profile && ['admin', 'project_editor', 'landingpage_editor'].includes(profile.role) && (
+                <a href="/dashboard" class="hover:text-firda-green-300 transition font-medium">
+                  Dashboard
+                </a>
+              )}
               {profile && (
                 <div class="flex items-center gap-2 px-3 py-1 bg-firda-blue-700/50 rounded-lg">
                   <span class="text-sm text-firda-blue-100">{profile.email}</span>
@@ -132,9 +136,11 @@ const roleLabel = profile ? (roleLabels[profile.role] || profile.role) : '';
                   </span>
                 </div>
               )}
-              <a href="/dashboard" class="hover:bg-firda-blue-700 px-3 py-2 rounded-lg transition">
-                Dashboard
-              </a>
+              {profile && ['admin', 'project_editor', 'landingpage_editor'].includes(profile.role) && (
+                <a href="/dashboard" class="hover:bg-firda-blue-700 px-3 py-2 rounded-lg transition">
+                  Dashboard
+                </a>
+              )}
               <a href="/api/auth/logout" class="hover:bg-firda-blue-700 px-3 py-2 rounded-lg transition">
                 Uitloggen
               </a>
