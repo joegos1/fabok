@@ -9,7 +9,9 @@ import Layout from '../layouts/Layout.astro';
 
 // Check of gebruiker al ingelogd is
 const cookies = Astro.request.headers.get('cookie') || '';
-const isLoggedIn = cookies.includes('sb-access-token');
+const accessTokenMatch = cookies.match(/sb-access-token=([^;]+)/);
+const accessToken = accessTokenMatch ? accessTokenMatch[1] : null;
+const isLoggedIn = accessToken && accessToken.length > 0;
 
 if (isLoggedIn) {
   return Astro.redirect('/dashboard');

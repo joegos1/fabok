@@ -19,11 +19,13 @@ export const GET: APIRoute = async ({ redirect }) => {
   // Verwijder cookies en redirect naar login
   const cookies = clearAuthCookies();
 
+  // Use Headers to properly set multiple Set-Cookie headers
+  const headers = new Headers();
+  headers.set('Location', '/login?message=logged_out');
+  cookies.forEach(cookie => headers.append('Set-Cookie', cookie));
+
   return new Response(null, {
     status: 302,
-    headers: {
-      Location: '/login?message=logged_out',
-      'Set-Cookie': cookies.join(', '),
-    },
+    headers,
   });
 };

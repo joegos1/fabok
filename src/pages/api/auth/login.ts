@@ -35,12 +35,14 @@ export const POST: APIRoute = async ({ request, redirect }) => {
       data.session.refresh_token
     );
 
+    // Use Headers to properly set multiple Set-Cookie headers
+    const headers = new Headers();
+    headers.set('Location', '/dashboard');
+    cookies.forEach(cookie => headers.append('Set-Cookie', cookie));
+
     return new Response(null, {
       status: 302,
-      headers: {
-        Location: '/dashboard',
-        'Set-Cookie': cookies.join(', '),
-      },
+      headers,
     });
   } catch (error) {
     console.error('Login error:', error);
