@@ -7,6 +7,7 @@
 
 import Layout from '../layouts/Layout.astro';
 import PdfList from '../components/PdfList.astro';
+import ProjectCard from '../components/ProjectCard.astro';
 import { supabaseAdmin } from '../lib/supabaseClient';
 
 // Haal landingpage content op
@@ -21,6 +22,14 @@ const { data: pdfs } = await supabaseAdmin
   .select('*')
   .eq('is_landing_page', true)
   .order('uploaded_at', { ascending: false });
+
+// Haal de laatste 4 actieve projecten op
+const { data: latestProjects } = await supabaseAdmin
+  .from('projects')
+  .select('*')
+  .eq('status', 'active')
+  .order('created_at', { ascending: false })
+  .limit(4);
 
 const content = landingContent || {
   title: 'VABOK - Versterken van de Aansluiting in de Beroepskolom',
@@ -96,22 +105,32 @@ const content = landingContent || {
 
           <!-- Snelle links naar projecten -->
           <div class="mt-8 bg-white rounded-xl shadow-sm p-8">
-            <h2 class="text-2xl font-bold text-firda-gray-900 mb-6">
-              Ontdek onze projecten
-            </h2>
-            <p class="text-firda-gray-600 mb-6">
-              VABOK omvat diverse projecten die gericht zijn op het verbeteren van de aansluiting 
-              tussen verschillende niveaus in het onderwijs. Van vmbo naar mbo, van mbo naar hbo.
-            </p>
-            <a 
-              href="/projecten" 
-              class="inline-flex items-center text-firda-blue-600 font-semibold hover:text-firda-blue-700 transition"
-            >
-              Bekijk alle projecten
-              <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-              </svg>
-            </a>
+            <div class="flex items-center justify-between mb-6">
+              <h2 class="text-2xl font-bold text-firda-gray-900">
+                Recente projecten
+              </h2>
+              <a 
+                href="/projecten" 
+                class="inline-flex items-center text-firda-blue-600 font-semibold hover:text-firda-blue-700 transition"
+              >
+                Alle projecten
+                <svg class="ml-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+              </a>
+            </div>
+            
+            {latestProjects && latestProjects.length > 0 ? (
+              <div class="grid gap-4">
+                {latestProjects.map(project => (
+                  <ProjectCard project={project} />
+                ))}
+              </div>
+            ) : (
+              <p class="text-firda-gray-600">
+                Er zijn nog geen projecten beschikbaar.
+              </p>
+            )}
           </div>
         </div>
 
