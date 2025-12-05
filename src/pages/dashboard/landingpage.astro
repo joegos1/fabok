@@ -6,8 +6,8 @@
  */
 
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
-import PdfList from '../../components/PdfList.astro';
-import PdfUpload from '../../components/PdfUpload.astro';
+import PdfList from '../../components/pdf/PdfList.astro';
+import PdfUpload from '../../components/pdf/PdfUpload.astro';
 import { requireAuth, isLandingPageEditor } from '../../lib/auth';
 import { supabaseAdmin } from '../../lib/supabaseClient';
 
@@ -194,7 +194,7 @@ const currentContent = content || {
     <!-- Sidebar met PDF's -->
     <aside class="space-y-6">
       <PdfUpload 
-        uploadUrl="/api/upload-pdf" 
+        uploadUrl="/api/pdf/upload" 
       />
       
       <PdfList 
@@ -212,7 +212,7 @@ const currentContent = content || {
                 <span class="text-sm text-firda-gray-700 truncate flex-1 mr-2">
                   {pdf.filename}
                 </span>
-                <form action="/api/delete-pdf" method="POST" class="inline">
+                <form action="/api/pdf/delete" method="POST" class="inline">
                   <input type="hidden" name="pdfId" value={pdf.id} />
                   <input type="hidden" name="redirectTo" value="/dashboard/landingpage" />
                   <button

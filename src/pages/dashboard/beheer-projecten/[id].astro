@@ -5,8 +5,8 @@
  */
 
 import DashboardLayout from '../../../layouts/DashboardLayout.astro';
-import PdfList from '../../../components/PdfList.astro';
-import PdfUpload from '../../../components/PdfUpload.astro';
+import PdfList from '../../../components/pdf/PdfList.astro';
+import PdfUpload from '../../../components/pdf/PdfUpload.astro';
 import { requireAuth, canEditProject } from '../../../lib/auth';
 import { supabaseAdmin } from '../../../lib/supabaseClient';
 
@@ -286,7 +286,7 @@ if (Astro.request.method === 'POST') {
     <aside class="space-y-6">
       <PdfUpload 
         projectId={id} 
-        uploadUrl="/api/upload-pdf" 
+        uploadUrl="/api/pdf/upload" 
       />
       
       <PdfList 
@@ -307,9 +307,9 @@ if (Astro.request.method === 'POST') {
                 <span class="text-sm text-firda-gray-700 truncate flex-1 mr-2">
                   {pdf.filename}
                 </span>
-                <form action="/api/delete-pdf" method="POST" class="inline">
+                <form action="/api/pdf/delete" method="POST" class="inline">
                   <input type="hidden" name="pdfId" value={pdf.id} />
-                  <input type="hidden" name="redirectTo" value={`/dashboard/projecten/${id}`} />
+                  <input type="hidden" name="redirectTo" value={`/dashboard/beheer-projecten/${id}`} />
                   <button
                     type="submit"
                     class="p-1 text-firda-gray-400 hover:text-red-500 transition"

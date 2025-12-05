@@ -5,7 +5,7 @@
  * Basis layout met navigatie voor alle pagina's
  */
 
-import type { Profile } from '../lib/database.types';
+import type { Profile } from '../types/database';
 import { getCurrentUser, getUserProfile } from '../lib/auth';
 
 interface Props {
@@ -172,7 +172,6 @@ const roleLabel = profile
         <div class="flex space-x-6 text-sm">
           <a href="/" class="hover:text-white transition">Home</a>
           <a href="/projecten" class="hover:text-white transition">Projecten</a>
-          <a href="/login" class="hover:text-white transition">Inloggen</a>
         </div>
       </div>
     </div>

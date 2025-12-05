@@ -6,7 +6,7 @@
  */
 
 import Layout from './Layout.astro';
-import type { Profile } from '../lib/database.types';
+import type { Profile } from '../types/database';
 
 interface Props {
   title: string;
@@ -58,10 +58,10 @@ const isProjectEditor = profile.role === 'project_editor' || isAdmin;
 
             {isAdmin && (
               <a 
-                href="/dashboard/projecten" 
+                href="/dashboard/beheer-projecten" 
                 class:list={[
                   "flex items-center px-3 py-2 rounded-lg transition",
-                  currentPath.startsWith('/dashboard/projecten')
+                  currentPath.startsWith('/dashboard/beheer-projecten')
                     ? "bg-firda-blue-50 text-firda-blue-700" 
                     : "hover:bg-firda-gray-100 text-firda-gray-700"
                 ]}

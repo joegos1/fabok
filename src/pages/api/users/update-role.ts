@@ -6,7 +6,7 @@
 import type { APIRoute } from 'astro';
 import { supabaseAdmin } from '../../../lib/supabaseClient';
 import { requireAuth } from '../../../lib/auth';
-import type { UserRole } from '../../../lib/database.types';
+import type { UserRole } from '../../../types/database';
 
 export const POST: APIRoute = async ({ request, redirect }) => {
   try {

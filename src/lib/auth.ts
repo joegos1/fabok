@@ -5,7 +5,7 @@
  */
 
 import { supabase, supabaseAdmin } from './supabaseClient';
-import type { UserRole, Profile } from './database.types';
+import type { UserRole, Profile } from '../types/database';
 import type { User } from '@supabase/supabase-js';
 
 /**
