@@ -67,23 +67,23 @@ const roleLabel = profile
 
         <!-- Navigatie links -->
         <nav class="hidden md:flex items-center space-x-6">
-          <a href="/" class="hover:text-firda-green-300 transition font-medium">
+          <a href="/" class="hover:text-firda-green-400 transition font-medium">
             Home
           </a>
-          <a href="/projecten" class="hover:text-firda-green-300 transition font-medium">
+          <a href="/projecten" class="hover:text-firda-green-400 transition font-medium">
             Projecten
           </a>
           {isLoggedIn ? (
             <>
               {profile && ['admin', 'project_editor', 'landingpage_editor'].includes(profile.role) && (
-                <a href="/dashboard" class="hover:text-firda-green-300 transition font-medium">
+                <a href="/dashboard" class="hover:text-firda-green-400 transition font-medium">
                   Dashboard
                 </a>
               )}
               {profile && (
                 <div class="flex items-center gap-2 px-3 py-1 bg-firda-blue-700/50 rounded-lg">
                   <span class="text-sm text-firda-blue-100">{profile.email}</span>
-                  <span class="inline-block px-2 py-0.5 text-xs font-medium rounded-full bg-firda-green-500 text-white">
+                  <span class="inline-block px-2 py-0.5 text-xs font-medium rounded-full bg-firda-green-500 text-firda-gray-900">
                     {roleLabel}
                   </span>
                 </div>
@@ -98,7 +98,7 @@ const roleLabel = profile
           ) : (
             <a 
               href="/login" 
-              class="bg-firda-green-500 hover:bg-firda-green-600 px-4 py-2 rounded-lg transition font-medium"
+              class="bg-firda-green-500 hover:bg-firda-green-600 text-firda-gray-900 px-4 py-2 rounded-lg transition font-medium"
             >
               Inloggen
             </a>
@@ -131,7 +131,7 @@ const roleLabel = profile
               {profile && (
                 <div class="flex items-center justify-between px-3 py-2 bg-firda-blue-700/50 rounded-lg mb-2">
                   <span class="text-sm text-firda-blue-100 truncate">{profile.email}</span>
-                  <span class="inline-block px-2 py-0.5 text-xs font-medium rounded-full bg-firda-green-500 text-white ml-2">
+                  <span class="inline-block px-2 py-0.5 text-xs font-medium rounded-full bg-firda-green-500 text-firda-gray-900 ml-2">
                     {roleLabel}
                   </span>
                 </div>
@@ -146,7 +146,7 @@ const roleLabel = profile
               </a>
             </>
           ) : (
-            <a href="/login" class="bg-firda-green-500 hover:bg-firda-green-600 px-3 py-2 rounded-lg transition">
+            <a href="/login" class="bg-firda-green-500 hover:bg-firda-green-600 text-firda-gray-900 px-3 py-2 rounded-lg transition">
               Inloggen
             </a>
           )}

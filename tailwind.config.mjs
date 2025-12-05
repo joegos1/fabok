@@ -3,44 +3,47 @@ export default {
   content: ['./src/**/*.{astro,html,js,jsx,md,mdx,svelte,ts,tsx,vue}'],
   theme: {
     extend: {
-      // Firda-achtig kleurenschema: rustige blauw/groentinten
+      // Firda.nl kleurenschema: donkergroen/teal met geel accent
       colors: {
         firda: {
+          // Primair: Donkergroen/teal (header achtergrond)
           blue: {
-            50: '#e6f2f9',
-            100: '#cce5f3',
-            200: '#99cbe7',
-            300: '#66b1db',
-            400: '#3397cf',
-            500: '#007dc3', // Primaire kleur
-            600: '#00649c',
-            700: '#004b75',
-            800: '#00324e',
-            900: '#001927',
+            50: '#e8eeee',
+            100: '#d1dddc',
+            200: '#a3bbb9',
+            300: '#759996',
+            400: '#476773',
+            500: '#3B5755', // Firda teal/groen
+            600: '#2D4A47', // Firda donkergroen (primair)
+            700: '#243b39',
+            800: '#1b2c2b',
+            900: '#121d1c',
           },
+          // Accent: Geel/goud (buttons, highlights)
           green: {
-            50: '#e6f5f0',
-            100: '#ccebe1',
-            200: '#99d7c3',
-            300: '#66c3a5',
-            400: '#33af87',
-            500: '#009b69', // Accent groen
-            600: '#007c54',
-            700: '#005d3f',
-            800: '#003e2a',
-            900: '#001f15',
+            50: '#fefce8',
+            100: '#fef9c3',
+            200: '#fef08a',
+            300: '#fde047',
+            400: '#facc15',
+            500: '#EAB308', // Firda geel (accent)
+            600: '#ca8a04',
+            700: '#a16207',
+            800: '#854d0e',
+            900: '#713f12',
           },
+          // Neutrale grijstinten
           gray: {
-            50: '#f8fafb',
-            100: '#f1f5f7',
-            200: '#e3eaef',
-            300: '#d5e0e7',
-            400: '#b9c7d1',
-            500: '#8fa3b1',
-            600: '#6b8292',
-            700: '#4e6271',
-            800: '#334250',
-            900: '#1a212a',
+            50: '#f9fafb',
+            100: '#f3f4f6',
+            200: '#e5e7eb',
+            300: '#d1d5db',
+            400: '#9ca3af',
+            500: '#6b7280',
+            600: '#4b5563',
+            700: '#374151',
+            800: '#1f2937',
+            900: '#111827',
           },
         },
       },
