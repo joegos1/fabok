@@ -40,7 +40,7 @@ const roleLabel = profile
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <title>{title} | VABOK</title>
 </head>
-<body class="min-h-screen bg-firda-gray-50 text-firda-gray-900">
+<body class="min-h-screen bg-firda-gray-50 text-firda-grey-900">
   <!-- Header / Navigatie -->
   <header class="bg-firda-blue-600 text-white shadow-lg">
   
@@ -48,7 +48,7 @@ const roleLabel = profile
       <div class="flex items-center justify-between h-16">
         <!-- Logo / Site naam -->
         <a href="/" class="flex items-center hover:opacity-90 transition">
-          <img src="/Logo_project_VABOK.png" alt="Logo VABOK" class="h-14 object-contain"/>
+          <img src="public/Picture1.png" alt="Logo VABOK" class="h-14 object-contain"/>
         </a>
 
         <!-- Navigatie links -->
@@ -149,12 +149,19 @@ const roleLabel = profile
   <!-- Footer -->
   <footer class="bg-firda-gray-800 text-firda-gray-300 mt-auto">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-      <div class="flex flex-col md:flex-row justify-between items-center">
-        <div class="mb-4 md:mb-0">
-          <p class="text-sm">
+      <div class="flex flex-col items-center gap-6">
+        <div>
+          <p class="text-sm text-center">
             &copy; {new Date().getFullYear()} VABOK - Versterken van de Aansluiting in de Beroepskolom
           </p>
         </div>
+        
+        <!-- Logo's in het midden -->
+        <div class="flex items-center justify-center gap-6">
+          <img src="/FirdaGeel_Groen-07_0_0.png" alt="Firda Logo" class="h-12 object-contain"/>
+          <img src="/HBO_logo.svg" alt="HBO Logo" class="h-12 object-contain"/>
+        </div>
+        
         <div class="flex space-x-6 text-sm">
           <a href="/" class="hover:text-white transition">Home</a>
           <a href="/projecten" class="hover:text-white transition">Projecten</a>
