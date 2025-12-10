@@ -8,6 +8,7 @@
 import DashboardLayout from '../../../layouts/DashboardLayout.astro';
 import { requireAuth } from '../../../lib/auth';
 import { supabaseAdmin } from '../../../lib/supabaseClient';
+import ConfirmDialog from '../../../components/ConfirmDialog.astro';
 
 // Check authenticatie en autorisatie
 const auth = await requireAuth(Astro.request);
@@ -154,19 +155,48 @@ const errorMsg = url.searchParams.get('error');
                     </svg>
                   </a>
                   {project.status === 'active' ? (
-                    <form action="/api/projects/archive" method="POST" class="inline">
-                      <input type="hidden" name="projectId" value={project.id} />
-                      <button 
-                        type="submit"
-                        class="p-2 text-firda-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition"
-                        title="Archiveren"
-                        onclick="return confirm('Weet je zeker dat je dit project wilt archiveren?')"
+                    <>
+                      <form 
+                        id={`archive-form-${project.id}`}
+                        action="/api/projects/archive" 
+                        method="POST" 
+                        class="inline"
                       >
-                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
-                        </svg>
-                      </button>
-                    </form>
+                        <input type="hidden" name="projectId" value={project.id} />
+                        <button 
+                          type="button"
+                          class="p-2 text-firda-gray-500 hover:text-orange-600 hover:bg-orange-50 rounded-lg transition"
+                          title="Archiveren"
+                          onclick={`openArchiveDialog${project.id}()`}
+                        >
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"></path>
+                          </svg>
+                        </button>
+                      </form>
+
+                      <ConfirmDialog 
+                        id={`ArchiveDialog${project.id}`}
+                        title="Project archiveren"
+                        message="Weet je zeker dat je dit project wilt archiveren? Het wordt niet meer zichtbaar."
+                        confirmText="Archiveren"
+                        isDangerous={true}
+                      />
+
+                      <script define:vars={{ projectId: project.id }}>
+                        const dialog = document.getElementById(`ArchiveDialog${projectId}`);
+                        const confirmBtn = document.getElementById(`ArchiveDialog${projectId}-confirm`);
+                        const form = document.getElementById(`archive-form-${projectId}`);
+
+                        window[`openArchiveDialog${projectId}`] = () => {
+                          dialog?.showModal();
+                        };
+
+                        confirmBtn?.addEventListener('click', () => {
+                          form?.submit();
+                        });
+                      </script>
+                    </>
                   ) : (
                     <form action="/api/projects/restore" method="POST" class="inline">
                       <input type="hidden" name="projectId" value={project.id} />

@@ -1,0 +1,101 @@
+---
+interface Props {
+  id: string;
+  title: string;
+  message: string;
+  confirmText?: string;
+  cancelText?: string;
+  isDangerous?: boolean;
+}
+
+const {
+  id,
+  title,
+  message,
+  confirmText = 'Bevestigen',
+  cancelText = 'Annuleren',
+  isDangerous = false
+} = Astro.props;
+---
+
+<dialog id={id} class="backdrop:bg-black/50 rounded-lg shadow-xl max-w-md w-full">
+  <div class="p-6">
+    <h2 class="text-lg font-bold text-firda-gray-900 mb-2">
+      {title}
+    </h2>
+    <p class="text-firda-gray-600 mb-6">
+      {message}
+    </p>
+    
+    <div class="flex gap-3 justify-end">
+      <button
+        id={`${id}-cancel`}
+        class="px-4 py-2 bg-firda-gray-100 text-firda-gray-700 rounded-lg hover:bg-firda-gray-200 transition font-medium"
+      >
+        {cancelText}
+      </button>
+      <button
+        id={`${id}-confirm`}
+        class={`px-4 py-2 rounded-lg transition font-medium text-white ${
+          isDangerous
+            ? 'bg-orange-600 hover:bg-orange-700'
+            : 'bg-firda-green-500 hover:bg-firda-green-600'
+        }`}
+      >
+        {confirmText}
+      </button>
+    </div>
+  </div>
+</dialog>
+
+<script define:vars={{ id }}>
+  const dialog = document.getElementById(id);
+  const cancelBtn = document.getElementById(`${id}-cancel`);
+
+  // Close on cancel
+  cancelBtn?.addEventListener('click', () => {
+    dialog?.close();
+  });
+
+  // Close on backdrop click
+  dialog?.addEventListener('click', (e) => {
+    if (e.target === dialog) {
+      dialog.close();
+    }
+  });
+
+  // Export function to open dialog
+  window[`open${id}`] = () => {
+    dialog?.showModal();
+  };
+</script>
+
+<style>
+  dialog {
+    animation: slideUp 0.3s ease-out;
+  }
+
+  dialog::backdrop {
+    animation: fadeIn 0.3s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
+</style>
