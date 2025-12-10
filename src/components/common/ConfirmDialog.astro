@@ -51,6 +51,7 @@ const {
 <script define:vars={{ id }}>
   const dialog = document.getElementById(id);
   const cancelBtn = document.getElementById(`${id}-cancel`);
+  const confirmBtn = document.getElementById(`${id}-confirm`);
 
   // Close on cancel
   cancelBtn?.addEventListener('click', () => {
@@ -68,6 +69,9 @@ const {
   window[`open${id}`] = () => {
     dialog?.showModal();
   };
+
+  // Export confirm button for external handlers
+  window[`getConfirmBtn${id}`] = () => confirmBtn;
 </script>
 
 <style>

@@ -183,13 +183,9 @@ const errorMsg = url.searchParams.get('error');
                       />
 
                       <script define:vars={{ projectId: project.id }}>
-                        const dialog = document.getElementById(`ArchiveDialog${projectId}`);
-                        const confirmBtn = document.getElementById(`ArchiveDialog${projectId}-confirm`);
+                        const dialogId = `ArchiveDialog${projectId}`;
                         const form = document.getElementById(`archive-form-${projectId}`);
-
-                        window[`openArchiveDialog${projectId}`] = () => {
-                          dialog?.showModal();
-                        };
+                        const confirmBtn = document.getElementById(`${dialogId}-confirm`);
 
                         confirmBtn?.addEventListener('click', () => {
                           form?.submit();
