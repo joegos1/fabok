@@ -123,6 +123,88 @@ const content = landingContent || {
     </section>
   )}
 
+  <!-- Info blokken -->
+  <section class="py-16 lg:py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2 class="text-3xl lg:text-4xl font-bold text-firda-gray-900 mb-4">
+          Voor wie is VABOK?
+        </h2>
+        <p class="text-lg text-firda-gray-600 max-w-2xl mx-auto">
+          Ons platform biedt waardevolle informatie voor verschillende doelgroepen
+        </p>
+      </div>
+      
+      <div class="grid md:grid-cols-3 gap-8">
+        <!-- Docenten -->
+        <div class="group relative bg-gradient-to-br from-firda-gray-50 to-white rounded-2xl p-8 border border-firda-gray-100 hover:border-firda-blue-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-firda-blue-500 to-firda-blue-600 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="w-14 h-14 bg-firda-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-firda-blue-200 transition-all">
+            <svg class="w-7 h-7 text-firda-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-firda-gray-900 mb-3">
+            Voor docenten
+          </h3>
+          <p class="text-firda-gray-600 leading-relaxed">
+            Vind informatie over projecten en materialen voor in de klas. Ontdek nieuwe methodes en onderwijsinnovaties.
+          </p>
+          <div class="mt-6 flex items-center text-firda-blue-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            Meer informatie
+            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- Projectleiders -->
+        <div class="group relative bg-gradient-to-br from-firda-gray-50 to-white rounded-2xl p-8 border border-firda-gray-100 hover:border-firda-green-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-firda-green-500 to-firda-green-600 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="w-14 h-14 bg-firda-green-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-firda-green-200 transition-all">
+            <svg class="w-7 h-7 text-firda-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-firda-gray-900 mb-3">
+            Voor projectleiders
+          </h3>
+          <p class="text-firda-gray-600 leading-relaxed">
+            Beheer projectinformatie en deel resultaten met belanghebbenden. Houd alle stakeholders op de hoogte.
+          </p>
+          <div class="mt-6 flex items-center text-firda-green-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            Meer informatie
+            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+
+        <!-- OCW -->
+        <div class="group relative bg-gradient-to-br from-firda-gray-50 to-white rounded-2xl p-8 border border-firda-gray-100 hover:border-firda-blue-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
+          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-firda-blue-500 to-firda-blue-600 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
+          <div class="w-14 h-14 bg-firda-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-firda-blue-200 transition-all">
+            <svg class="w-7 h-7 text-firda-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+            </svg>
+          </div>
+          <h3 class="text-xl font-bold text-firda-gray-900 mb-3">
+            Voor OCW
+          </h3>
+          <p class="text-firda-gray-600 leading-relaxed">
+            Inzicht in projectvoortgang en borging van onderwijsverbetering. Volg de resultaten en impact.
+          </p>
+          <div class="mt-6 flex items-center text-firda-blue-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
+            Meer informatie
+            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+            </svg>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+  
   <!-- VABOK Uitleg sectie -->
   <section class="py-16 lg:py-20 bg-white relative overflow-hidden">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -211,88 +293,6 @@ const content = landingContent || {
             </div>
           </div>
         </aside>
-      </div>
-    </div>
-  </section>
-
-  <!-- Info blokken -->
-  <section class="py-16 lg:py-20 bg-white">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl lg:text-4xl font-bold text-firda-gray-900 mb-4">
-          Voor wie is VABOK?
-        </h2>
-        <p class="text-lg text-firda-gray-600 max-w-2xl mx-auto">
-          Ons platform biedt waardevolle informatie voor verschillende doelgroepen
-        </p>
-      </div>
-      
-      <div class="grid md:grid-cols-3 gap-8">
-        <!-- Docenten -->
-        <div class="group relative bg-gradient-to-br from-firda-gray-50 to-white rounded-2xl p-8 border border-firda-gray-100 hover:border-firda-blue-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-firda-blue-500 to-firda-blue-600 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="w-14 h-14 bg-firda-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-firda-blue-200 transition-all">
-            <svg class="w-7 h-7 text-firda-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold text-firda-gray-900 mb-3">
-            Voor docenten
-          </h3>
-          <p class="text-firda-gray-600 leading-relaxed">
-            Vind informatie over projecten en materialen voor in de klas. Ontdek nieuwe methodes en onderwijsinnovaties.
-          </p>
-          <div class="mt-6 flex items-center text-firda-blue-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-            Meer informatie
-            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </div>
-        </div>
-
-        <!-- Projectleiders -->
-        <div class="group relative bg-gradient-to-br from-firda-gray-50 to-white rounded-2xl p-8 border border-firda-gray-100 hover:border-firda-green-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-firda-green-500 to-firda-green-600 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="w-14 h-14 bg-firda-green-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-firda-green-200 transition-all">
-            <svg class="w-7 h-7 text-firda-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold text-firda-gray-900 mb-3">
-            Voor projectleiders
-          </h3>
-          <p class="text-firda-gray-600 leading-relaxed">
-            Beheer projectinformatie en deel resultaten met belanghebbenden. Houd alle stakeholders op de hoogte.
-          </p>
-          <div class="mt-6 flex items-center text-firda-green-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-            Meer informatie
-            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </div>
-        </div>
-
-        <!-- OCW -->
-        <div class="group relative bg-gradient-to-br from-firda-gray-50 to-white rounded-2xl p-8 border border-firda-gray-100 hover:border-firda-blue-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-firda-blue-500 to-firda-blue-600 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="w-14 h-14 bg-firda-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-firda-blue-200 transition-all">
-            <svg class="w-7 h-7 text-firda-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
-            </svg>
-          </div>
-          <h3 class="text-xl font-bold text-firda-gray-900 mb-3">
-            Voor OCW
-          </h3>
-          <p class="text-firda-gray-600 leading-relaxed">
-            Inzicht in projectvoortgang en borging van onderwijsverbetering. Volg de resultaten en impact.
-          </p>
-          <div class="mt-6 flex items-center text-firda-blue-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-            Meer informatie
-            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </div>
-        </div>
       </div>
     </div>
   </section>
