@@ -5,7 +5,7 @@
  */
 
 import type { APIRoute } from 'astro';
-import { supabase, createAuthCookies } from '../../../lib';
+import { supabase, supabaseAdmin, createAuthCookies } from '../../../lib';
 
 export const POST: APIRoute = async ({ request, redirect }) => {
   try {

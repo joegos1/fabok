@@ -159,13 +159,19 @@ export async function requireAuth(request: Request): Promise<{
 
   // Check account status
   if (profile && profile.account_status !== 'approved') {
+    // Clear cookies to prevent infinite redirect loop
+    const cookies = clearAuthCookies();
+    const headers = new Headers();
+    headers.set('Location', '/login?error=account_' + (profile.account_status || 'pending'));
+    cookies.forEach(cookie => headers.append('Set-Cookie', cookie));
+
     return {
       user: null,
       profile: null,
       accessToken: null,
       redirect: new Response(null, {
         status: 302,
-        headers: { Location: '/login?error=account_' + profile.account_status },
+        headers,
       }),
     };
   }
