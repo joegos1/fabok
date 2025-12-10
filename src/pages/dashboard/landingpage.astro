@@ -8,8 +8,7 @@
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
 import PdfList from '../../components/pdf/PdfList.astro';
 import PdfUpload from '../../components/pdf/PdfUpload.astro';
-import { requireAuth, isLandingPageEditor } from '../../lib/auth';
-import { supabaseAdmin } from '../../lib/supabaseClient';
+import { requireAuth, isLandingPageEditor, supabaseAdmin } from '../../lib';
 
 // Check authenticatie
 const auth = await requireAuth(Astro.request);

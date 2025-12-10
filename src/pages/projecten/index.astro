@@ -7,7 +7,7 @@
 
 import Layout from '../../layouts/Layout.astro';
 import ProjectCard from '../../components/project/ProjectCard.astro';
-import { supabaseAdmin } from '../../lib/supabaseClient';
+import { supabaseAdmin } from '../../lib';
 
 // Haal alle actieve projecten op
 const { data: projects, error } = await supabaseAdmin

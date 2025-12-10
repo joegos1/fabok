@@ -6,9 +6,8 @@
  */
 
 import DashboardLayout from '../../../layouts/DashboardLayout.astro';
-import { requireAuth } from '../../../lib/auth';
-import { supabaseAdmin } from '../../../lib/supabaseClient';
-import ConfirmDialog from '../../../components/ConfirmDialog.astro';
+import { requireAuth, supabaseAdmin } from '../../../lib';
+import ConfirmDialog from '../../../components/common/ConfirmDialog.astro';
 
 // Check authenticatie en autorisatie
 const auth = await requireAuth(Astro.request);

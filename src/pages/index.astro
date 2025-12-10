@@ -8,7 +8,7 @@
 import Layout from '../layouts/Layout.astro';
 import PdfList from '../components/pdf/PdfList.astro';
 import ProjectCard from '../components/project/ProjectCard.astro';
-import { supabaseAdmin } from '../lib/supabaseClient';
+import { supabaseAdmin } from '../lib';
 
 // Haal landingpage content op
 const { data: landingContent } = await supabaseAdmin

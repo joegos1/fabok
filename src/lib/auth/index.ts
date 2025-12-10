@@ -4,8 +4,8 @@
  * Helper functies voor authenticatie en autorisatie
  */
 
-import { supabase, supabaseAdmin } from './supabaseClient';
-import type { UserRole, Profile } from '../types/database';
+import { supabase, supabaseAdmin } from '../database/supabase';
+import type { UserRole, Profile } from '../../types/database';
 import type { User } from '@supabase/supabase-js';
 
 /**
