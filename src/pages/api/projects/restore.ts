@@ -41,6 +41,6 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     return redirect('/dashboard/beheer-projecten?message=updated');
   } catch (error) {
     console.error('Error:', error);
-    return redirect('/dashboard/projecten?error=Er is een fout opgetreden');
+    return redirect('/dashboard/beheer-projecten?error=Er is een fout opgetreden');
   }
 };

@@ -45,7 +45,7 @@ const errorMsg = url.searchParams.get('error');
       Alle projecten
     </h1>
     <a 
-      href="/dashboard/projecten/nieuw"
+      href="/dashboard/beheer-projecten/nieuw"
       class="inline-flex items-center px-4 py-2 bg-firda-green-500 text-white rounded-lg hover:bg-firda-green-600 transition"
     >
       <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -84,7 +84,7 @@ const errorMsg = url.searchParams.get('error');
         Maak je eerste VABOK project aan.
       </p>
       <a 
-        href="/dashboard/projecten/nieuw"
+        href="/dashboard/beheer-projecten/nieuw"
         class="inline-flex items-center px-4 py-2 bg-firda-blue-600 text-white rounded-lg hover:bg-firda-blue-700 transition"
       >
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -145,7 +145,7 @@ const errorMsg = url.searchParams.get('error');
               <td class="py-3 px-4">
                 <div class="flex items-center justify-end gap-2">
                   <a 
-                    href={`/dashboard/projecten/${project.id}`}
+                    href={`/dashboard/beheer-projecten/${project.id}`}
                     class="p-2 text-firda-gray-500 hover:text-firda-blue-600 hover:bg-firda-blue-50 rounded-lg transition"
                     title="Bewerken"
                   >

@@ -41,7 +41,7 @@ const { data: project, error: projectError } = await supabaseAdmin
   .single();
 
 if (projectError || !project) {
-  return Astro.redirect('/dashboard/projecten');
+  return Astro.redirect('/dashboard/beheer-projecten');
 }
 
 // Haal PDF's op
@@ -105,9 +105,9 @@ if (Astro.request.method === 'POST') {
     
     if (error) {
       console.error('Error updating project:', error);
-      return Astro.redirect(`/dashboard/projecten/${id}?error=Update mislukt`);
+      return Astro.redirect(`/dashboard/beheer-projecten/${id}?error=Update mislukt`);
     } else {
-      return Astro.redirect(`/dashboard/projecten/${id}?message=updated`);
+      return Astro.redirect(`/dashboard/beheer-projecten/${id}?message=updated`);
     }
   } catch (error) {
     console.error('Error processing form:', error);
@@ -120,7 +120,7 @@ if (Astro.request.method === 'POST') {
     <!-- Formulier -->
     <div class="lg:col-span-2">
       <div class="flex items-center mb-6">
-        <a href={isAdmin ? '/dashboard/projecten' : '/dashboard/mijn-projecten'} class="text-firda-gray-500 hover:text-firda-gray-700 mr-4">
+        <a href={isAdmin ? '/dashboard/beheer-projecten' : '/dashboard/mijn-projecten'} class="text-firda-gray-500 hover:text-firda-gray-700 mr-4">
           <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
           </svg>
