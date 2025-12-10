@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     const projectId = formData.get('projectId')?.toString();
 
     if (!projectId) {
-      return redirect('/dashboard/projecten?error=Ongeldig project');
+      return redirect('/dashboard/beheer-projecten?error=Ongeldig project');
     }
 
     // Restore project
@@ -35,10 +35,10 @@ export const POST: APIRoute = async ({ request, redirect }) => {
 
     if (error) {
       console.error('Error restoring project:', error);
-      return redirect('/dashboard/projecten?error=Herstellen mislukt');
+      return redirect('/dashboard/beheer-projecten?error=Herstellen mislukt');
     }
 
-    return redirect('/dashboard/projecten?message=updated');
+    return redirect('/dashboard/beheer-projecten?message=updated');
   } catch (error) {
     console.error('Error:', error);
     return redirect('/dashboard/projecten?error=Er is een fout opgetreden');

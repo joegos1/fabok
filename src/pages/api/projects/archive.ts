@@ -24,7 +24,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     const projectId = formData.get('projectId')?.toString();
 
     if (!projectId) {
-      return redirect('/dashboard/projecten?error=Ongeldig project');
+      return redirect('/dashboard/beheer-projecten?error=Ongeldig project');
     }
 
     // Archive project
@@ -35,10 +35,10 @@ export const POST: APIRoute = async ({ request, redirect }) => {
 
     if (error) {
       console.error('Error archiving project:', error);
-      return redirect('/dashboard/projecten?error=Archiveren mislukt');
+      return redirect('/dashboard/beheer-projecten?error=Archiveren mislukt');
     }
 
-    return redirect('/dashboard/projecten?message=archived');
+    return redirect('/dashboard/beheer-projecten?message=archived');
   } catch (error) {
     console.error('Error:', error);
     return redirect('/dashboard/projecten?error=Er is een fout opgetreden');
