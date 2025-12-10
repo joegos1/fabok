@@ -307,7 +307,7 @@ if (Astro.request.method === 'POST') {
                 <span class="text-sm text-firda-gray-700 truncate flex-1 mr-2">
                   {pdf.filename}
                 </span>
-                <form action="/api/pdf/delete" method="POST" class="inline">
+                <form action="/api/pdf/delete.ts" method="POST" class="inline">
                   <input type="hidden" name="pdfId" value={pdf.id} />
                   <input type="hidden" name="redirectTo" value={`/dashboard/beheer-projecten/${id}`} />
                   <button

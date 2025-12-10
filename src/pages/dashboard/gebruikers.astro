@@ -117,7 +117,7 @@ const roleColors: Record<UserRole, string> = {
                 {new Date(user.created_at).toLocaleDateString('nl-NL')}
               </td>
               <td class="py-3 px-4">
-                <form action="/api/users/update-role" method="POST" class="flex items-center justify-end gap-2">
+                <form action="/api/users/update-role.ts" method="POST" class="flex items-center justify-end gap-2">
                   <input type="hidden" name="userId" value={user.id} />
                   <select 
                     name="role" 

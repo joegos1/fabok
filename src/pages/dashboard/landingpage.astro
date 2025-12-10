@@ -206,7 +206,7 @@ const currentContent = content || {
         </p>
         
         <!-- School toevoegen formulier -->
-        <form action="/api/schools/add" method="POST" class="mb-6">
+        <form action="/api/schools/add.ts" method="POST" class="mb-6">
           <div class="flex gap-2">
             <input
               type="text"
@@ -235,7 +235,7 @@ const currentContent = content || {
                 </div>
                 <div class="flex items-center gap-2">
                   {index > 0 && (
-                    <form action="/api/schools/reorder" method="POST" class="inline">
+                    <form action="/api/schools/reorder.ts" method="POST" class="inline">
                       <input type="hidden" name="schoolId" value={school.id} />
                       <input type="hidden" name="direction" value="up" />
                       <button
@@ -250,7 +250,7 @@ const currentContent = content || {
                     </form>
                   )}
                   {index < schools.length - 1 && (
-                    <form action="/api/schools/reorder" method="POST" class="inline">
+                    <form action="/api/schools/reorder.ts" method="POST" class="inline">
                       <input type="hidden" name="schoolId" value={school.id} />
                       <input type="hidden" name="direction" value="down" />
                       <button
@@ -264,7 +264,7 @@ const currentContent = content || {
                       </button>
                     </form>
                   )}
-                  <form action="/api/schools/delete" method="POST" class="inline">
+                  <form action="/api/schools/delete.ts" method="POST" class="inline">
                     <input type="hidden" name="schoolId" value={school.id} />
                     <button
                       type="submit"
@@ -310,7 +310,7 @@ const currentContent = content || {
                 <span class="text-sm text-firda-gray-700 truncate flex-1 mr-2">
                   {pdf.filename}
                 </span>
-                <form action="/api/pdf/delete" method="POST" class="inline">
+                <form action="/api/pdf/delete.ts" method="POST" class="inline">
                   <input type="hidden" name="pdfId" value={pdf.id} />
                   <input type="hidden" name="redirectTo" value="/dashboard/landingpage" />
                   <button
