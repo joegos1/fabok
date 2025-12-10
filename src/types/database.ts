@@ -173,6 +173,26 @@ export interface Database {
           created_at?: string;
         };
       };
+      schools: {
+        Row: {
+          id: string;
+          name: string;
+          display_order: number;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          name: string;
+          display_order?: number;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          name?: string;
+          display_order?: number;
+          created_at?: string;
+        };
+      };
     };
     Views: {};
     Functions: {
@@ -193,3 +213,4 @@ export type Project = Database['public']['Tables']['projects']['Row'];
 export type LandingPageContent = Database['public']['Tables']['landing_page_content']['Row'];
 export type PdfFile = Database['public']['Tables']['pdf_files']['Row'];
 export type AuditLog = Database['public']['Tables']['audit_log']['Row'];
+export type School = Database['public']['Tables']['schools']['Row'];

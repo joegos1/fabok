@@ -40,6 +40,12 @@ const { data: pdfs } = await supabaseAdmin
   .eq('is_landing_page', true)
   .order('uploaded_at', { ascending: false });
 
+// Haal scholen op
+const { data: schools } = await supabaseAdmin
+  .from('schools')
+  .select('*')
+  .order('display_order', { ascending: true });
+
 // Check voor message
 const url = new URL(Astro.request.url);
 const message = url.searchParams.get('message');
@@ -189,6 +195,98 @@ const currentContent = content || {
           </a>
         </div>
       </form>
+
+      <!-- Scholen beheer sectie -->
+      <div class="mt-12 pt-8 border-t border-firda-gray-200">
+        <h2 class="text-xl font-bold text-firda-gray-900 mb-4">
+          Samenwerkende scholen
+        </h2>
+        <p class="text-sm text-firda-gray-600 mb-4">
+          Beheer de lijst van scholen die wordt getoond in de marquee op de landingspagina.
+        </p>
+        
+        <!-- School toevoegen formulier -->
+        <form action="/api/schools/add" method="POST" class="mb-6">
+          <div class="flex gap-2">
+            <input
+              type="text"
+              name="schoolName"
+              required
+              placeholder="Naam van de school..."
+              class="flex-1 px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
+            />
+            <button
+              type="submit"
+              class="px-6 py-2 bg-firda-green-500 text-firda-gray-900 font-medium rounded-lg hover:bg-firda-green-600 transition"
+            >
+              Toevoegen
+            </button>
+          </div>
+        </form>
+
+        <!-- School lijst -->
+        {schools && schools.length > 0 ? (
+          <div class="space-y-2">
+            {schools.map((school, index) => (
+              <div class="flex items-center justify-between p-3 bg-firda-gray-50 rounded-lg border border-firda-gray-200">
+                <div class="flex items-center gap-3">
+                  <span class="text-sm font-medium text-firda-gray-500 w-8">#{index + 1}</span>
+                  <span class="text-firda-gray-900 font-medium">{school.name}</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  {index > 0 && (
+                    <form action="/api/schools/reorder" method="POST" class="inline">
+                      <input type="hidden" name="schoolId" value={school.id} />
+                      <input type="hidden" name="direction" value="up" />
+                      <button
+                        type="submit"
+                        class="p-1 text-firda-gray-400 hover:text-firda-blue-600 transition"
+                        title="Omhoog"
+                      >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7"></path>
+                        </svg>
+                      </button>
+                    </form>
+                  )}
+                  {index < schools.length - 1 && (
+                    <form action="/api/schools/reorder" method="POST" class="inline">
+                      <input type="hidden" name="schoolId" value={school.id} />
+                      <input type="hidden" name="direction" value="down" />
+                      <button
+                        type="submit"
+                        class="p-1 text-firda-gray-400 hover:text-firda-blue-600 transition"
+                        title="Omlaag"
+                      >
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                      </button>
+                    </form>
+                  )}
+                  <form action="/api/schools/delete" method="POST" class="inline">
+                    <input type="hidden" name="schoolId" value={school.id} />
+                    <button
+                      type="submit"
+                      class="p-1 text-firda-gray-400 hover:text-red-500 transition"
+                      onclick="return confirm('Weet je zeker dat je deze school wilt verwijderen?')"
+                      title="Verwijderen"
+                    >
+                      <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                      </svg>
+                    </button>
+                  </form>
+                </div>
+              </div>
+            ))}
+          </div>
+        ) : (
+          <div class="text-center py-8 bg-firda-gray-50 rounded-lg border-2 border-dashed border-firda-gray-300">
+            <p class="text-firda-gray-500">Nog geen scholen toegevoegd.</p>
+          </div>
+        )}
+      </div>
     </div>
 
     <!-- Sidebar met PDF's -->
