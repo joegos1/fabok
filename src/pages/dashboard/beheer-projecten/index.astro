@@ -154,7 +154,7 @@ const errorMsg = url.searchParams.get('error');
                     </svg>
                   </a>
                   {project.status === 'active' ? (
-                    <form action="/api/projects/archive.ts" method="POST" class="inline">
+                    <form action="/api/projects/archive" method="POST" class="inline">
                       <input type="hidden" name="projectId" value={project.id} />
                       <button 
                         type="submit"
@@ -168,7 +168,7 @@ const errorMsg = url.searchParams.get('error');
                       </button>
                     </form>
                   ) : (
-                    <form action="/api/projects/restore.ts" method="POST" class="inline">
+                    <form action="/api/projects/restore" method="POST" class="inline">
                       <input type="hidden" name="projectId" value={project.id} />
                       <button 
                         type="submit"
