@@ -14,7 +14,7 @@ if (auth.redirect) {
 }
 
 const { profile } = auth;
-if (!profile || profile.role !== 'admin') {
+if (!profile || (profile.role !== 'admin' && profile.role !== 'landingpage_editor')) {
   return Astro.redirect('/dashboard');
 }
 

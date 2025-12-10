@@ -168,20 +168,36 @@ if (isProjectEditor && !isAdmin) {
     )}
 
     {isLandingPageEditor && (
-      <a 
-        href="/dashboard/landingpage"
-        class="flex items-center p-4 bg-white border border-firda-gray-200 rounded-lg hover:border-firda-blue-300 hover:shadow-sm transition"
-      >
-        <div class="p-3 bg-firda-blue-50 rounded-lg mr-4">
-          <svg class="w-6 h-6 text-firda-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 5a1 1 0 011-1h14a1 1 0 011 1v2a1 1 0 01-1 1H5a1 1 0 01-1-1V5zM4 13a1 1 0 011-1h6a1 1 0 011 1v6a1 1 0 01-1 1H5a1 1 0 01-1-1v-6zM16 13a1 1 0 011-1h2a1 1 0 011 1v6a1 1 0 01-1 1h-2a1 1 0 01-1-1v-6z"></path>
-          </svg>
-        </div>
-        <div>
-          <h3 class="font-semibold text-firda-gray-900">Landingspagina</h3>
-          <p class="text-sm text-firda-gray-500">Tekst en PDF's bewerken van de Landingspagina & Samenwerkende scholen aanpassen</p>
-        </div>
-      </a>
+      <>
+        <a 
+          href="/dashboard/landingpage"
+          class="flex items-center p-4 bg-white border border-firda-gray-200 rounded-lg hover:border-firda-blue-300 hover:shadow-sm transition"
+        >
+          <div class="p-3 bg-firda-purple-50 rounded-lg mr-4">
+            <svg class="w-6 h-6 text-firda-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold text-firda-gray-900">Landingspagina bewerken</h3>
+            <p class="text-sm text-firda-gray-500">Tekst en PDF's bewerken van de Landingspagina & Samenwerkende scholen aanpassen</p>
+          </div>
+        </a>
+        <a 
+          href="/dashboard/beheer-projecten/nieuw"
+          class="flex items-center p-4 bg-white border border-firda-gray-200 rounded-lg hover:border-firda-blue-300 hover:shadow-sm transition"
+        >
+          <div class="p-3 bg-firda-green-50 rounded-lg mr-4">
+            <svg class="w-6 h-6 text-firda-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="font-semibold text-firda-gray-900">Nieuw project aanmaken</h3>
+            <p class="text-sm text-firda-gray-500">Maak een nieuw VABOK project aan</p>
+          </div>
+        </a>
+      </>
     )}
 
     {isProjectEditor && !isAdmin && (
