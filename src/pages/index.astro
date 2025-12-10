@@ -23,11 +23,12 @@ const { data: pdfs } = await supabaseAdmin
   .eq('is_landing_page', true)
   .order('uploaded_at', { ascending: false });
 
-// Haal de laatste 4 actieve projecten op
+// Haal de laatste 4 actieve en gepubliceerde projecten op
 const { data: latestProjects } = await supabaseAdmin
   .from('projects')
   .select('*')
   .eq('status', 'active')
+  .eq('is_published', true)
   .order('created_at', { ascending: false })
   .limit(4);
 
