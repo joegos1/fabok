@@ -9,11 +9,12 @@ import Layout from '../../layouts/Layout.astro';
 import ProjectCard from '../../components/project/ProjectCard.astro';
 import { supabaseAdmin } from '../../lib';
 
-// Haal alle actieve projecten op
+// Haal alle actieve EN gepubliceerde projecten op
 const { data: projects, error } = await supabaseAdmin
   .from('projects')
   .select('*')
   .eq('status', 'active')
+  .eq('is_published', true)
   .order('created_at', { ascending: false });
 
 if (error) {

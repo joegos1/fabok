@@ -131,13 +131,22 @@ const errorMsg = url.searchParams.get('error');
                 {project.owner?.full_name || project.owner?.email || 'Onbekend'}
               </td>
               <td class="py-3 px-4">
-                <span class={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
-                  project.status === 'active' 
-                    ? 'bg-firda-green-100 text-firda-green-700' 
-                    : 'bg-firda-gray-100 text-firda-gray-600'
-                }`}>
-                  {project.status === 'active' ? 'published' : 'nonpublished'}
-                </span>
+                <div class="flex gap-2">
+                  <span class={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                    project.status === 'active' 
+                      ? 'bg-firda-green-100 text-firda-green-700' 
+                      : 'bg-firda-gray-100 text-firda-gray-600'
+                  }`}>
+                    {project.status === 'active' ? 'Actief' : 'Gearchiveerd'}
+                  </span>
+                  <span class={`inline-flex px-2 py-1 text-xs font-medium rounded-full ${
+                    project.is_published 
+                      ? 'bg-firda-blue-100 text-firda-blue-700' 
+                      : 'bg-orange-100 text-orange-700'
+                  }`}>
+                    {project.is_published ? 'Gepubliceerd' : 'Concept'}
+                  </span>
+                </div>
               </td>
               <td class="py-3 px-4 text-sm text-firda-gray-600">
                 {new Date(project.created_at).toLocaleDateString('nl-NL')}

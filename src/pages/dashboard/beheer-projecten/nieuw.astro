@@ -58,6 +58,7 @@ if (Astro.request.method === 'POST') {
         tags,
         owner_id: ownerId,
         status: 'active',
+        is_published: false,
       });
     
     if (error) {

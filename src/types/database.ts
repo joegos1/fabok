@@ -50,6 +50,7 @@ export interface Database {
           contact_person: string | null;
           tags: string[] | null;
           status: 'active' | 'archived';
+          is_published: boolean;
           owner_id: string;
           created_at: string;
           updated_at: string;
@@ -64,6 +65,7 @@ export interface Database {
           contact_person?: string | null;
           tags?: string[] | null;
           status?: 'active' | 'archived';
+          is_published?: boolean;
           owner_id: string;
           created_at?: string;
           updated_at?: string;
@@ -78,6 +80,7 @@ export interface Database {
           contact_person?: string | null;
           tags?: string[] | null;
           status?: 'active' | 'archived';
+          is_published?: boolean;
           owner_id?: string;
           created_at?: string;
           updated_at?: string;
