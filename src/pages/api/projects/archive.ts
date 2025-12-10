@@ -30,7 +30,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     // Archive project
     const { error } = await supabaseAdmin
       .from('projects')
-      .update({ status: 'gearchiveerd', updated_at: new Date().toISOString() })
+      .update({ status: 'archived', updated_at: new Date().toISOString() })
       .eq('id', projectId);
 
     if (error) {
