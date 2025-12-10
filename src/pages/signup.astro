@@ -1,19 +1,18 @@
 ---
 /**
- * Login Page
- * ==========
- * Login pagina met e-mail en wachtwoord
+ * Signup Page
+ * ===========
+ * Registratie pagina voor nieuwe gebruikers
  */
 
 import Layout from '../layouts/Layout.astro';
 import { getCurrentUser } from '../lib';
 
-// Check of gebruiker al ingelogd is met een geldige token
+// Check of gebruiker al ingelogd is
 const cookies = Astro.request.headers.get('cookie') || '';
 const accessTokenMatch = cookies.match(/sb-access-token=([^;]+)/);
 const accessToken = accessTokenMatch ? accessTokenMatch[1] : null;
 
-// Only redirect if we have a valid token AND the user exists
 if (accessToken && accessToken.length > 0) {
   const user = await getCurrentUser(accessToken);
   if (user) {
@@ -27,7 +26,7 @@ const error = url.searchParams.get('error');
 const message = url.searchParams.get('message');
 ---
 
-<Layout title="Inloggen">
+<Layout title="Account aanvragen">
   <div class="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
     <div class="max-w-md w-full">
       <div class="bg-white rounded-2xl shadow-lg p-8">
@@ -35,39 +34,54 @@ const message = url.searchParams.get('message');
         <div class="text-center mb-8">
           <div class="mx-auto w-16 h-16 bg-firda-blue-100 rounded-full flex items-center justify-center mb-4">
             <svg class="w-8 h-8 text-firda-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"></path>
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
             </svg>
           </div>
-          <h1 class="text-2xl font-bold text-firda-gray-900">Inloggen</h1>
+          <h1 class="text-2xl font-bold text-firda-gray-900">Account aanvragen</h1>
           <p class="mt-2 text-firda-gray-600">
-            Log in om toegang te krijgen tot het dashboard
+            Vraag toegang aan tot het VABOK dashboard
           </p>
         </div>
 
         <!-- Error message -->
         {error && (
           <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-            {error === 'invalid_credentials' && 'Ongeldige e-mail of wachtwoord.'}
+            {error === 'password_mismatch' && 'Wachtwoorden komen niet overeen.'}
             {error === 'server_error' && 'Er is een serverfout opgetreden. Probeer het later opnieuw.'}
-            {error === 'unauthorized' && 'Je bent niet geautoriseerd om deze pagina te bekijken.'}
-            {error === 'account_pending' && 'Je account wacht nog op goedkeuring door een beheerder.'}
-            {error === 'account_rejected' && 'Je accountaanvraag is afgewezen.'}
-            {!['invalid_credentials', 'server_error', 'unauthorized', 'account_pending', 'account_rejected'].includes(error) && error}
+            {error === 'email_taken' && 'Dit e-mailadres is al in gebruik.'}
+            {!['password_mismatch', 'server_error', 'email_taken'].includes(error) && error}
           </div>
         )}
 
-        <!-- Success message -->
-        {message && (
-          <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700 text-sm">
-            {message === 'logged_out' && 'Je bent succesvol uitgelogd.'}
-            {message === 'password_reset' && 'Check je e-mail voor instructies om je wachtwoord te resetten.'}
-            {message === 'account_pending' && 'Je account is aangevraagd en wacht op goedkeuring.'}
-            {!['logged_out', 'password_reset', 'account_pending'].includes(message) && message}
-          </div>
-        )}
+        <!-- Info message -->
+        <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-sm">
+          <p class="flex gap-2">
+            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+            <span>
+              Na registratie moet je account worden goedgekeurd door een beheerder voordat je kunt inloggen.
+            </span>
+          </p>
+        </div>
 
-        <!-- Login form -->
-        <form action="/api/auth/login" method="POST" class="space-y-6">
+        <!-- Signup form -->
+        <form action="/api/auth/signup" method="POST" class="space-y-6">
+          <div>
+            <label for="full_name" class="block text-sm font-medium text-firda-gray-700 mb-1">
+              Volledige naam
+            </label>
+            <input
+              type="text"
+              id="full_name"
+              name="full_name"
+              required
+              autocomplete="name"
+              class="w-full px-4 py-3 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 transition"
+              placeholder="Jan Jansen"
+            />
+          </div>
+
           <div>
             <label for="email" class="block text-sm font-medium text-firda-gray-700 mb-1">
               E-mailadres
@@ -92,9 +106,10 @@ const message = url.searchParams.get('message');
               id="password"
               name="password"
               required
-              autocomplete="current-password"
+              autocomplete="new-password"
+              minlength="6"
               class="w-full px-4 py-3 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 transition"
-              placeholder="••••••••"
+              placeholder="Minimaal 6 karakters"
             />
           </div>
 
@@ -102,26 +117,24 @@ const message = url.searchParams.get('message');
             type="submit"
             class="w-full bg-firda-blue-600 text-white py-3 px-4 rounded-lg font-semibold hover:bg-firda-blue-700 focus:ring-4 focus:ring-firda-blue-200 transition"
           >
-            Inloggen
+            Account aanvragen
           </button>
         </form>
 
         <!-- Footer links -->
         <div class="mt-6 text-center text-sm text-firda-gray-600">
-          <a href="/" class="text-firda-blue-600 hover:text-firda-blue-700 font-medium">
-            ← Terug naar home
-          </a>
+          <p>
+            Heb je al een account?
+            <a href="/login" class="text-firda-blue-600 hover:text-firda-blue-700 font-medium">
+              Inloggen
+            </a>
+          </p>
+          <div class="mt-4">
+            <a href="/" class="text-firda-gray-500 hover:text-firda-gray-700">
+              ← Terug naar home
+            </a>
+          </div>
         </div>
-      </div>
-
-      <!-- Info box -->
-      <div class="mt-6 bg-firda-blue-50 rounded-xl p-4 text-center text-sm text-firda-blue-800">
-        <p>
-          <strong>Nieuw account nodig?</strong><br />
-          <a href="/signup" class="text-firda-blue-600 hover:text-firda-blue-700 font-semibold underline">
-            Vraag hier een account aan
-          </a>
-        </p>
       </div>
     </div>
   </div>

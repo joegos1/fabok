@@ -9,6 +9,7 @@
  */
 
 export type UserRole = 'admin' | 'landingpage_editor' | 'project_editor' | 'viewer';
+export type AccountStatus = 'pending' | 'approved' | 'rejected';
 
 export interface Database {
   public: {
@@ -18,7 +19,8 @@ export interface Database {
           id: string;
           email: string;
           full_name: string | null;
-          role: UserRole;
+          role: UserRole | null;
+          account_status: AccountStatus;
           created_at: string;
           updated_at: string;
         };
@@ -26,7 +28,8 @@ export interface Database {
           id: string;
           email: string;
           full_name?: string | null;
-          role?: UserRole;
+          role?: UserRole | null;
+          account_status?: AccountStatus;
           created_at?: string;
           updated_at?: string;
         };
@@ -34,7 +37,8 @@ export interface Database {
           id?: string;
           email?: string;
           full_name?: string | null;
-          role?: UserRole;
+          role?: UserRole | null;
+          account_status?: AccountStatus;
           created_at?: string;
           updated_at?: string;
         };

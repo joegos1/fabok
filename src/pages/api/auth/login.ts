@@ -28,6 +28,24 @@ export const POST: APIRoute = async ({ request, redirect }) => {
       return redirect('/login?error=invalid_credentials');
     }
 
+    // Check account status
+    const { data: profile } = await supabaseAdmin
+      .from('profiles')
+      .select('account_status')
+      .eq('id', data.user.id)
+      .single();
+
+    if (profile) {
+      if (profile.account_status === 'pending') {
+        await supabase.auth.signOut();
+        return redirect('/login?error=account_pending');
+      }
+      if (profile.account_status === 'rejected') {
+        await supabase.auth.signOut();
+        return redirect('/login?error=account_rejected');
+      }
+    }
+
     // Zet auth cookies
     const cookies = createAuthCookies(
       data.session.access_token,

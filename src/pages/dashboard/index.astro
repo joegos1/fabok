@@ -27,6 +27,7 @@ const isProjectEditor = profile.role === 'project_editor' || isAdmin;
 let projectCount = 0;
 let pdfCount = 0;
 let myProjectCount = 0;
+let pendingUserCount = 0;
 
 if (isAdmin) {
   const { count: pc } = await supabaseAdmin
@@ -38,6 +39,12 @@ if (isAdmin) {
     .from('pdf_files')
     .select('*', { count: 'exact', head: true });
   pdfCount = pdfc || 0;
+
+  const { count: puc } = await supabaseAdmin
+    .from('profiles')
+    .select('*', { count: 'exact', head: true })
+    .eq('account_status', 'pending');
+  pendingUserCount = puc || 0;
 }
 
 if (isProjectEditor && !isAdmin) {
@@ -68,6 +75,22 @@ if (isProjectEditor && !isAdmin) {
   <!-- Admin statistieken -->
   {isAdmin && (
     <div class="grid sm:grid-cols-3 gap-4 mb-8">
+      {pendingUserCount > 0 && (
+        <a href="/dashboard/gebruikers" class="bg-orange-50 border border-orange-200 rounded-lg p-6 hover:bg-orange-100 transition cursor-pointer">
+          <div class="flex items-center justify-between">
+            <div>
+              <p class="text-sm text-orange-700 font-medium">Wachtend op goedkeuring</p>
+              <p class="text-3xl font-bold text-orange-800">{pendingUserCount}</p>
+            </div>
+            <div class="p-3 bg-orange-200 rounded-lg">
+              <svg class="w-6 h-6 text-orange-700" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path>
+              </svg>
+            </div>
+          </div>
+        </a>
+      )}
+
       <div class="bg-firda-gray-50 rounded-lg p-6">
         <div class="flex items-center justify-between">
           <div>

@@ -126,7 +126,8 @@ export async function requireAuth(request: Request): Promise<{
     };
   }
   
-  const user = await getCurrentUser(accessToken);
+  let user = await getCurrentUser(accessToken);
+  let newAccessToken = accessToken;
   
   if (!user) {
     // Probeer token te vernieuwen
@@ -136,32 +137,43 @@ export async function requireAuth(request: Request): Promise<{
       });
       
       if (!error && data.user) {
-        const profile = await getUserProfile(data.user.id);
-        return {
-          user: data.user,
-          profile,
-          accessToken: data.session?.access_token || null,
-        };
+        user = data.user;
+        newAccessToken = data.session?.access_token || null;
       }
     }
     
+    if (!user) {
+      return {
+        user: null,
+        profile: null,
+        accessToken: null,
+        redirect: new Response(null, {
+          status: 302,
+          headers: { Location: '/login' },
+        }),
+      };
+    }
+  }
+  
+  const profile = await getUserProfile(user.id);
+
+  // Check account status
+  if (profile && profile.account_status !== 'approved') {
     return {
       user: null,
       profile: null,
       accessToken: null,
       redirect: new Response(null, {
         status: 302,
-        headers: { Location: '/login' },
+        headers: { Location: '/login?error=account_' + profile.account_status },
       }),
     };
   }
   
-  const profile = await getUserProfile(user.id);
-  
   return {
     user,
     profile,
-    accessToken,
+    accessToken: newAccessToken,
   };
 }
 
