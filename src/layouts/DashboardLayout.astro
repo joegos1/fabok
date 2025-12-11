@@ -43,7 +43,7 @@ const isProjectEditor = profile.role === 'project_editor' || isAdmin;
           <nav class="space-y-2">
             <a 
               href="/dashboard/overzicht" 
-              class:list=[
+              class:list={[
                 "flex items-center px-3 py-2 rounded-lg transition",
                 currentPath === '/dashboard/overzicht' 
                   ? "bg-firda-blue-50 text-firda-blue-700" 
@@ -59,7 +59,7 @@ const isProjectEditor = profile.role === 'project_editor' || isAdmin;
             {isAdmin && (
               <a 
                 href="/dashboard/beheer-projecten/alle-projecten" 
-                class:list=[
+                class:list={[
                   "flex items-center px-3 py-2 rounded-lg transition",
                   currentPath.startsWith('/dashboard/beheer-projecten')
                     ? "bg-firda-blue-50 text-firda-blue-700" 
@@ -76,7 +76,7 @@ const isProjectEditor = profile.role === 'project_editor' || isAdmin;
             {isProjectEditor && !isAdmin && (
               <a 
                 href="/dashboard/mijn-projecten" 
-                class:list=[
+                class:list={[
                   "flex items-center px-3 py-2 rounded-lg transition",
                   currentPath.startsWith('/dashboard/mijn-projecten')
                     ? "bg-firda-blue-50 text-firda-blue-700" 
@@ -94,7 +94,7 @@ const isProjectEditor = profile.role === 'project_editor' || isAdmin;
               <>
                 <a 
                   href="/dashboard/landingpage" 
-                  class:list=[
+                  class:list={[
                     "flex items-center px-3 py-2 rounded-lg transition",
                     currentPath.startsWith('/dashboard/landingpage') 
                       ? "bg-firda-blue-50 text-firda-blue-700" 
@@ -108,7 +108,7 @@ const isProjectEditor = profile.role === 'project_editor' || isAdmin;
                 </a>
                 <a 
                   href="/dashboard/beheer-projecten/nieuw" 
-                  class:list=[
+                  class:list={[
                     "flex items-center px-3 py-2 rounded-lg transition",
                     currentPath === '/dashboard/beheer-projecten/nieuw'
                       ? "bg-firda-blue-50 text-firda-blue-700" 
@@ -126,7 +126,7 @@ const isProjectEditor = profile.role === 'project_editor' || isAdmin;
             {isAdmin && (
               <a 
                 href="/dashboard/gebruikers" 
-                class:list=[
+                class:list={[
                   "flex items-center px-3 py-2 rounded-lg transition",
                   currentPath.startsWith('/dashboard/gebruikers')
                     ? "bg-firda-blue-50 text-firda-blue-700" 
