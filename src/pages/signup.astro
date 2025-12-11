@@ -16,7 +16,7 @@ const accessToken = accessTokenMatch ? accessTokenMatch[1] : null;
 if (accessToken && accessToken.length > 0) {
   const user = await getCurrentUser(accessToken);
   if (user) {
-    return Astro.redirect('/dashboard');
+    return Astro.redirect('/dashboard/overzicht');
   }
 }
 

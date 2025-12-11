@@ -23,7 +23,7 @@ if (!profile) {
 
 // Check of gebruiker landingpage_editor of admin is
 if (!isLandingPageEditor(profile.role)) {
-  return Astro.redirect('/dashboard');
+  return Astro.redirect('/dashboard/overzicht');
 }
 
 // Haal huidige content op

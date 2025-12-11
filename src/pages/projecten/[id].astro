@@ -13,7 +13,7 @@ import { supabaseAdmin } from '../../lib';
 const { id } = Astro.params;
 
 if (!id) {
-  return Astro.redirect('/projecten');
+  return Astro.redirect('/projecten/lijst');
 }
 
 // Haal project op
@@ -25,7 +25,7 @@ const { data: project, error: projectError } = await supabaseAdmin
   .single();
 
 if (projectError || !project) {
-  return Astro.redirect('/projecten');
+  return Astro.redirect('/projecten/lijst');
 }
 
 // Haal PDF's op voor dit project
@@ -57,7 +57,7 @@ const { data: owner } = await supabaseAdmin
           </svg>
         </li>
         <li>
-          <a href="/projecten" class="hover:text-firda-blue-600 transition">Projecten</a>
+          <a href="/projecten/lijst" class="hover:text-firda-blue-600 transition">Projecten</a>
         </li>
         <li>
           <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20">
@@ -199,7 +199,7 @@ const { data: owner } = await supabaseAdmin
     <!-- Terug link -->
     <div class="mt-8">
       <a 
-        href="/projecten" 
+        href="/projecten/lijst" 
         class="inline-flex items-center text-firda-blue-600 font-medium hover:text-firda-blue-700 transition"
       >
         <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">

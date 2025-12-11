@@ -57,13 +57,13 @@ const roleLabel = profile
           <a href="/" class="hover:text-firda-green-400 transition font-medium">
             Home
           </a>
-          <a href="/projecten" class="hover:text-firda-green-400 transition font-medium">
+          <a href="/projecten/lijst" class="hover:text-firda-green-400 transition font-medium">
             Projecten
           </a>
           {isLoggedIn ? (
             <>
               {profile && ['admin', 'project_editor', 'landingpage_editor'].includes(profile.role) && (
-                <a href="/dashboard" class="hover:text-firda-green-400 transition font-medium">
+                <a href="/dashboard/overzicht" class="hover:text-firda-green-400 transition font-medium">
                   Dashboard
                 </a>
               )}
@@ -110,7 +110,7 @@ const roleLabel = profile
           <a href="/" class="hover:bg-firda-blue-700 px-3 py-2 rounded-lg transition">
             Home
           </a>
-          <a href="/projecten" class="hover:bg-firda-blue-700 px-3 py-2 rounded-lg transition">
+          <a href="/projecten/lijst" class="hover:bg-firda-blue-700 px-3 py-2 rounded-lg transition">
             Projecten
           </a>
           {isLoggedIn ? (
@@ -124,7 +124,7 @@ const roleLabel = profile
                 </div>
               )}
               {profile && ['admin', 'project_editor', 'landingpage_editor'].includes(profile.role) && (
-                <a href="/dashboard" class="hover:bg-firda-blue-700 px-3 py-2 rounded-lg transition">
+                <a href="/dashboard/overzicht" class="hover:bg-firda-blue-700 px-3 py-2 rounded-lg transition">
                   Dashboard
                 </a>
               )}
