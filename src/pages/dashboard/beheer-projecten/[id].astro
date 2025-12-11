@@ -196,6 +196,9 @@ if (Astro.request.method === 'POST') {
               Afbeelding uploaden...
             </div>
           </div>
+            <div id="pasted-images" class="mt-3 grid grid-cols-2 md:grid-cols-3 gap-3 hidden">
+              <!-- previews van geplakte afbeeldingen komen hier -->
+            </div>
         </div>
 
         <!-- Doelen -->
@@ -365,6 +368,22 @@ if (Astro.request.method === 'POST') {
   // Afbeelding plakken functionaliteit
   const textarea = document.getElementById('full_description');
   const pasteStatus = document.getElementById('paste-status');
+  const pastedImages = document.getElementById('pasted-images');
+
+  const addPreview = (url, filename) => {
+    if (!pastedImages) return;
+    pastedImages.classList.remove('hidden');
+
+    const card = document.createElement('div');
+    card.className = 'rounded-lg border border-firda-gray-200 bg-white shadow-sm overflow-hidden';
+    card.innerHTML = `
+      <div class="aspect-video bg-firda-gray-50 overflow-hidden">
+        <img src="${url}" alt="${filename}" class="w-full h-full object-cover" loading="lazy" />
+      </div>
+      <div class="px-2 py-2 text-xs text-firda-gray-700 truncate">${filename}</div>
+    `;
+    pastedImages.prepend(card);
+  };
 
   if (textarea) {
     textarea.addEventListener('paste', async (e) => {
@@ -417,6 +436,9 @@ if (Astro.request.method === 'POST') {
             const newCursorPos = cursorPos + imageMarkdown.length;
             textarea.setSelectionRange(newCursorPos, newCursorPos);
             textarea.focus();
+
+            // Toon visuele preview
+            addPreview(result.url, result.filename);
 
             // Verberg status
             pasteStatus.classList.add('hidden');
