@@ -79,23 +79,23 @@ CREATE POLICY "Owners can delete images" ON project_images
 -- STORAGE BUCKET VOOR PROJECT IMAGES
 -- =====================================================
 -- Maak storage bucket aan voor project afbeeldingen
--- Voer dit uit in de Supabase dashboard onder Storage
 
--- INSERT INTO storage.buckets (id, name, public)
--- VALUES ('project-images', 'project-images', true);
+INSERT INTO storage.buckets (id, name, public)
+VALUES ('project-images', 'project-images', true)
+ON CONFLICT (id) DO NOTHING;
 
 -- Storage policies voor project-images bucket
--- CREATE POLICY "Public can view project images" ON storage.objects
---   FOR SELECT USING (bucket_id = 'project-images');
+CREATE POLICY "Public can view project images" ON storage.objects
+  FOR SELECT USING (bucket_id = 'project-images');
 
--- CREATE POLICY "Authenticated users can upload project images" ON storage.objects
---   FOR INSERT WITH CHECK (
---     bucket_id = 'project-images' 
---     AND auth.role() = 'authenticated'
---   );
+CREATE POLICY "Authenticated users can upload project images" ON storage.objects
+  FOR INSERT WITH CHECK (
+    bucket_id = 'project-images' 
+    AND auth.role() = 'authenticated'
+  );
 
--- CREATE POLICY "Users can delete their own project images" ON storage.objects
---   FOR DELETE USING (
---     bucket_id = 'project-images' 
---     AND auth.role() = 'authenticated'
---   );
+CREATE POLICY "Users can delete their own project images" ON storage.objects
+  FOR DELETE USING (
+    bucket_id = 'project-images' 
+    AND auth.role() = 'authenticated'
+  );
