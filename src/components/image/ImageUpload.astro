@@ -1,0 +1,280 @@
+---
+/**
+ * Image Upload Component
+ * ======================
+ * Upload formulier voor afbeeldingen
+ * Valideert bestandstype (jpg, jpeg, png, webp)
+ */
+
+interface Props {
+  projectId: string;
+  uploadUrl: string;
+}
+
+const { projectId, uploadUrl } = Astro.props;
+---
+
+<div class="bg-firda-gray-50 rounded-lg p-4">
+  <h3 class="font-semibold text-firda-gray-800 mb-3 flex items-center">
+    <svg class="w-5 h-5 mr-2 text-firda-blue-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+    </svg>
+    Afbeelding Uploaden
+  </h3>
+
+  <form 
+    id="image-upload-form" 
+    action={uploadUrl} 
+    method="POST" 
+    enctype="multipart/form-data"
+    class="space-y-4"
+  >
+    <input type="hidden" name="projectId" value={projectId} />
+    
+    <div 
+      id="image-drop-zone"
+      class="border-2 border-dashed border-firda-gray-300 rounded-lg p-6 text-center hover:border-firda-blue-400 transition cursor-pointer"
+    >
+      <svg class="mx-auto h-12 w-12 text-firda-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path>
+      </svg>
+      <p class="mt-2 text-sm text-firda-gray-600">
+        <label for="image-file" class="font-medium text-firda-blue-600 hover:text-firda-blue-500 cursor-pointer">
+          Klik om te uploaden
+        </label>
+        <span class="text-firda-gray-500"> of sleep hier een afbeelding</span>
+      </p>
+      <p class="mt-1 text-xs text-firda-gray-500">
+        JPG, PNG of WebP (max 5MB)
+      </p>
+      <input 
+        id="image-file" 
+        name="imageFile" 
+        type="file" 
+        accept="image/jpeg,image/jpg,image/png,image/webp,.jpg,.jpeg,.png,.webp" 
+        class="hidden"
+        required
+      />
+    </div>
+
+    <!-- Preview geselecteerde afbeelding -->
+    <div id="image-selected-file" class="hidden">
+      <div class="flex items-start p-3 bg-white rounded-lg border border-firda-gray-200">
+        <img 
+          id="image-preview" 
+          src="" 
+          alt="Preview" 
+          class="w-20 h-20 object-cover rounded mr-3"
+        />
+        <div class="flex-1">
+          <p id="image-file-name" class="text-sm font-medium text-firda-gray-800"></p>
+          <p id="image-file-size" class="text-xs text-firda-gray-500"></p>
+        </div>
+        <button 
+          type="button" 
+          id="image-remove-file" 
+          class="text-firda-gray-400 hover:text-red-500 transition"
+        >
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Error message -->
+    <div id="image-upload-error" class="hidden p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+      <p id="image-error-message"></p>
+    </div>
+
+    <!-- Submit button -->
+    <button 
+      type="submit" 
+      id="image-submit-btn"
+      class="w-full bg-firda-blue-500 text-white py-2 px-4 rounded-lg font-medium hover:bg-firda-blue-600 disabled:bg-firda-gray-300 disabled:cursor-not-allowed transition"
+      disabled
+    >
+      <span id="image-btn-text">Uploaden</span>
+      <span id="image-btn-loading" class="hidden">
+        <svg class="animate-spin h-5 w-5 mx-auto" fill="none" viewBox="0 0 24 24">
+          <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+          <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+        </svg>
+      </span>
+    </button>
+  </form>
+</div>
+
+<script>
+  const form = document.getElementById('image-upload-form') as HTMLFormElement;
+  const fileInput = document.getElementById('image-file') as HTMLInputElement;
+  const dropZone = document.getElementById('image-drop-zone') as HTMLDivElement;
+  const selectedFile = document.getElementById('image-selected-file') as HTMLDivElement;
+  const fileName = document.getElementById('image-file-name') as HTMLParagraphElement;
+  const fileSize = document.getElementById('image-file-size') as HTMLParagraphElement;
+  const imagePreview = document.getElementById('image-preview') as HTMLImageElement;
+  const removeFile = document.getElementById('image-remove-file') as HTMLButtonElement;
+  const submitBtn = document.getElementById('image-submit-btn') as HTMLButtonElement;
+  const btnText = document.getElementById('image-btn-text') as HTMLSpanElement;
+  const btnLoading = document.getElementById('image-btn-loading') as HTMLSpanElement;
+  const errorDiv = document.getElementById('image-upload-error') as HTMLDivElement;
+  const errorMessage = document.getElementById('image-error-message') as HTMLParagraphElement;
+
+  const MAX_FILE_SIZE = 5 * 1024 * 1024; // 5MB
+
+  // Helper: format file size
+  function formatFileSize(bytes: number): string {
+    if (bytes < 1024) return `${bytes} bytes`;
+    if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
+    return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
+  }
+
+  // Helper: validate image
+  function isValidImage(file: File): { valid: boolean; error?: string } {
+    const validTypes = ['image/jpeg', 'image/jpg', 'image/png', 'image/webp'];
+    const validExtensions = ['.jpg', '.jpeg', '.png', '.webp'];
+    const extension = file.name.substring(file.name.lastIndexOf('.')).toLowerCase();
+
+    if (!validTypes.includes(file.type) || !validExtensions.includes(extension)) {
+      return { valid: false, error: 'Alleen JPG, PNG en WebP bestanden zijn toegestaan.' };
+    }
+
+    if (file.size > MAX_FILE_SIZE) {
+      return { valid: false, error: 'Bestand is te groot. Maximaal 5MB toegestaan.' };
+    }
+
+    return { valid: true };
+  }
+
+  // Helper: show error
+  function showError(message: string) {
+    errorMessage.textContent = message;
+    errorDiv.classList.remove('hidden');
+  }
+
+  // Helper: hide error
+  function hideError() {
+    errorDiv.classList.add('hidden');
+  }
+
+  // Helper: update file display
+  function updateFileDisplay(file: File | null) {
+    if (file) {
+      const validation = isValidImage(file);
+      
+      if (validation.valid) {
+        fileName.textContent = file.name;
+        fileSize.textContent = formatFileSize(file.size);
+        
+        // Create preview
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          imagePreview.src = e.target?.result as string;
+        };
+        reader.readAsDataURL(file);
+        
+        selectedFile.classList.remove('hidden');
+        dropZone.classList.add('hidden');
+        submitBtn.disabled = false;
+        hideError();
+      } else {
+        showError(validation.error || 'Ongeldig bestand.');
+        resetFileInput();
+      }
+    } else {
+      selectedFile.classList.add('hidden');
+      dropZone.classList.remove('hidden');
+      submitBtn.disabled = true;
+    }
+  }
+
+  // Helper: reset file input
+  function resetFileInput() {
+    fileInput.value = '';
+    updateFileDisplay(null);
+  }
+
+  // Event: file input change
+  fileInput.addEventListener('change', () => {
+    const file = fileInput.files?.[0] || null;
+    updateFileDisplay(file);
+  });
+
+  // Event: click on drop zone
+  dropZone.addEventListener('click', () => {
+    fileInput.click();
+  });
+
+  // Event: drag and drop
+  dropZone.addEventListener('dragover', (e) => {
+    e.preventDefault();
+    dropZone.classList.add('border-firda-blue-400', 'bg-firda-blue-50');
+  });
+
+  dropZone.addEventListener('dragleave', () => {
+    dropZone.classList.remove('border-firda-blue-400', 'bg-firda-blue-50');
+  });
+
+  dropZone.addEventListener('drop', (e) => {
+    e.preventDefault();
+    dropZone.classList.remove('border-firda-blue-400', 'bg-firda-blue-50');
+    
+    const files = e.dataTransfer?.files;
+    if (files && files.length > 0) {
+      const dataTransfer = new DataTransfer();
+      dataTransfer.items.add(files[0]);
+      fileInput.files = dataTransfer.files;
+      updateFileDisplay(files[0]);
+    }
+  });
+
+  // Event: remove file
+  removeFile.addEventListener('click', () => {
+    resetFileInput();
+  });
+
+  // Event: form submit
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const file = fileInput.files?.[0];
+    if (!file) {
+      showError('Selecteer een afbeelding.');
+      return;
+    }
+
+    const validation = isValidImage(file);
+    if (!validation.valid) {
+      showError(validation.error || 'Ongeldig bestand.');
+      return;
+    }
+
+    // Show loading state
+    submitBtn.disabled = true;
+    btnText.classList.add('hidden');
+    btnLoading.classList.remove('hidden');
+    hideError();
+
+    try {
+      const formData = new FormData(form);
+      const response = await fetch(form.action, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (response.ok) {
+        // Reload page to show new image
+        window.location.reload();
+      } else {
+        const data = await response.json();
+        showError(data.error || 'Er is een fout opgetreden bij het uploaden.');
+      }
+    } catch (error) {
+      showError('Er is een fout opgetreden bij het uploaden.');
+    } finally {
+      submitBtn.disabled = false;
+      btnText.classList.remove('hidden');
+      btnLoading.classList.add('hidden');
+    }
+  });
+</script>

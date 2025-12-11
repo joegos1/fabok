@@ -1,17 +1,101 @@
--- Add account_status column to profiles
-ALTER TABLE public.profiles 
-ADD COLUMN account_status text NOT NULL DEFAULT 'pending' 
-CHECK (account_status IN ('pending', 'approved', 'rejected'));
+-- =====================================================
+-- PROJECT IMAGES TABLE
+-- =====================================================
+-- Tabel voor het opslaan van afbeeldingen per project
+-- Afbeeldingen worden gebruikt in de uitgebreide beschrijving
 
--- Remove NOT NULL constraint from role and remove default value
-ALTER TABLE public.profiles 
-ALTER COLUMN role DROP NOT NULL,
-ALTER COLUMN role DROP DEFAULT;
+CREATE TABLE IF NOT EXISTS project_images (
+  id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+  project_id UUID NOT NULL REFERENCES projects(id) ON DELETE CASCADE,
+  url TEXT NOT NULL,
+  filename TEXT NOT NULL,
+  file_size INTEGER NOT NULL,
+  mime_type TEXT NOT NULL,
+  display_order INTEGER DEFAULT 0,
+  uploaded_at TIMESTAMPTZ DEFAULT NOW(),
+  uploaded_by UUID REFERENCES auth.users(id) ON DELETE SET NULL
+);
 
--- Update existing users to approved
-UPDATE public.profiles 
-SET account_status = 'approved' 
-WHERE account_status = 'pending'; -- This ensures we only update if we just added the column (though default is pending, so all existing rows get pending initially)
+-- Index voor snellere queries
+CREATE INDEX IF NOT EXISTS idx_project_images_project_id ON project_images(project_id);
+CREATE INDEX IF NOT EXISTS idx_project_images_display_order ON project_images(project_id, display_order);
 
--- Create index for performance
-CREATE INDEX IF NOT EXISTS idx_profiles_account_status ON public.profiles(account_status);
+-- RLS policies voor project_images
+ALTER TABLE project_images ENABLE ROW LEVEL SECURITY;
+
+-- Iedereen kan afbeeldingen van gepubliceerde projecten lezen
+CREATE POLICY "Public can view images of published projects" ON project_images
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM projects 
+      WHERE projects.id = project_images.project_id 
+      AND projects.is_published = true
+    )
+  );
+
+-- Eigenaren en admins kunnen afbeeldingen van hun eigen projecten lezen
+CREATE POLICY "Owners can view their project images" ON project_images
+  FOR SELECT USING (
+    EXISTS (
+      SELECT 1 FROM projects 
+      JOIN profiles ON profiles.id = projects.owner_id
+      WHERE projects.id = project_images.project_id 
+      AND (
+        profiles.id = auth.uid() 
+        OR profiles.role = 'admin'
+      )
+    )
+  );
+
+-- Eigenaren en admins kunnen afbeeldingen uploaden
+CREATE POLICY "Owners can upload images" ON project_images
+  FOR INSERT WITH CHECK (
+    EXISTS (
+      SELECT 1 FROM projects 
+      JOIN profiles ON profiles.id = projects.owner_id
+      WHERE projects.id = project_images.project_id 
+      AND (
+        profiles.id = auth.uid() 
+        OR profiles.role = 'admin'
+      )
+    )
+  );
+
+-- Eigenaren en admins kunnen afbeeldingen verwijderen
+CREATE POLICY "Owners can delete images" ON project_images
+  FOR DELETE USING (
+    EXISTS (
+      SELECT 1 FROM projects 
+      JOIN profiles ON profiles.id = projects.owner_id
+      WHERE projects.id = project_images.project_id 
+      AND (
+        profiles.id = auth.uid() 
+        OR profiles.role = 'admin'
+      )
+    )
+  );
+
+-- =====================================================
+-- STORAGE BUCKET VOOR PROJECT IMAGES
+-- =====================================================
+-- Maak storage bucket aan voor project afbeeldingen
+-- Voer dit uit in de Supabase dashboard onder Storage
+
+-- INSERT INTO storage.buckets (id, name, public)
+-- VALUES ('project-images', 'project-images', true);
+
+-- Storage policies voor project-images bucket
+-- CREATE POLICY "Public can view project images" ON storage.objects
+--   FOR SELECT USING (bucket_id = 'project-images');
+
+-- CREATE POLICY "Authenticated users can upload project images" ON storage.objects
+--   FOR INSERT WITH CHECK (
+--     bucket_id = 'project-images' 
+--     AND auth.role() = 'authenticated'
+--   );
+
+-- CREATE POLICY "Users can delete their own project images" ON storage.objects
+--   FOR DELETE USING (
+--     bucket_id = 'project-images' 
+--     AND auth.role() = 'authenticated'
+--   );

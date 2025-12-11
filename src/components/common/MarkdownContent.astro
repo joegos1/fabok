@@ -1,0 +1,87 @@
+---
+/**
+ * Markdown Content Component
+ * ===========================
+ * Rendert tekst met markdown afbeelding syntax
+ * Ondersteunt: ![alt](url) syntax voor afbeeldingen
+ */
+
+interface Props {
+  content: string;
+  class?: string;
+}
+
+const { content, class: className = '' } = Astro.props;
+
+// Parse markdown-style images: ![alt](url)
+function parseMarkdown(text: string): { type: 'text' | 'image'; content: string; alt?: string; url?: string }[] {
+  const parts: { type: 'text' | 'image'; content: string; alt?: string; url?: string }[] = [];
+  const imageRegex = /!\[([^\]]*)\]\(([^\)]+)\)/g;
+  
+  let lastIndex = 0;
+  let match;
+  
+  while ((match = imageRegex.exec(text)) !== null) {
+    // Add text before image
+    if (match.index > lastIndex) {
+      const textContent = text.substring(lastIndex, match.index);
+      if (textContent.trim()) {
+        parts.push({ type: 'text', content: textContent });
+      }
+    }
+    
+    // Add image
+    parts.push({ 
+      type: 'image', 
+      content: '',
+      alt: match[1] || 'Project afbeelding',
+      url: match[2]
+    });
+    
+    lastIndex = match.index + match[0].length;
+  }
+  
+  // Add remaining text
+  if (lastIndex < text.length) {
+    const textContent = text.substring(lastIndex);
+    if (textContent.trim()) {
+      parts.push({ type: 'text', content: textContent });
+    }
+  }
+  
+  // If no images found, return original text as single part
+  if (parts.length === 0) {
+    parts.push({ type: 'text', content: text });
+  }
+  
+  return parts;
+}
+
+const parsedContent = parseMarkdown(content);
+---
+
+<div class={className}>
+  {parsedContent.map(part => {
+    if (part.type === 'image') {
+      return (
+        <div class="my-6">
+          <img 
+            src={part.url} 
+            alt={part.alt} 
+            class="w-full rounded-lg shadow-md"
+            loading="lazy"
+          />
+          {part.alt && part.alt !== 'Project afbeelding' && (
+            <p class="text-sm text-firda-gray-500 mt-2 text-center italic">
+              {part.alt}
+            </p>
+          )}
+        </div>
+      );
+    } else {
+      return part.content.split('\n').map(paragraph => (
+        paragraph.trim() && <p class="mb-4">{paragraph}</p>
+      ));
+    }
+  })}
+</div>

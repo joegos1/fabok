@@ -7,6 +7,7 @@
 
 import Layout from '../../layouts/Layout.astro';
 import PdfList from '../../components/pdf/PdfList.astro';
+import MarkdownContent from '../../components/common/MarkdownContent.astro';
 import { supabaseAdmin } from '../../lib';
 
 // Haal project ID uit URL
@@ -102,11 +103,10 @@ const { data: owner } = await supabaseAdmin
             <h2 class="text-xl font-bold text-firda-gray-900 mb-4">
               Over dit project
             </h2>
-            <div class="prose prose-lg max-w-none text-firda-gray-700">
-              {project.full_description.split('\n').map(paragraph => (
-                paragraph.trim() && <p class="mb-4">{paragraph}</p>
-              ))}
-            </div>
+            <MarkdownContent 
+              content={project.full_description} 
+              class="prose prose-lg max-w-none text-firda-gray-700"
+            />
           </div>
         )}
 
