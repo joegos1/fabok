@@ -7,8 +7,6 @@
 import DashboardLayout from '../../../layouts/DashboardLayout.astro';
 import PdfList from '../../../components/pdf/PdfList.astro';
 import PdfUpload from '../../../components/pdf/PdfUpload.astro';
-import ImageUpload from '../../../components/image/ImageUpload.astro';
-import ImageGallery from '../../../components/image/ImageGallery.astro';
 import { requireAuth, canEditProject, supabaseAdmin } from '../../../lib';
 
 // Check authenticatie
@@ -48,13 +46,6 @@ if (projectError || !project) {
 // Haal PDF's op
 const { data: pdfs } = await supabaseAdmin
   .from('pdf_files')
-  .select('*')
-  .eq('project_id', id)
-  .order('uploaded_at', { ascending: false });
-
-// Haal afbeeldingen op
-const { data: images } = await supabaseAdmin
-  .from('project_images')
   .select('*')
   .eq('project_id', id)
   .order('uploaded_at', { ascending: false });
@@ -193,9 +184,6 @@ if (Astro.request.method === 'POST') {
             rows="6"
             class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
           >{project.full_description || ''}</textarea>
-          <p class="mt-1 text-sm text-firda-gray-500">
-            💡 Je kunt foto's toevoegen door op een afbeelding rechts te klikken en de URL in de tekst te plakken
-          </p>
         </div>
 
         <!-- Doelen -->
@@ -314,18 +302,8 @@ if (Astro.request.method === 'POST') {
       </form>
     </div>
 
-    <!-- Sidebar met PDF's en Afbeeldingen -->
+    <!-- Sidebar met PDF's -->
     <aside class="space-y-6">
-      <ImageUpload 
-        projectId={id} 
-        uploadUrl="/api/images/upload" 
-      />
-      
-      <ImageGallery 
-        images={images || []} 
-        projectId={id}
-      />
-
       <PdfUpload 
         projectId={id} 
         uploadUrl="/api/pdf/upload" 
