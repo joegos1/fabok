@@ -5,6 +5,7 @@
  */
 
 import DashboardLayout from '../../../layouts/DashboardLayout.astro';
+import ImageUpload from '../../../components/image/ImageUpload.astro';
 import { requireAuth, supabaseAdmin } from '../../../lib';
 
 // Check authenticatie en autorisatie
@@ -38,6 +39,7 @@ if (Astro.request.method === 'POST') {
     const contactPerson = formData.get('contact_person')?.toString() || null;
     const tagsString = formData.get('tags')?.toString() || '';
     const ownerId = formData.get('owner_id')?.toString() || profile.id;
+    const imageUrl = formData.get('image_url')?.toString() || null;
     
     // Parse tags
     const tags = tagsString
@@ -57,6 +59,7 @@ if (Astro.request.method === 'POST') {
         contact_person: contactPerson,
         tags,
         owner_id: ownerId,
+        image_url: imageUrl,
         status: 'active',
         is_published: false,
       });
@@ -148,6 +151,12 @@ if (Astro.request.method === 'POST') {
           Zet elk doel op een nieuwe regel
         </p>
       </div>
+      
+      <!-- afbeelding toevoegen -->
+      <div>
+        <ImageUpload uploadUrl="/api/images/upload" />
+        <input type="hidden" name="image_url" id="image_url_input" value="" />
+      </div>
 
       <!-- Doelgroep -->
       <div>
@@ -234,3 +243,15 @@ if (Astro.request.method === 'POST') {
     </form>
   </div>
 </DashboardLayout>
+
+<script>
+  // Listen for image upload events from the ImageUpload component
+  document.addEventListener('imageUploaded', (event: Event) => {
+    const customEvent = event as CustomEvent;
+    const imageUrl = customEvent.detail.url;
+    const inputField = document.getElementById('image_url_input') as HTMLInputElement;
+    if (inputField) {
+      inputField.value = imageUrl;
+    }
+  });
+</script>
