@@ -137,12 +137,14 @@ const { data: owner } = await supabaseAdmin
         <!-- Sectie afbeelding (tussen doelen en doelgroep) -->
         {project.section_image_url && (
           <div class="bg-white rounded-xl shadow-sm p-6">
-            <div class="aspect-video w-full overflow-hidden rounded-lg border border-firda-gray-100 bg-firda-gray-50">
+            <div class="aspect-video w-full overflow-hidden rounded-lg border border-firda-gray-100 bg-firda-gray-50" style="max-height: 520px;">
               <img
                 src={project.section_image_url}
                 alt={`Afbeelding bij ${project.title}`}
                 class="h-full w-full object-cover"
+                style="object-position: center;"
                 loading="lazy"
+                data-smart-fit="section-image"
               />
             </div>
           </div>
@@ -224,3 +226,39 @@ const { data: owner } = await supabaseAdmin
     </div>
   </div>
 </Layout>
+
+<script>
+  // UX-first image fitting:
+  // - Default: cover (fills 16:9 nicely)
+  // - If image is portrait/square-ish: switch to contain to avoid huge cropping
+  (function () {
+    const images = document.querySelectorAll('img[data-smart-fit="section-image"]');
+    if (!images || images.length === 0) return;
+
+    const applySmartFit = (img) => {
+      try {
+        const w = img.naturalWidth;
+        const h = img.naturalHeight;
+        if (!w || !h) return;
+
+        const ratio = w / h;
+        // If ratio is <= ~1.15 (square/portrait leaning), cropping in 16:9 becomes very aggressive.
+        if (ratio <= 1.15) {
+          img.classList.remove('object-cover');
+          img.classList.add('object-contain');
+          img.style.objectPosition = 'center';
+          // Keep the soft background visible for letterboxing
+          const parent = img.parentElement;
+          if (parent) parent.classList.add('bg-firda-gray-50');
+        }
+      } catch (_) {
+        // ignore
+      }
+    };
+
+    images.forEach((img) => {
+      if (img.complete) applySmartFit(img);
+      else img.addEventListener('load', () => applySmartFit(img), { once: true });
+    });
+  })();
+</script>
