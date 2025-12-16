@@ -22,7 +22,7 @@ const isLoggedIn = !!user;
 // Nederlandse vertalingen voor rollen
 const roleLabels: Record<string, string> = {
   admin: 'Beheerder',
-  landingpage_editor: 'Landingspaginabeheerder',
+  landingpage_editor: 'Editor',
   project_editor: 'Projectbeheerder',
   viewer: 'Bezoeker',
 };
@@ -154,6 +154,9 @@ const roleLabel = profile
         <div>
           <p class="text-sm text-center">
             &copy; {new Date().getFullYear()} VABOK - Versterken van de Aansluiting in de Beroepskolom
+          </p>
+          <p class="text-sm text-center">
+            Ontwikkeld door <a href="https://firda.nl" class="underline hover:text-firda-green-400 transition">Jorg & Jens</a>
           </p>
         </div>
         
