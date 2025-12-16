@@ -59,7 +59,8 @@ const content = landingContent || {
     <div class="absolute inset-0 opacity-5" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.4&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
     
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl hero-content">
+      <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+        <div class="max-w-3xl hero-content">
         <!-- Badge -->
         <div class="inline-flex items-center gap-2 px-4 py-2 bg-white/10 backdrop-blur-sm rounded-full text-sm font-medium mb-6 animate-fade-in">
           <span class="w-2 h-2 bg-firda-green-500 rounded-full animate-pulse"></span>
@@ -92,6 +93,48 @@ const content = landingContent || {
             Documenten
           </a>
         </div>
+        </div>
+
+        <!-- Video naast hero (geen component) -->
+        <div class="relative lg:justify-self-end">
+          <div class="group relative overflow-hidden rounded-2xl border border-white/15 bg-black/20 shadow-2xl shadow-firda-blue-900/30">
+            <div class="aspect-video w-full">
+              <video
+                id="hero-video"
+                class="h-full w-full object-cover"
+                muted
+                loop
+                playsinline
+                preload="metadata"
+                aria-label="Introductievideo VABOK"
+              >
+                <source src="/IMG_1513 (1).mp4" type="video/mp4" />
+                Je browser ondersteunt geen video.
+              </video>
+            </div>
+
+            <button
+              id="hero-video-toggle"
+              type="button"
+              class="absolute inset-0 grid place-items-center focus:outline-none"
+              aria-label="Video afspelen"
+            >
+              <span class="absolute inset-0 bg-black/25 group-hover:bg-black/20 transition-colors"></span>
+              <span class="relative inline-flex items-center gap-3 rounded-full bg-white/10 px-5 py-3 backdrop-blur-md ring-1 ring-white/25 shadow-lg shadow-black/30 group-hover:bg-white/15 transition-colors">
+                <span class="grid h-10 w-10 place-items-center rounded-full bg-white text-firda-gray-900">
+                  <svg id="hero-video-icon-play" class="h-5 w-5 translate-x-[1px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M8 5v14l11-7z" />
+                  </svg>
+                  <svg id="hero-video-icon-pause" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                    <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
+                  </svg>
+                </span>
+                <span class="text-sm font-semibold tracking-wide">Bekijk video</span>
+              </span>
+            </button>
+          </div>
+          <p class="mt-3 text-sm text-white/70">Klik om af te spelen</p>
+        </div>
       </div>
     </div>
     
@@ -102,6 +145,44 @@ const content = landingContent || {
       </svg>
     </div>
   </section>
+
+  <script>
+    const video = document.getElementById('hero-video');
+    const toggle = document.getElementById('hero-video-toggle');
+    const iconPlay = document.getElementById('hero-video-icon-play');
+    const iconPause = document.getElementById('hero-video-icon-pause');
+
+    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
+
+    function setUi(isPlaying) {
+      if (!iconPlay || !iconPause) return;
+      iconPlay.classList.toggle('hidden', isPlaying);
+      iconPause.classList.toggle('hidden', !isPlaying);
+      toggle?.setAttribute('aria-label', isPlaying ? 'Video pauzeren' : 'Video afspelen');
+    }
+
+    if (prefersReducedMotion) {
+      setUi(false);
+    }
+
+    toggle?.addEventListener('click', async () => {
+      if (!video) return;
+      try {
+        if (video.paused) {
+          await video.play();
+          setUi(true);
+        } else {
+          video.pause();
+          setUi(false);
+        }
+      } catch {
+        setUi(false);
+      }
+    });
+
+    video?.addEventListener('play', () => setUi(true));
+    video?.addEventListener('pause', () => setUi(false));
+  </script>
 
    <!-- School Marquee -->
   {schools && schools.length > 0 && (
