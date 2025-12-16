@@ -134,6 +134,20 @@ const { data: owner } = await supabaseAdmin
           </div>
         )}
 
+        <!-- Sectie afbeelding (tussen doelen en doelgroep) -->
+        {project.section_image_url && (
+          <div class="bg-white rounded-xl shadow-sm p-6">
+            <div class="aspect-video w-full overflow-hidden rounded-lg border border-firda-gray-100 bg-firda-gray-50">
+              <img
+                src={project.section_image_url}
+                alt={`Afbeelding bij ${project.title}`}
+                class="h-full w-full object-cover"
+                loading="lazy"
+              />
+            </div>
+          </div>
+        )}
+
         <!-- Doelgroep -->
         {project.target_audience && (
           <div class="bg-white rounded-xl shadow-sm p-8">

@@ -50,6 +50,8 @@ export interface Database {
           short_description: string | null;
           full_description: string | null;
           goals: string | null;
+          section_image_url: string | null;
+          section_image_path: string | null;
           target_audience: string | null;
           contact_person: string | null;
           tags: string[] | null;
@@ -65,6 +67,8 @@ export interface Database {
           short_description?: string | null;
           full_description?: string | null;
           goals?: string | null;
+          section_image_url?: string | null;
+          section_image_path?: string | null;
           target_audience?: string | null;
           contact_person?: string | null;
           tags?: string[] | null;
@@ -80,6 +84,8 @@ export interface Database {
           short_description?: string | null;
           full_description?: string | null;
           goals?: string | null;
+          section_image_url?: string | null;
+          section_image_path?: string | null;
           target_audience?: string | null;
           contact_person?: string | null;
           tags?: string[] | null;
