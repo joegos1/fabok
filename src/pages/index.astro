@@ -102,7 +102,6 @@ const content = landingContent || {
               <video
                 id="hero-video"
                 class="h-full w-full object-cover"
-                muted
                 loop
                 playsinline
                 preload="metadata"
@@ -113,27 +112,51 @@ const content = landingContent || {
               </video>
             </div>
 
+            <!-- YouTube-style controls linksonder -->
+            <div class="absolute bottom-0 left-0 right-0 flex items-center gap-3 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+              <button
+                id="hero-video-toggle"
+                type="button"
+                class="grid h-10 w-10 place-items-center rounded-full bg-white/90 text-firda-gray-900 hover:bg-white transition-colors focus:outline-none"
+                aria-label="Video afspelen"
+              >
+                <svg id="hero-video-icon-play" class="h-5 w-5 translate-x-[1px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
+                <svg id="hero-video-icon-pause" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
+                </svg>
+              </button>
+
+              <button
+                id="hero-video-mute"
+                type="button"
+                class="grid h-10 w-10 place-items-center rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors focus:outline-none"
+                aria-label="Geluid aan/uit"
+              >
+                <svg id="hero-video-icon-unmuted" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
+                </svg>
+                <svg id="hero-video-icon-muted" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
+                </svg>
+              </button>
+            </div>
+
+            <!-- Grote play-knop (verdwijnt na eerste klik) -->
             <button
-              id="hero-video-toggle"
+              id="hero-video-big-play"
               type="button"
-              class="absolute inset-0 grid place-items-center focus:outline-none"
+              class="absolute inset-0 grid place-items-center focus:outline-none bg-black/30 hover:bg-black/20 transition-colors"
               aria-label="Video afspelen"
             >
-              <span class="absolute inset-0 bg-black/25 group-hover:bg-black/20 transition-colors"></span>
-              <span class="relative inline-flex items-center gap-3 rounded-full bg-white/10 px-5 py-3 backdrop-blur-md ring-1 ring-white/25 shadow-lg shadow-black/30 group-hover:bg-white/15 transition-colors">
-                <span class="grid h-10 w-10 place-items-center rounded-full bg-white text-firda-gray-900">
-                  <svg id="hero-video-icon-play" class="h-5 w-5 translate-x-[1px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M8 5v14l11-7z" />
-                  </svg>
-                  <svg id="hero-video-icon-pause" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                    <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
-                  </svg>
-                </span>
-                <span class="text-sm font-semibold tracking-wide">Bekijk video</span>
+              <span class="grid h-16 w-16 place-items-center rounded-full bg-white/90 text-firda-gray-900 shadow-lg">
+                <svg class="h-7 w-7 translate-x-[2px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
+                  <path d="M8 5v14l11-7z" />
+                </svg>
               </span>
             </button>
           </div>
-          <p class="mt-3 text-sm text-white/70">Klik om af te spelen</p>
         </div>
       </div>
     </div>
@@ -147,41 +170,77 @@ const content = landingContent || {
   </section>
 
   <script>
-    const video = document.getElementById('hero-video');
+    const video = document.getElementById('hero-video') as HTMLVideoElement | null;
     const toggle = document.getElementById('hero-video-toggle');
+    const bigPlay = document.getElementById('hero-video-big-play');
+    const muteBtn = document.getElementById('hero-video-mute');
     const iconPlay = document.getElementById('hero-video-icon-play');
     const iconPause = document.getElementById('hero-video-icon-pause');
+    const iconMuted = document.getElementById('hero-video-icon-muted');
+    const iconUnmuted = document.getElementById('hero-video-icon-unmuted');
 
-    const prefersReducedMotion = window.matchMedia?.('(prefers-reduced-motion: reduce)')?.matches;
-
-    function setUi(isPlaying) {
-      if (!iconPlay || !iconPause) return;
-      iconPlay.classList.toggle('hidden', isPlaying);
-      iconPause.classList.toggle('hidden', !isPlaying);
+    function setPlayUi(isPlaying: boolean) {
+      iconPlay?.classList.toggle('hidden', isPlaying);
+      iconPause?.classList.toggle('hidden', !isPlaying);
       toggle?.setAttribute('aria-label', isPlaying ? 'Video pauzeren' : 'Video afspelen');
     }
 
-    if (prefersReducedMotion) {
-      setUi(false);
+    function setMuteUi(isMuted: boolean) {
+      iconMuted?.classList.toggle('hidden', !isMuted);
+      iconUnmuted?.classList.toggle('hidden', isMuted);
+      muteBtn?.setAttribute('aria-label', isMuted ? 'Geluid aan' : 'Geluid uit');
     }
 
-    toggle?.addEventListener('click', async () => {
+    async function playVideo() {
       if (!video) return;
       try {
-        if (video.paused) {
-          await video.play();
-          setUi(true);
-        } else {
-          video.pause();
-          setUi(false);
-        }
+        await video.play();
+        setPlayUi(true);
+        bigPlay?.classList.add('hidden');
       } catch {
-        setUi(false);
+        setPlayUi(false);
+      }
+    }
+
+    function pauseVideo() {
+      if (!video) return;
+      video.pause();
+      setPlayUi(false);
+    }
+
+    // Grote play-knop: eerste keer klikken start video met geluid
+    bigPlay?.addEventListener('click', async () => {
+      if (!video) return;
+      video.muted = false;
+      setMuteUi(false);
+      await playVideo();
+    });
+
+    // Kleine play/pause toggle
+    toggle?.addEventListener('click', async () => {
+      if (!video) return;
+      if (video.paused) {
+        await playVideo();
+      } else {
+        pauseVideo();
       }
     });
 
-    video?.addEventListener('play', () => setUi(true));
-    video?.addEventListener('pause', () => setUi(false));
+    // Mute toggle
+    muteBtn?.addEventListener('click', () => {
+      if (!video) return;
+      video.muted = !video.muted;
+      setMuteUi(video.muted);
+    });
+
+    // Sync UI met video events
+    video?.addEventListener('play', () => setPlayUi(true));
+    video?.addEventListener('pause', () => setPlayUi(false));
+    video?.addEventListener('volumechange', () => setMuteUi(video?.muted ?? true));
+
+    // Init UI
+    setPlayUi(false);
+    setMuteUi(true);
   </script>
 
    <!-- School Marquee -->
