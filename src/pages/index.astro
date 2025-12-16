@@ -263,13 +263,19 @@ const content = landingContent || {
       </div>
     </section>
   )}
+  <!-- Diagonal divider boven de foto -->
+  <div class="relative h-24 lg:h-32 bg-gradient-to-b from-white to-white overflow-hidden">
+    <svg class="absolute bottom-0 w-full h-24 lg:h-32" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M0,0 L1440,40 L1440,120 L0,120 Z" fill="#ffffff" />
+    </svg>
+  </div>
 
   <!-- Collage Image -->
   <div class="w-full">
     <img src="/Collage vabok.png" alt="VABOK Collage" class="w-full h-auto object-cover" />
   </div>
 
-  <!-- Diagonal divider -->
+  <!-- Diagonal divider onder de foto -->
   <div class="relative h-24 lg:h-32 bg-gradient-to-b from-white to-white overflow-hidden">
     <svg class="absolute bottom-0 w-full h-24 lg:h-32" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
       <path d="M0,0 L1440,40 L1440,120 L0,120 Z" fill="#ffffff" />
@@ -301,7 +307,7 @@ const content = landingContent || {
             Voor docenten
           </h3>
           <p class="text-firda-gray-600 leading-relaxed">
-            Vind informatie over projecten en materialen voor in de klas. Ontdek nieuwe methodes en onderwijsinnovaties.
+            Vind informatie over projecten. En ontdek onderwijsinnovaties.
           </p>
           <div class="mt-6 flex items-center text-firda-blue-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
             Meer informatie
@@ -342,7 +348,7 @@ const content = landingContent || {
             </svg>
           </div>
           <h3 class="text-xl font-bold text-firda-gray-900 mb-3">
-            Voor OCW
+            Voor het OCW
           </h3>
           <p class="text-firda-gray-600 leading-relaxed">
             Inzicht in projectvoortgang en borging van onderwijsverbetering. Volg de resultaten en impact.
@@ -400,14 +406,14 @@ const content = landingContent || {
                   </svg>
                 </div>
                 <h2 class="text-2xl lg:text-3xl font-bold text-firda-gray-900">
-                  Recente projecten
+                  Recente projecten van VABOK
                 </h2>
               </div>
               <a 
                 href="/projecten/lijst" 
                 class="group inline-flex items-center text-firda-blue-600 font-semibold hover:text-firda-blue-700 transition"
               >
-                Alle projecten
+                Naar alle projecten
                 <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
                 </svg>
@@ -426,7 +432,7 @@ const content = landingContent || {
                   <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
                 </svg>
                 <p class="text-firda-gray-500">
-                  Er zijn nog geen projecten beschikbaar.
+                  Er zijn momenteel nog geen projecten beschikbaar.
                 </p>
               </div>
             )}
@@ -479,12 +485,6 @@ const content = landingContent || {
           <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
           </svg>
-        </a>
-        <a 
-          href="/login" 
-          class="inline-flex items-center px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300 border border-white/20"
-        >
-          Inloggen
         </a>
       </div>
     </div>
