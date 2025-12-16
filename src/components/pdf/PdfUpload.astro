@@ -105,35 +105,42 @@ const { projectId, uploadUrl } = Astro.props;
 </div>
 
 <script>
-  const form = document.getElementById('pdf-upload-form') as HTMLFormElement;
-  const fileInput = document.getElementById('pdf-file') as HTMLInputElement;
-  const dropZone = document.getElementById('drop-zone') as HTMLDivElement;
-  const selectedFile = document.getElementById('selected-file') as HTMLDivElement;
-  const fileName = document.getElementById('file-name') as HTMLParagraphElement;
-  const fileSize = document.getElementById('file-size') as HTMLParagraphElement;
-  const removeFile = document.getElementById('remove-file') as HTMLButtonElement;
-  const submitBtn = document.getElementById('submit-btn') as HTMLButtonElement;
-  const btnText = document.getElementById('btn-text') as HTMLSpanElement;
-  const btnLoading = document.getElementById('btn-loading') as HTMLSpanElement;
-  const errorDiv = document.getElementById('upload-error') as HTMLDivElement;
-  const errorMessage = document.getElementById('error-message') as HTMLParagraphElement;
+  const form = document.getElementById('pdf-upload-form');
+  const fileInput = document.getElementById('pdf-file');
+  const dropZone = document.getElementById('drop-zone');
+  const selectedFile = document.getElementById('selected-file');
+  const fileName = document.getElementById('file-name');
+  const fileSize = document.getElementById('file-size');
+  const removeFile = document.getElementById('remove-file');
+  const submitBtn = document.getElementById('submit-btn');
+  const btnText = document.getElementById('btn-text');
+  const btnLoading = document.getElementById('btn-loading');
+  const errorDiv = document.getElementById('upload-error');
+  const errorMessage = document.getElementById('error-message');
+
+  if (!form || !fileInput || !dropZone || !selectedFile || !fileName || !fileSize || !removeFile || !submitBtn || !btnText || !btnLoading || !errorDiv || !errorMessage) {
+    // Required elements not found; do nothing.
+    // (Avoids runtime errors if component markup changes.)
+    // eslint-disable-next-line no-console
+    console.warn('PdfUpload: required elements not found');
+  } else {
 
   // Helper: format file size
-  function formatFileSize(bytes: number): string {
+  function formatFileSize(bytes) {
     if (bytes < 1024) return `${bytes} bytes`;
     if (bytes < 1024 * 1024) return `${(bytes / 1024).toFixed(1)} KB`;
     return `${(bytes / (1024 * 1024)).toFixed(1)} MB`;
   }
 
   // Helper: validate PDF
-  function isValidPdf(file: File): boolean {
+  function isValidPdf(file) {
     const validTypes = ['application/pdf'];
     const validExtension = file.name.toLowerCase().endsWith('.pdf');
     return validTypes.includes(file.type) && validExtension;
   }
 
   // Helper: show error
-  function showError(message: string) {
+  function showError(message) {
     errorMessage.textContent = message;
     errorDiv.classList.remove('hidden');
   }
@@ -144,7 +151,7 @@ const { projectId, uploadUrl } = Astro.props;
   }
 
   // Helper: update file display
-  function updateFileDisplay(file: File | null) {
+  function updateFileDisplay(file) {
     if (file && isValidPdf(file)) {
       fileName.textContent = file.name;
       fileSize.textContent = formatFileSize(file.size);
@@ -245,4 +252,5 @@ const { projectId, uploadUrl } = Astro.props;
       btnLoading.classList.add('hidden');
     }
   });
+  }
 </script>

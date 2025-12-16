@@ -422,14 +422,14 @@ if (Astro.request.method === 'POST') {
   const pastedImages = document.getElementById('pasted-images');
 
   // Sectie afbeelding upload (tussen doelen en doelgroep)
-  const sectionFile = document.getElementById('section-image-file') as HTMLInputElement | null;
-  const sectionUploadBtn = document.getElementById('section-image-upload') as HTMLButtonElement | null;
-  const sectionDeleteBtn = document.getElementById('section-image-delete') as HTMLButtonElement | null;
-  const sectionStatus = document.getElementById('section-image-status') as HTMLDivElement | null;
-  const sectionPreview = document.getElementById('section-image-preview') as HTMLDivElement | null;
-  const sectionPreviewImg = document.getElementById('section-image-preview-img') as HTMLImageElement | null;
+  const sectionFile = document.getElementById('section-image-file');
+  const sectionUploadBtn = document.getElementById('section-image-upload');
+  const sectionDeleteBtn = document.getElementById('section-image-delete');
+  const sectionStatus = document.getElementById('section-image-status');
+  const sectionPreview = document.getElementById('section-image-preview');
+  const sectionPreviewImg = document.getElementById('section-image-preview-img');
 
-  const setSectionStatus = (message: string, kind: 'info' | 'success' | 'error') => {
+  const setSectionStatus = (message, kind) => {
     if (!sectionStatus) return;
     sectionStatus.classList.remove('hidden');
     sectionStatus.classList.remove('text-firda-gray-600', 'text-green-700', 'text-red-700');
@@ -439,7 +439,7 @@ if (Astro.request.method === 'POST') {
     sectionStatus.textContent = message;
   };
 
-  const setSectionPreviewUrl = (url: string | null) => {
+  const setSectionPreviewUrl = (url) => {
     if (sectionPreviewImg) sectionPreviewImg.src = url || '';
     if (sectionPreview) sectionPreview.classList.toggle('hidden', !url);
     if (sectionDeleteBtn) sectionDeleteBtn.disabled = !url;
@@ -449,7 +449,7 @@ if (Astro.request.method === 'POST') {
   setSectionPreviewUrl(sectionPreviewImg?.getAttribute('src') || null);
 
   sectionUploadBtn?.addEventListener('click', async () => {
-    if (!sectionFile?.files || sectionFile.files.length === 0) {
+    if (!sectionFile || !sectionFile.files || sectionFile.files.length === 0) {
       setSectionStatus('Selecteer eerst een afbeelding.', 'error');
       return;
     }
@@ -477,9 +477,9 @@ if (Astro.request.method === 'POST') {
       setSectionPreviewUrl(result.url);
       setSectionStatus('Afbeelding opgeslagen.', 'success');
       sectionFile.value = '';
-    } catch (error: any) {
+    } catch (error) {
       console.error('Section image upload error:', error);
-      setSectionStatus(error?.message || 'Upload mislukt', 'error');
+      setSectionStatus(error && error.message ? error.message : 'Upload mislukt', 'error');
     } finally {
       sectionUploadBtn.disabled = false;
     }
@@ -509,9 +509,9 @@ if (Astro.request.method === 'POST') {
 
       setSectionPreviewUrl(null);
       setSectionStatus('Afbeelding verwijderd.', 'success');
-    } catch (error: any) {
+    } catch (error) {
       console.error('Section image delete error:', error);
-      setSectionStatus(error?.message || 'Verwijderen mislukt', 'error');
+      setSectionStatus(error && error.message ? error.message : 'Verwijderen mislukt', 'error');
     } finally {
       if (sectionUploadBtn) sectionUploadBtn.disabled = false;
     }

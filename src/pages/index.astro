@@ -170,7 +170,7 @@ const content = landingContent || {
   </section>
 
   <script>
-    const video = document.getElementById('hero-video') as HTMLVideoElement | null;
+    const video = document.getElementById('hero-video');
     const toggle = document.getElementById('hero-video-toggle');
     const bigPlay = document.getElementById('hero-video-big-play');
     const muteBtn = document.getElementById('hero-video-mute');
@@ -179,13 +179,13 @@ const content = landingContent || {
     const iconMuted = document.getElementById('hero-video-icon-muted');
     const iconUnmuted = document.getElementById('hero-video-icon-unmuted');
 
-    function setPlayUi(isPlaying: boolean) {
+    function setPlayUi(isPlaying) {
       iconPlay?.classList.toggle('hidden', isPlaying);
       iconPause?.classList.toggle('hidden', !isPlaying);
       toggle?.setAttribute('aria-label', isPlaying ? 'Video pauzeren' : 'Video afspelen');
     }
 
-    function setMuteUi(isMuted: boolean) {
+    function setMuteUi(isMuted) {
       iconMuted?.classList.toggle('hidden', !isMuted);
       iconUnmuted?.classList.toggle('hidden', isMuted);
       muteBtn?.setAttribute('aria-label', isMuted ? 'Geluid aan' : 'Geluid uit');
