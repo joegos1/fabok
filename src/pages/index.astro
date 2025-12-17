@@ -98,7 +98,7 @@ const content = landingContent || {
         </div>
 
         <!-- Video naast hero (geen component) -->
-        <div class="relative lg:justify-self-end">
+        <div class="relative lg:justify-self-end animate-fade-in">
           <div class="group relative overflow-hidden rounded-2xl border border-white/15 bg-black/20 shadow-2xl shadow-firda-blue-900/30">
             <div class="aspect-video w-full">
               <video
@@ -273,7 +273,7 @@ const content = landingContent || {
   </div>
 
   <!-- Collage Image -->
-  <div class="w-full">
+  <div class="w-full animate-fade-in">
     <Image src={CollageVabok} alt="VABOK Collage" class="w-full h-auto object-cover" loading="lazy" />
   </div>
 
@@ -495,18 +495,18 @@ const content = landingContent || {
 
 <style>
   @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+    from { opacity: 0; filter: blur(4px); }
+    to { opacity: 1; filter: blur(0); }
   }
   
   @keyframes fade-in-up {
     from { 
       opacity: 0;
-      transform: translateY(20px);
+      filter: blur(8px);
     }
     to { 
       opacity: 1;
-      transform: translateY(0);
+      filter: blur(0);
     }
   }
   
@@ -520,11 +520,11 @@ const content = landingContent || {
   }
   
   .animate-fade-in {
-    animation: fade-in 0.6s ease-out forwards;
+    animation: fade-in 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   }
   
   .animate-fade-in-up {
-    animation: fade-in-up 0.6s ease-out forwards;
+    animation: fade-in-up 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) forwards;
   }
   
   .animation-delay-200 {
