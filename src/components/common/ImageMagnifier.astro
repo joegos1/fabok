@@ -15,8 +15,9 @@ const {
 ---
 <img src={src} alt={alt} class={imgClass} data-zoomable data-smart-fit={smartFit ? 'section-image' : undefined} id={id} loading="lazy" />
 
-<script>
-  const img = document.currentScript?.previousElementSibling as HTMLImageElement | null;
+<script is:inline>
+  const scriptEl = document.currentScript;
+  const img = scriptEl && scriptEl.previousElementSibling;
   if (img) {
     // Click to open overlay
     img.style.cursor = 'zoom-in';
@@ -50,12 +51,12 @@ const {
 
       document.body.appendChild(overlay);
 
-      const backdrop = overlay.querySelector('[data-backdrop]') as HTMLDivElement;
-      const zoomImg = overlay.querySelector('[data-zoom-img]') as HTMLImageElement;
-      const closeBtn = overlay.querySelector('[data-close]') as HTMLButtonElement;
-      const zoomInBtn = overlay.querySelector('[data-zoom-in]') as HTMLButtonElement;
-      const zoomOutBtn = overlay.querySelector('[data-zoom-out]') as HTMLButtonElement;
-      const resetBtn = overlay.querySelector('[data-zoom-reset]') as HTMLButtonElement;
+      const backdrop = overlay.querySelector('[data-backdrop]');
+      const zoomImg = overlay.querySelector('[data-zoom-img]');
+      const closeBtn = overlay.querySelector('[data-close]');
+      const zoomInBtn = overlay.querySelector('[data-zoom-in]');
+      const zoomOutBtn = overlay.querySelector('[data-zoom-out]');
+      const resetBtn = overlay.querySelector('[data-zoom-reset]');
 
       // Fit image initially within viewport (contain)
       const vw = window.innerWidth * 0.95;
@@ -125,14 +126,14 @@ const {
       let lastX = 0;
       let lastY = 0;
 
-      const onPointerDown = (e: PointerEvent) => {
+      const onPointerDown = (e) => {
         dragging = true;
         lastX = e.clientX; lastY = e.clientY;
-        (zoomImg as any).style.cursor = 'grabbing';
-        (zoomImg as any).setPointerCapture(e.pointerId);
+        zoomImg.style.cursor = 'grabbing';
+        zoomImg.setPointerCapture && zoomImg.setPointerCapture(e.pointerId);
       };
 
-      const onPointerMove = (e: PointerEvent) => {
+      const onPointerMove = (e) => {
         if (!dragging) return;
         const dx = e.clientX - lastX;
         const dy = e.clientY - lastY;
@@ -142,18 +143,18 @@ const {
         applyTransform();
       };
 
-      const onPointerUp = (e: PointerEvent) => {
+      const onPointerUp = (e) => {
         dragging = false;
-        (zoomImg as any).style.cursor = 'grab';
-        (zoomImg as any).releasePointerCapture(e.pointerId);
+        zoomImg.style.cursor = 'grab';
+        zoomImg.releasePointerCapture && zoomImg.releasePointerCapture(e.pointerId);
       };
 
-      const onWheel = (e: WheelEvent) => {
+      const onWheel = (e) => {
         e.preventDefault();
         zoomAt(-e.deltaY, e.clientX, e.clientY);
       };
 
-      const onKeyDown = (e: KeyboardEvent) => {
+      const onKeyDown = (e) => {
         if (e.key === 'Escape') close();
         if (e.key === '+') zoomAt(-120, window.innerWidth / 2, window.innerHeight / 2);
         if (e.key === '-') zoomAt(120, window.innerWidth / 2, window.innerHeight / 2);
@@ -176,7 +177,7 @@ const {
       document.addEventListener('keydown', onKeyDown);
 
       computeInitialScale();
-      (zoomImg as any).style.cursor = 'grab';
+      zoomImg.style.cursor = 'grab';
       requestAnimationFrame(animateIn);
     };
 
