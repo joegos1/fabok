@@ -132,32 +132,29 @@ const {
       let dragging = false;
       let lastX = 0;
       let lastY = 0;
-      let animationFrameId = null;
 
-      const onPointerDown = (e) => {
+      const onMouseDown = (e) => {
         dragging = true;
         lastX = e.clientX;
         lastY = e.clientY;
         zoomImg.style.cursor = 'grabbing';
-        zoomImg.setPointerCapture && zoomImg.setPointerCapture(e.pointerId);
       };
 
-      const onPointerMove = (e) => {
+      const onMouseMove = (e) => {
         if (!dragging) return;
         const dx = e.clientX - lastX;
         const dy = e.clientY - lastY;
         lastX = e.clientX;
         lastY = e.clientY;
-        tx += dx * 2; // multiply by 2 for better feel
-        ty += dy * 2;
+        tx += dx;
+        ty += dy;
         clampPan();
         applyTransform();
       };
 
-      const onPointerUp = (e) => {
+      const onMouseUp = () => {
         dragging = false;
         zoomImg.style.cursor = 'grab';
-        zoomImg.releasePointerCapture && zoomImg.releasePointerCapture(e.pointerId);
       };
 
       const onWheel = (e) => {
@@ -180,10 +177,9 @@ const {
       resetBtn.addEventListener('click', () => { scale = minScale; tx = 0; ty = 0; applyTransform(); });
 
       zoomImg.addEventListener('wheel', onWheel, { passive: false });
-      zoomImg.addEventListener('pointerdown', onPointerDown);
-      zoomImg.addEventListener('pointermove', onPointerMove);
-      zoomImg.addEventListener('pointerup', onPointerUp);
-      zoomImg.addEventListener('pointercancel', onPointerUp);
+      zoomImg.addEventListener('mousedown', onMouseDown);
+      document.addEventListener('mousemove', onMouseMove);
+      document.addEventListener('mouseup', onMouseUp);
 
       document.addEventListener('keydown', onKeyDown);
 
