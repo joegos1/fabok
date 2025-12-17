@@ -31,12 +31,12 @@ const {
       overlay.className = 'fixed inset-0 z-[1000]';
 
       overlay.innerHTML = `
-        <div class="absolute inset-0 bg-black/80 opacity-0 transition-opacity duration-200" data-backdrop></div>
-        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
-          <div class="relative max-w-[95vw] max-h-[95vh] w-auto h-auto pointer-events-auto select-none">
+        <div class="absolute inset-0 bg-black opacity-0 transition-opacity duration-200" data-backdrop></div>
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
+          <div class="relative w-full h-full pointer-events-auto select-none flex items-center justify-center">
             <img src="${img.src}" alt="${img.alt || ''}" class="max-w-none will-change-transform block" style="transform: translate(0px, 0px) scale(1); transform-origin: center center;" data-zoom-img />
 
-            <div class="absolute top-2 right-2 flex gap-2">
+            <div class="absolute top-2 right-2 flex gap-2 z-10">
               <button type="button" class="p-2 rounded-md bg-white/90 hover:bg-white shadow text-firda-gray-800" aria-label="Zoom uit" data-zoom-out>-</button>
               <button type="button" class="p-2 rounded-md bg-white/90 hover:bg-white shadow text-firda-gray-800" aria-label="Zoom in" data-zoom-in>+</button>
               <button type="button" class="p-2 rounded-md bg-white/90 hover:bg-white shadow text-firda-gray-800" aria-label="Reset" data-zoom-reset>
@@ -48,7 +48,7 @@ const {
             </div>
           </div>
         </div>
-        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/80 text-sm px-3 py-1 rounded-full bg-black/40 pointer-events-none hidden sm:block">Scroll om te zoomen · Sleep om te pannen · Esc om te sluiten</div>
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/80 text-sm px-3 py-1 rounded-full bg-black/50 pointer-events-none hidden sm:block z-10">Scroll om te zoomen · Sleep om te pannen · Esc om te sluiten</div>
       `;
 
       document.body.appendChild(overlay);
