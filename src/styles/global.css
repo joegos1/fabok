@@ -11,6 +11,13 @@
   body {
     @apply min-h-screen flex flex-col;
   }
+
+  svg {
+    text-align: left;
+    border-color: transparent;
+    border-style: none;
+    border-image: none;
+  }
 }
 
 /* Custom utilities */
