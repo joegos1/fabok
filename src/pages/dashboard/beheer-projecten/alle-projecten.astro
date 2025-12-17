@@ -137,7 +137,7 @@ const errorMsg = url.searchParams.get('error');
                       ? 'bg-firda-blue-100 text-firda-blue-700' 
                       : 'bg-orange-100 text-orange-700'
                   }`}>
-                    {project.is_published ? 'Gepubliceerd' : 'Concept'}
+                    {project.is_published ? 'Gepubliceerd' : 'Niet gepubliceerd'}
                   </span>
                 </div>
               </td>
@@ -207,7 +207,7 @@ const errorMsg = url.searchParams.get('error');
                       <ConfirmDialog 
                         id={`ArchiveDialog${project.id}`}
                         title="Project archiveren"
-                        message="Weet je zeker dat je dit project wilt archiveren? Het wordt niet meer zichtbaar."
+                        message="Weet je zeker dat je dit project wilt archiveren? Het project wordt niet meer zichtbaar op de publieke site."
                         confirmText="Archiveren"
                         isDangerous={true}
                       />

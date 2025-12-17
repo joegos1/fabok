@@ -2,7 +2,7 @@
 /**
  * Dashboard Home
  * ==============
- * Overzichtspagina voor ingelogde gebruikers
+ * dashboard/CMS voor geauthenticeerde gebruikers.
  */
 
 import DashboardLayout from '../../layouts/DashboardLayout.astro';
@@ -66,7 +66,7 @@ if (isProjectEditor && !isAdmin) {
     <p class="text-sm text-firda-blue-800">
       Je bent ingelogd als <strong class="font-semibold">{profile.role}</strong>.
       {profile.role === 'viewer' && 'Je kunt alle content bekijken, maar niets aanpassen.'}
-      {profile.role === 'project_editor' && 'Je kunt je eigen projecten beheren.'}
+      {profile.role === 'project_editor' && 'Je kunt aangewezen projecten beheren.'}
       {profile.role === 'landingpage_editor' && 'Je kunt de landingspagina beheren.'}
       {profile.role === 'admin' && 'Je hebt volledige toegang tot alle functies.'}
     </p>
@@ -237,8 +237,8 @@ if (isProjectEditor && !isAdmin) {
         </svg>
       </div>
       <div>
-        <h3 class="font-semibold text-firda-gray-900">Bekijk website</h3>
-        <p class="text-sm text-firda-gray-500">Open de publieke VABOK site</p>
+        <h3 class="font-semibold text-firda-gray-900">Bekijk de website</h3>
+        <p class="text-sm text-firda-gray-500">Open de publieke site</p>
       </div>
     </a>
   </div>
