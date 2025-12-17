@@ -5,6 +5,7 @@
  */
 
 import DashboardLayout from '../../../layouts/DashboardLayout.astro';
+import ImageMagnifier from '../../../components/common/ImageMagnifier.astro';
 import PdfList from '../../../components/pdf/PdfList.astro';
 import PdfUpload from '../../../components/pdf/PdfUpload.astro';
 import { requireAuth, canEditProject, supabaseAdmin } from '../../../lib';
@@ -247,14 +248,12 @@ if (Astro.request.method === 'POST') {
 
             <div id="section-image-preview" class:list={["mt-4", project.section_image_url ? '' : 'hidden']}>
               <div class="aspect-video w-full overflow-hidden rounded-lg border border-firda-gray-200 bg-firda-gray-50" style="max-height: 420px;">
-                <img
+                <ImageMagnifier
                   id="section-image-preview-img"
                   src={project.section_image_url || ''}
                   alt="Project foto"
-                  class="h-full w-full object-cover"
-                  style="object-position: center;"
-                  data-smart-fit="section-image"
-                  loading="lazy"
+                  imgClass="h-full w-full object-cover"
+                  smartFit={true}
                 />
               </div>
             </div>

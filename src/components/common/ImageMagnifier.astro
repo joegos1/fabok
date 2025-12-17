@@ -1,0 +1,185 @@
+---
+const {
+  src,
+  alt = '',
+  imgClass = 'h-full w-full object-cover',
+  smartFit = true,
+  id,
+} = Astro.props as {
+  src: string;
+  alt?: string;
+  imgClass?: string;
+  smartFit?: boolean;
+  id?: string;
+};
+---
+<img src={src} alt={alt} class={imgClass} data-zoomable data-smart-fit={smartFit ? 'section-image' : undefined} id={id} loading="lazy" />
+
+<script>
+  const img = document.currentScript?.previousElementSibling as HTMLImageElement | null;
+  if (img) {
+    // Click to open overlay
+    img.style.cursor = 'zoom-in';
+
+    const openOverlay = () => {
+      const overlay = document.createElement('div');
+      overlay.setAttribute('role', 'dialog');
+      overlay.setAttribute('aria-modal', 'true');
+      overlay.className = 'fixed inset-0 z-[1000]';
+
+      overlay.innerHTML = `
+        <div class="absolute inset-0 bg-black/80 opacity-0 transition-opacity duration-200" data-backdrop></div>
+        <div class="absolute inset-0 flex items-center justify-center pointer-events-none">
+          <div class="relative max-w-[95vw] max-h-[95vh] w-auto h-auto pointer-events-auto select-none">
+            <img src="${img.src}" alt="${img.alt || ''}" class="max-w-none will-change-transform block" style="transform: translate(0px, 0px) scale(1); transform-origin: center center;" data-zoom-img />
+
+            <div class="absolute top-2 right-2 flex gap-2">
+              <button type="button" class="p-2 rounded-md bg-white/90 hover:bg-white shadow text-firda-gray-800" aria-label="Zoom uit" data-zoom-out>-</button>
+              <button type="button" class="p-2 rounded-md bg-white/90 hover:bg-white shadow text-firda-gray-800" aria-label="Zoom in" data-zoom-in>+</button>
+              <button type="button" class="p-2 rounded-md bg-white/90 hover:bg-white shadow text-firda-gray-800" aria-label="Reset" data-zoom-reset>
+                ↺
+              </button>
+              <button type="button" class="p-2 rounded-md bg-white/90 hover:bg-white shadow text-firda-gray-800" aria-label="Sluiten (Esc)" data-close>
+                ✕
+              </button>
+            </div>
+          </div>
+        </div>
+        <div class="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/80 text-sm px-3 py-1 rounded-full bg-black/40 pointer-events-none hidden sm:block">Scroll om te zoomen · Sleep om te pannen · Esc om te sluiten</div>
+      `;
+
+      document.body.appendChild(overlay);
+
+      const backdrop = overlay.querySelector('[data-backdrop]') as HTMLDivElement;
+      const zoomImg = overlay.querySelector('[data-zoom-img]') as HTMLImageElement;
+      const closeBtn = overlay.querySelector('[data-close]') as HTMLButtonElement;
+      const zoomInBtn = overlay.querySelector('[data-zoom-in]') as HTMLButtonElement;
+      const zoomOutBtn = overlay.querySelector('[data-zoom-out]') as HTMLButtonElement;
+      const resetBtn = overlay.querySelector('[data-zoom-reset]') as HTMLButtonElement;
+
+      // Fit image initially within viewport (contain)
+      const vw = window.innerWidth * 0.95;
+      const vh = window.innerHeight * 0.95;
+      const naturalW = zoomImg.naturalWidth || img.naturalWidth || 0;
+      const naturalH = zoomImg.naturalHeight || img.naturalHeight || 0;
+      let scale = 1;
+      let minScale = 1;
+      let maxScale = 4;
+      let tx = 0;
+      let ty = 0;
+
+      const computeInitialScale = () => {
+        if (naturalW && naturalH) {
+          const scaleW = vw / naturalW;
+          const scaleH = vh / naturalH;
+          // contain
+          const s = Math.min(scaleW, scaleH, 1);
+          minScale = s;
+          scale = s;
+        } else {
+          minScale = 1; scale = 1;
+        }
+        maxScale = Math.max(4, minScale * 3);
+        tx = 0; ty = 0;
+        applyTransform();
+      };
+
+      const applyTransform = () => {
+        zoomImg.style.transform = `translate(${tx}px, ${ty}px) scale(${scale})`;
+      };
+
+      const animateIn = () => {
+        requestAnimationFrame(() => {
+          (backdrop as any).style.opacity = '1';
+        });
+      };
+
+      const close = () => {
+        overlay.remove();
+        document.removeEventListener('keydown', onKeyDown);
+      };
+
+      const clampPan = () => {
+        // Keep image within some bounds so it’s not too easy to lose
+        const bounds = 2000; // generous; prevents runaway values
+        tx = Math.max(-bounds, Math.min(bounds, tx));
+        ty = Math.max(-bounds, Math.min(bounds, ty));
+      };
+
+      const zoomAt = (delta: number, cx: number, cy: number) => {
+        const prevScale = scale;
+        const zoomFactor = Math.exp(delta * 0.0015); // smooth
+        scale = Math.max(minScale, Math.min(maxScale, scale * zoomFactor));
+        // Adjust translation to keep the point under cursor stationary
+        const rect = zoomImg.getBoundingClientRect();
+        const imgX = cx - rect.left;
+        const imgY = cy - rect.top;
+        const k = scale / prevScale - 1;
+        tx -= imgX * k;
+        ty -= imgY * k;
+        clampPan();
+        applyTransform();
+      };
+
+      let dragging = false;
+      let lastX = 0;
+      let lastY = 0;
+
+      const onPointerDown = (e: PointerEvent) => {
+        dragging = true;
+        lastX = e.clientX; lastY = e.clientY;
+        (zoomImg as any).style.cursor = 'grabbing';
+        (zoomImg as any).setPointerCapture(e.pointerId);
+      };
+
+      const onPointerMove = (e: PointerEvent) => {
+        if (!dragging) return;
+        const dx = e.clientX - lastX;
+        const dy = e.clientY - lastY;
+        lastX = e.clientX; lastY = e.clientY;
+        tx += dx; ty += dy;
+        clampPan();
+        applyTransform();
+      };
+
+      const onPointerUp = (e: PointerEvent) => {
+        dragging = false;
+        (zoomImg as any).style.cursor = 'grab';
+        (zoomImg as any).releasePointerCapture(e.pointerId);
+      };
+
+      const onWheel = (e: WheelEvent) => {
+        e.preventDefault();
+        zoomAt(-e.deltaY, e.clientX, e.clientY);
+      };
+
+      const onKeyDown = (e: KeyboardEvent) => {
+        if (e.key === 'Escape') close();
+        if (e.key === '+') zoomAt(-120, window.innerWidth / 2, window.innerHeight / 2);
+        if (e.key === '-') zoomAt(120, window.innerWidth / 2, window.innerHeight / 2);
+        if (e.key.toLowerCase() === '0') { scale = minScale; tx = 0; ty = 0; applyTransform(); }
+      };
+
+      // Events
+      backdrop.addEventListener('click', close);
+      closeBtn.addEventListener('click', close);
+      zoomInBtn.addEventListener('click', () => zoomAt(-160, window.innerWidth / 2, window.innerHeight / 2));
+      zoomOutBtn.addEventListener('click', () => zoomAt(160, window.innerWidth / 2, window.innerHeight / 2));
+      resetBtn.addEventListener('click', () => { scale = minScale; tx = 0; ty = 0; applyTransform(); });
+
+      zoomImg.addEventListener('wheel', onWheel, { passive: false });
+      zoomImg.addEventListener('pointerdown', onPointerDown);
+      zoomImg.addEventListener('pointermove', onPointerMove);
+      zoomImg.addEventListener('pointerup', onPointerUp);
+      zoomImg.addEventListener('pointercancel', onPointerUp);
+
+      document.addEventListener('keydown', onKeyDown);
+
+      computeInitialScale();
+      (zoomImg as any).style.cursor = 'grab';
+      requestAnimationFrame(animateIn);
+    };
+
+    img.addEventListener('click', openOverlay);
+  }
+</script>
