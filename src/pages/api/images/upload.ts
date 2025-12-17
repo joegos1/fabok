@@ -9,7 +9,7 @@ import type { APIRoute } from 'astro';
 import { requireAuth, canEditProject, supabaseAdmin } from '../../../lib';
 
 const MAX_SIZE_BYTES = 5 * 1024 * 1024; // 5MB
-const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/png', 'image/webp']);
+const ALLOWED_MIME_TYPES = new Set(['image/jpeg', 'image/jpg', 'image/png', 'image/webp']);
 
 function sanitizeFilename(name: string) {
   return name.replace(/[^a-zA-Z0-9._-]/g, '_');
@@ -52,7 +52,7 @@ export const POST: APIRoute = async ({ request }) => {
 
     if (file.size > MAX_SIZE_BYTES) {
       return new Response(JSON.stringify({ error: 'Afbeelding is te groot (max 5MB)' }), {
-        status: 400,
+        status: 413, // Te grote payload voor duidelijkere afhandeling aan de client-kant
         headers: { 'Content-Type': 'application/json' },
       });
     }

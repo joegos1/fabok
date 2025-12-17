@@ -425,6 +425,54 @@ if (Astro.request.method === 'POST') {
   const sectionPreview = document.getElementById('section-image-preview');
   const sectionPreviewImg = document.getElementById('section-image-preview-img');
 
+  // Probeer client-side compressie om serverlimieten te vermijden
+  const maybeCompressImage = async (file) => {
+    try {
+      if (!file || !file.type?.startsWith('image/')) return file;
+
+      // Sla compressie over als het bestand al klein is
+      if (file.size <= 1.5 * 1024 * 1024) return file; // ~1,5MB
+
+      const createImage = (file) => new Promise((resolve, reject) => {
+        const img = new Image();
+        img.onload = () => resolve(img);
+        img.onerror = reject;
+        const reader = new FileReader();
+        reader.onload = () => {
+          img.src = reader.result;
+        };
+        reader.onerror = reject;
+        reader.readAsDataURL(file);
+      });
+
+      const img = await createImage(file);
+      const maxDim = 1920; // maximale afmeting voor foto's
+      let { width, height } = img;
+      const ratio = Math.min(1, maxDim / Math.max(width, height));
+      width = Math.round(width * ratio);
+      height = Math.round(height * ratio);
+
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+
+      const outType = 'image/jpeg';
+      const quality = 0.85;
+      const blob = await new Promise(resolve => canvas.toBlob(resolve, outType, quality));
+      if (!blob) return file;
+
+      // Als compressie niet helpt, behoud het origineel
+      const better = blob.size < file.size ? blob : file;
+      const origName = file.name || 'image';
+      const newName = origName.replace(/\.(png|webp|jpeg|jpg)$/i, '') + '.jpg';
+      return new File([better], newName, { type: better.type || outType });
+    } catch {
+      return file;
+    }
+  };
+
   const setSectionStatus = (message, kind) => {
     if (!sectionStatus) return;
     sectionStatus.classList.remove('hidden');
@@ -477,19 +525,22 @@ if (Astro.request.method === 'POST') {
       return;
     }
 
-    const file = sectionFile.files[0];
+    let file = sectionFile.files[0];
     sectionUploadBtn.disabled = true;
     if (sectionDeleteBtn) sectionDeleteBtn.disabled = true;
     setSectionStatus('Uploaden...', 'info');
 
     try {
+      // Probeer client-side compressie voor grote bestanden
+      file = await maybeCompressImage(file);
       const formData = new FormData();
-      formData.append('imageFile', file);
+      formData.append('imageFile', file, file.name);
       formData.append('projectId', projectId);
 
       const response = await fetch('/api/images/upload', {
         method: 'POST',
         body: formData,
+        credentials: 'same-origin',
       });
 
       const result = await response.json().catch(() => ({}));
