@@ -127,10 +127,12 @@ const {
       let dragging = false;
       let lastX = 0;
       let lastY = 0;
+      let animationFrameId = null;
 
       const onPointerDown = (e) => {
         dragging = true;
-        lastX = e.clientX; lastY = e.clientY;
+        lastX = e.clientX;
+        lastY = e.clientY;
         zoomImg.style.cursor = 'grabbing';
         zoomImg.setPointerCapture && zoomImg.setPointerCapture(e.pointerId);
       };
@@ -139,10 +141,16 @@ const {
         if (!dragging) return;
         const dx = e.clientX - lastX;
         const dy = e.clientY - lastY;
-        lastX = e.clientX; lastY = e.clientY;
-        tx += dx; ty += dy;
+        lastX = e.clientX;
+        lastY = e.clientY;
+        tx += dx;
+        ty += dy;
         clampPan();
-        applyTransform();
+        
+        if (animationFrameId) cancelAnimationFrame(animationFrameId);
+        animationFrameId = requestAnimationFrame(() => {
+          applyTransform();
+        });
       };
 
       const onPointerUp = (e) => {
