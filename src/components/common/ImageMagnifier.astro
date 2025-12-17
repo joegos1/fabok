@@ -1,17 +1,19 @@
 ---
+interface Props {
+  src: string;
+  alt?: string;
+  imgClass?: string;
+  smartFit?: boolean;
+  id?: string;
+}
+
 const {
   src,
   alt = '',
   imgClass = 'h-full w-full object-cover',
   smartFit = true,
   id,
-} = Astro.props as {
-  src: string;
-  alt?: string;
-  imgClass?: string;
-  smartFit?: boolean;
-  id?: string;
-};
+}: Props = Astro.props;
 ---
 <img src={src} alt={alt} class={imgClass} data-zoomable data-smart-fit={smartFit ? 'section-image' : undefined} id={id} loading="lazy" />
 
