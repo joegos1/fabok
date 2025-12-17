@@ -15,7 +15,7 @@ const {
   id,
 }: Props = Astro.props;
 ---
-<img src={src} alt={alt} class={imgClass} data-zoomable data-smart-fit={smartFit ? 'section-image' : undefined} id={id} loading="lazy" />
+<img src={src} alt={alt} class={imgClass} data-zoomable data-smart-fit={smartFit ? 'section-image' : undefined} id={id} loading="lazy" draggable="false" />
 
 <script is:inline>
   const scriptEl = document.currentScript;
@@ -34,7 +34,7 @@ const {
         <div class="absolute inset-0 bg-black opacity-0 transition-opacity duration-200" data-backdrop></div>
         <div class="absolute inset-0 flex items-center justify-center pointer-events-none overflow-hidden">
           <div class="relative w-full h-full pointer-events-auto select-none flex items-center justify-center">
-            <img src="${img.src}" alt="${img.alt || ''}" class="max-w-none will-change-transform block" style="transform: translate(0px, 0px) scale(1); transform-origin: center center;" data-zoom-img />
+            <img src="${img.src}" alt="${img.alt || ''}" class="max-w-none will-change-transform block" style="transform: translate(0px, 0px) scale(1); transform-origin: center center;" data-zoom-img draggable="false" />
 
             <div class="absolute top-2 right-2 flex gap-2 z-10">
               <button type="button" class="p-2 rounded-md bg-white/90 hover:bg-white shadow text-firda-gray-800" aria-label="Zoom uit" data-zoom-out>-</button>
@@ -134,6 +134,8 @@ const {
       let lastY = 0;
 
       const onMouseDown = (e) => {
+        if (e.button !== 0) return; // only left button
+        e.preventDefault();
         dragging = true;
         lastX = e.clientX;
         lastY = e.clientY;
@@ -153,6 +155,10 @@ const {
       };
 
       const onMouseUp = () => {
+        dragging = false;
+        zoomImg.style.cursor = 'grab';
+      };
+      const onMouseLeave = () => {
         dragging = false;
         zoomImg.style.cursor = 'grab';
       };
@@ -180,6 +186,7 @@ const {
       zoomImg.addEventListener('mousedown', onMouseDown);
       document.addEventListener('mousemove', onMouseMove);
       document.addEventListener('mouseup', onMouseUp);
+      document.addEventListener('mouseleave', onMouseLeave);
 
       document.addEventListener('keydown', onKeyDown);
 
