@@ -109,7 +109,7 @@ const {
         ty = Math.max(-bounds, Math.min(bounds, ty));
       };
 
-      const zoomAt = (delta: number, cx: number, cy: number) => {
+      const zoomAt = (delta, cx, cy) => {
         const prevScale = scale;
         const zoomFactor = Math.exp(delta * 0.0015); // smooth
         scale = Math.max(minScale, Math.min(maxScale, scale * zoomFactor));
