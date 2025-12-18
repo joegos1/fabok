@@ -4,8 +4,8 @@
  * ==============================
  */
 
-import DashboardLayout from '../../../layouts/DashboardLayout.astro';
-import { requireAuth, supabaseAdmin } from '../../../lib';
+import DashboardLayout from "../../../layouts/DashboardLayout.astro";
+import { requireAuth, supabaseAdmin } from "../../../lib";
 
 // Check authenticatie en autorisatie
 const auth = await requireAuth(Astro.request);
@@ -14,60 +14,67 @@ if (auth.redirect) {
 }
 
 const { profile } = auth;
-if (!profile || (profile.role !== 'admin' && profile.role !== 'landingpage_editor')) {
-  return Astro.redirect('/dashboard/overzicht');
+if (
+  !profile ||
+  (profile.role !== "admin" && profile.role !== "landingpage_editor")
+) {
+  return Astro.redirect("/dashboard/overzicht");
 }
 
 // Haal gebruikers op om eigenaar te selecteren
 const { data: users } = await supabaseAdmin
-  .from('profiles')
-  .select('id, email, full_name, role')
-  .in('role', ['admin', 'project_editor'])
-  .order('full_name');
+  .from("profiles")
+  .select("id, email, full_name, role")
+  .in("role", ["admin", "project_editor"])
+  .order("full_name");
 
 // Verwerk formulier als het een POST is
-if (Astro.request.method === 'POST') {
+if (Astro.request.method === "POST") {
   try {
     const formData = await Astro.request.formData();
-    
-    const title = formData.get('title')?.toString() || '';
-    const shortDescription = formData.get('short_description')?.toString() || null;
-    const fullDescription = formData.get('full_description')?.toString() || null;
-    const goals = formData.get('goals')?.toString() || null;
-    const targetAudience = formData.get('target_audience')?.toString() || null;
-    const contactPerson = formData.get('contact_person')?.toString() || null;
-    const tagsString = formData.get('tags')?.toString() || '';
-    const ownerId = formData.get('owner_id')?.toString() || profile.id;
-    
+
+    const title = formData.get("title")?.toString() || "";
+    const shortDescription =
+      formData.get("short_description")?.toString() || null;
+    const fullDescription =
+      formData.get("full_description")?.toString() || null;
+    const goals = formData.get("goals")?.toString() || null;
+    const targetAudience = formData.get("target_audience")?.toString() || null;
+    const contactPerson = formData.get("contact_person")?.toString() || null;
+    const tagsString = formData.get("tags")?.toString() || "";
+    const ownerId = formData.get("owner_id")?.toString() || profile.id;
+    const province = formData.get("province")?.toString() || null;
+
     // Parse tags
     const tags = tagsString
-      .split(',')
-      .map(t => t.trim())
-      .filter(t => t.length > 0);
-    
+      .split(",")
+      .map((t) => t.trim())
+      .filter((t) => t.length > 0);
+
     // Maak project aan
-    const { error } = await supabaseAdmin
-      .from('projects')
-      .insert({
-        title,
-        short_description: shortDescription,
-        full_description: fullDescription,
-        goals,
-        target_audience: targetAudience,
-        contact_person: contactPerson,
-        tags,
-        owner_id: ownerId,
-        status: 'active',
-        is_published: false,
-      });
-    
+    const { error } = await supabaseAdmin.from("projects").insert({
+      title,
+      short_description: shortDescription,
+      full_description: fullDescription,
+      goals,
+      target_audience: targetAudience,
+      contact_person: contactPerson,
+      tags,
+      province,
+      owner_id: ownerId,
+      status: "active",
+      is_published: false,
+    });
+
     if (error) {
-      console.error('Error creating project:', error);
+      console.error("Error creating project:", error);
     } else {
-      return Astro.redirect('/dashboard/beheer-projecten/alle-projecten?message=created');
+      return Astro.redirect(
+        "/dashboard/beheer-projecten/alle-projecten?message=created",
+      );
     }
   } catch (error) {
-    console.error('Error processing form:', error);
+    console.error("Error processing form:", error);
   }
 }
 ---
@@ -75,9 +82,21 @@ if (Astro.request.method === 'POST') {
 <DashboardLayout title="Nieuw project" profile={profile}>
   <div class="max-w-3xl">
     <div class="flex items-center mb-6">
-      <a href="/dashboard/beheer-projecten/alle-projecten" class="text-firda-gray-500 hover:text-firda-gray-700 mr-4">
-        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+      <a
+        href="/dashboard/beheer-projecten/alle-projecten"
+        class="text-firda-gray-500 hover:text-firda-gray-700 mr-4"
+      >
+        <svg
+          class="w-6 h-6"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
         </svg>
       </a>
       <h1 class="text-2xl font-bold text-firda-gray-900">
@@ -88,7 +107,10 @@ if (Astro.request.method === 'POST') {
     <form method="POST" class="space-y-6">
       <!-- Titel -->
       <div>
-        <label for="title" class="block text-sm font-medium text-firda-gray-700 mb-1">
+        <label
+          for="title"
+          class="block text-sm font-medium text-firda-gray-700 mb-1"
+        >
           Titel <span class="text-red-500">*</span>
         </label>
         <input
@@ -103,7 +125,10 @@ if (Astro.request.method === 'POST') {
 
       <!-- Korte beschrijving -->
       <div>
-        <label for="short_description" class="block text-sm font-medium text-firda-gray-700 mb-1">
+        <label
+          for="short_description"
+          class="block text-sm font-medium text-firda-gray-700 mb-1"
+        >
           Korte beschrijving
         </label>
         <input
@@ -120,7 +145,10 @@ if (Astro.request.method === 'POST') {
 
       <!-- Uitgebreide beschrijving -->
       <div>
-        <label for="full_description" class="block text-sm font-medium text-firda-gray-700 mb-1">
+        <label
+          for="full_description"
+          class="block text-sm font-medium text-firda-gray-700 mb-1"
+        >
           Uitgebreide beschrijving
         </label>
         <textarea
@@ -134,7 +162,10 @@ if (Astro.request.method === 'POST') {
 
       <!-- Doelen -->
       <div>
-        <label for="goals" class="block text-sm font-medium text-firda-gray-700 mb-1">
+        <label
+          for="goals"
+          class="block text-sm font-medium text-firda-gray-700 mb-1"
+        >
           Doelen
         </label>
         <textarea
@@ -142,8 +173,7 @@ if (Astro.request.method === 'POST') {
           name="goals"
           rows="4"
           class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
-          placeholder="Elk doel op een nieuwe regel..."
-        ></textarea>
+          placeholder="Elk doel op een nieuwe regel..."></textarea>
         <p class="mt-1 text-sm text-firda-gray-500">
           Zet elk doel op een nieuwe regel
         </p>
@@ -151,7 +181,10 @@ if (Astro.request.method === 'POST') {
 
       <!-- Doelgroep -->
       <div>
-        <label for="target_audience" class="block text-sm font-medium text-firda-gray-700 mb-1">
+        <label
+          for="target_audience"
+          class="block text-sm font-medium text-firda-gray-700 mb-1"
+        >
           Doelgroep
         </label>
         <input
@@ -165,7 +198,10 @@ if (Astro.request.method === 'POST') {
 
       <!-- Contactpersoon -->
       <div>
-        <label for="contact_person" class="block text-sm font-medium text-firda-gray-700 mb-1">
+        <label
+          for="contact_person"
+          class="block text-sm font-medium text-firda-gray-700 mb-1"
+        >
           Contactpersoon
         </label>
         <input
@@ -179,7 +215,10 @@ if (Astro.request.method === 'POST') {
 
       <!-- Tags -->
       <div>
-        <label for="tags" class="block text-sm font-medium text-firda-gray-700 mb-1">
+        <label
+          for="tags"
+          class="block text-sm font-medium text-firda-gray-700 mb-1"
+        >
           Tags
         </label>
         <input
@@ -189,14 +228,15 @@ if (Astro.request.method === 'POST') {
           class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
           placeholder="vmbo-mbo, doorstroom, innovatie"
         />
-        <p class="mt-1 text-sm text-firda-gray-500">
-          Scheid tags met komma's
-        </p>
+        <p class="mt-1 text-sm text-firda-gray-500">Scheid tags met komma's</p>
       </div>
 
       <!-- Eigenaar -->
       <div>
-        <label for="owner_id" class="block text-sm font-medium text-firda-gray-700 mb-1">
+        <label
+          for="owner_id"
+          class="block text-sm font-medium text-firda-gray-700 mb-1"
+        >
           Projecteigenaar <span class="text-red-500">*</span>
         </label>
         <select
@@ -205,11 +245,13 @@ if (Astro.request.method === 'POST') {
           required
           class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
         >
-          {users?.map(user => (
-            <option value={user.id} selected={user.id === profile.id}>
-              {user.full_name || user.email} ({user.role})
-            </option>
-          ))}
+          {
+            users?.map((user) => (
+              <option value={user.id} selected={user.id === profile.id}>
+                {user.full_name || user.email} ({user.role})
+              </option>
+            ))
+          }
         </select>
         <p class="mt-1 text-sm text-firda-gray-500">
           De eigenaar kan dit project bewerken

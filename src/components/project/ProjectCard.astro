@@ -5,7 +5,7 @@
  * Kaart voor weergave van project in overzichtslijst
  */
 
-import type { Project } from '../../types/database';
+import type { Project } from "../../types/database";
 
 interface Props {
   project: Project;
@@ -15,60 +15,108 @@ interface Props {
 const { project, showStatus = false } = Astro.props;
 ---
 
-<article class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-firda-gray-200">
+<article
+  class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-firda-gray-200"
+>
   <div class="flex items-start justify-between">
     <div class="flex-1">
       <a href={`/projecten/${project.id}`} class="group">
-        <h3 class="text-lg font-semibold text-firda-gray-900 group-hover:text-firda-blue-600 transition">
+        <h3
+          class="text-lg font-semibold text-firda-gray-900 group-hover:text-firda-blue-600 transition"
+        >
           {project.title}
         </h3>
       </a>
-      
-      {project.short_description && (
-        <p class="mt-2 text-firda-gray-600 line-clamp-2">
-          {project.short_description}
-        </p>
-      )}
+
+      {
+        project.short_description && (
+          <p class="mt-2 text-firda-gray-600 line-clamp-2">
+            {project.short_description}
+          </p>
+        )
+      }
     </div>
 
-    {showStatus && (
-      <span 
-        class:list={[
-          "ml-4 px-2 py-1 text-xs font-medium rounded-full",
-          project.status === 'active' 
-            ? "bg-firda-green-100 text-firda-green-700"
-            : "bg-firda-gray-100 text-firda-gray-600"
-        ]}
-      >
-        {project.status === 'active' ? 'Actief' : 'Gearchiveerd'}
-      </span>
-    )}
+    {
+      showStatus && (
+        <span
+          class:list={[
+            "ml-4 px-2 py-1 text-xs font-medium rounded-full",
+            project.status === "active"
+              ? "bg-firda-green-100 text-firda-green-700"
+              : "bg-firda-gray-100 text-firda-gray-600",
+          ]}
+        >
+          {project.status === "active" ? "Actief" : "Gearchiveerd"}
+        </span>
+      )
+    }
   </div>
 
-  {project.tags && project.tags.length > 0 && (
-    <div class="mt-4 flex flex-wrap gap-2">
-      {project.tags.map(tag => (
-        <span class="px-2 py-1 text-xs font-medium rounded-full bg-firda-blue-50 text-firda-blue-600">
-          {tag}
-        </span>
-      ))}
-    </div>
-  )}
+  {
+    project.tags && project.tags.length > 0 && (
+      <div class="mt-4 flex flex-wrap gap-2">
+        {project.tags.map((tag) => (
+          <span class="px-2 py-1 text-xs font-medium rounded-full bg-firda-blue-50 text-firda-blue-600">
+            {tag}
+          </span>
+        ))}
+      </div>
+    )
+  }
 
   <div class="mt-4 flex items-center justify-between">
-    {project.contact_person && (
-      <p class="text-sm text-firda-gray-500">
-        <span class="font-medium">Contact:</span> {project.contact_person}
-      </p>
-    )}
-    
-    <a 
+    {
+      project.contact_person && (
+        <p class="text-sm text-firda-gray-500 flex items-center gap-2">
+          <span class="font-medium">Contact:</span> {project.contact_person}
+          {project.province && (
+            <>
+              <span class="w-1 h-1 bg-firda-gray-300 rounded-full" />
+              <span class="flex items-center">
+                <svg
+                  class="w-3.4 h-3.4 mr-1 text-firda-gray-400"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                  />
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                  />
+                </svg>
+                {project.province}
+              </span>
+            </>
+          )}
+        </p>
+      )
+    }
+
+    <a
       href={`/projecten/${project.id}`}
       class="inline-flex items-center text-sm font-medium text-firda-blue-600 hover:text-firda-blue-700 transition"
     >
       Bekijk details
-      <svg class="ml-1 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+      <svg
+        class="ml-1 w-4 h-4"
+        fill="none"
+        stroke="currentColor"
+        viewBox="0 0 24 24"
+      >
+        <path
+          stroke-linecap="round"
+          stroke-linejoin="round"
+          stroke-width="2"
+          d="M9 5l7 7-7 7"></path>
       </svg>
     </a>
   </div>

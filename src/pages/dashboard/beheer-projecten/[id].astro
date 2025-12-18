@@ -4,11 +4,11 @@
  * ===============================
  */
 
-import DashboardLayout from '../../../layouts/DashboardLayout.astro';
-import ImageMagnifier from '../../../components/common/ImageMagnifier.astro';
-import PdfList from '../../../components/pdf/PdfList.astro';
-import PdfUpload from '../../../components/pdf/PdfUpload.astro';
-import { requireAuth, canEditProject, supabaseAdmin } from '../../../lib';
+import DashboardLayout from "../../../layouts/DashboardLayout.astro";
+import ImageMagnifier from "../../../components/common/ImageMagnifier.astro";
+import PdfList from "../../../components/pdf/PdfList.astro";
+import PdfUpload from "../../../components/pdf/PdfUpload.astro";
+import { requireAuth, canEditProject, supabaseAdmin } from "../../../lib";
 
 // Check authenticatie
 const auth = await requireAuth(Astro.request);
@@ -18,79 +18,84 @@ if (auth.redirect) {
 
 const { profile, user } = auth;
 if (!profile || !user) {
-  return Astro.redirect('/login');
+  return Astro.redirect("/login");
 }
 
 // Haal project ID uit URL
 const { id } = Astro.params;
 if (!id) {
-  return Astro.redirect('/dashboard/overzicht');
+  return Astro.redirect("/dashboard/overzicht");
 }
 
 // Check rechten
 const canEdit = await canEditProject(user.id, id);
 if (!canEdit) {
-  return Astro.redirect('/dashboard/overzicht');
+  return Astro.redirect("/dashboard/overzicht");
 }
 
 // Haal project op
 const { data: project, error: projectError } = await supabaseAdmin
-  .from('projects')
-  .select('*')
-  .eq('id', id)
+  .from("projects")
+  .select("*")
+  .eq("id", id)
   .single();
 
 if (projectError || !project) {
-  return Astro.redirect('/dashboard/beheer-projecten/alle-projecten');
+  return Astro.redirect("/dashboard/beheer-projecten/alle-projecten");
 }
 
 // Haal PDF's op
 const { data: pdfs } = await supabaseAdmin
-  .from('pdf_files')
-  .select('*')
-  .eq('project_id', id)
-  .order('uploaded_at', { ascending: false });
+  .from("pdf_files")
+  .select("*")
+  .eq("project_id", id)
+  .order("uploaded_at", { ascending: false });
 
 // Haal gebruikers op voor eigenaar selectie (alleen voor admin)
-const isAdmin = profile.role === 'admin';
+const isAdmin = profile.role === "admin";
 let users: any[] = [];
 if (isAdmin) {
   const { data } = await supabaseAdmin
-    .from('profiles')
-    .select('id, email, full_name, role')
-    .in('role', ['admin', 'project_editor'])
-    .order('full_name');
+    .from("profiles")
+    .select("id, email, full_name, role")
+    .in("role", ["admin", "project_editor"])
+    .order("full_name");
   users = data || [];
 }
 
 // Verwerk formulier als het een POST is
 const url = new URL(Astro.request.url);
-const message = url.searchParams.get('message');
-const errorMsg = url.searchParams.get('error');
+const message = url.searchParams.get("message");
+const errorMsg = url.searchParams.get("error");
 
-if (Astro.request.method === 'POST') {
+if (Astro.request.method === "POST") {
   try {
     const formData = await Astro.request.formData();
-    
-    const title = formData.get('title')?.toString() || project.title;
-    const shortDescription = formData.get('short_description')?.toString() || null;
-    const fullDescription = formData.get('full_description')?.toString() || null;
-    const goals = formData.get('goals')?.toString() || null;
-    const targetAudience = formData.get('target_audience')?.toString() || null;
-    const contactPerson = formData.get('contact_person')?.toString() || null;
-    const tagsString = formData.get('tags')?.toString() || '';
-    const ownerId = isAdmin ? (formData.get('owner_id')?.toString() || project.owner_id) : project.owner_id;
-    const isPublished = formData.get('is_published') === 'on';
-    
+
+    const title = formData.get("title")?.toString() || project.title;
+    const shortDescription =
+      formData.get("short_description")?.toString() || null;
+    const fullDescription =
+      formData.get("full_description")?.toString() || null;
+    const goals = formData.get("goals")?.toString() || null;
+    const targetAudience = formData.get("target_audience")?.toString() || null;
+    const contactPerson = formData.get("contact_person")?.toString() || null;
+    const tagsString = formData.get("tags")?.toString() || "";
+    const ownerId = isAdmin
+      ? formData.get("owner_id")?.toString() || project.owner_id
+      : project.owner_id;
+    const province = formData.get("province")?.toString() || project.province;
+    const isPublished = formData.get("is_published") === "on";
+
     // Parse tags
     const tags = tagsString
-      .split(',')
-      .map(t => t.trim())
-      .filter(t => t.length > 0);
-    
+      .split(",")
+      .map((t) => t.trim())
+      .filter((t) => t.length > 0);
+
     // Update project
     const { error } = await supabaseAdmin
-      .from('projects')
+      .from("projects")
       .update({
         title,
         short_description: shortDescription,
@@ -99,20 +104,25 @@ if (Astro.request.method === 'POST') {
         target_audience: targetAudience,
         contact_person: contactPerson,
         tags,
+        province,
         owner_id: ownerId,
         is_published: isPublished,
         updated_at: new Date().toISOString(),
       })
-      .eq('id', id);
-    
+      .eq("id", id);
+
     if (error) {
-      console.error('Error updating project:', error);
-      return Astro.redirect(`/dashboard/beheer-projecten/${id}?error=Update mislukt`);
+      console.error("Error updating project:", error);
+      return Astro.redirect(
+        `/dashboard/beheer-projecten/${id}?error=Update mislukt`,
+      );
     } else {
-      return Astro.redirect(`/dashboard/beheer-projecten/${id}?message=updated`);
+      return Astro.redirect(
+        `/dashboard/beheer-projecten/${id}?message=updated`,
+      );
     }
   } catch (error) {
-    console.error('Error processing form:', error);
+    console.error("Error processing form:", error);
   }
 }
 ---
@@ -122,32 +132,51 @@ if (Astro.request.method === 'POST') {
     <!-- Formulier -->
     <div class="lg:col-span-2">
       <div class="flex items-center mb-6">
-        <a href={isAdmin ? '/dashboard/beheer-projecten/alle-projecten' : '/dashboard/mijn-projecten'} class="text-firda-gray-500 hover:text-firda-gray-700 mr-4">
-          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
+        <a
+          href={isAdmin
+            ? "/dashboard/beheer-projecten/alle-projecten"
+            : "/dashboard/mijn-projecten"}
+          class="text-firda-gray-500 hover:text-firda-gray-700 mr-4"
+        >
+          <svg
+            class="w-6 h-6"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M10 19l-7-7m0 0l7-7m-7 7h18"></path>
           </svg>
         </a>
-        <h1 class="text-2xl font-bold text-firda-gray-900">
-          Project bewerken
-        </h1>
+        <h1 class="text-2xl font-bold text-firda-gray-900">Project bewerken</h1>
       </div>
 
-      {message === 'updated' && (
-        <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
-          Project succesvol bijgewerkt.
-        </div>
-      )}
+      {
+        message === "updated" && (
+          <div class="mb-6 p-4 bg-green-50 border border-green-200 rounded-lg text-green-700">
+            Project succesvol bijgewerkt.
+          </div>
+        )
+      }
 
-      {errorMsg && (
-        <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
-          {errorMsg}
-        </div>
-      )}
+      {
+        errorMsg && (
+          <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700">
+            {errorMsg}
+          </div>
+        )
+      }
 
       <form method="POST" class="space-y-6">
         <!-- Titel -->
         <div>
-          <label for="title" class="block text-sm font-medium text-firda-gray-700 mb-1">
+          <label
+            for="title"
+            class="block text-sm font-medium text-firda-gray-700 mb-1"
+          >
             Titel <span class="text-red-500">*</span>
           </label>
           <input
@@ -162,21 +191,27 @@ if (Astro.request.method === 'POST') {
 
         <!-- Korte beschrijving -->
         <div>
-          <label for="short_description" class="block text-sm font-medium text-firda-gray-700 mb-1">
+          <label
+            for="short_description"
+            class="block text-sm font-medium text-firda-gray-700 mb-1"
+          >
             Korte beschrijving
           </label>
           <input
             type="text"
             id="short_description"
             name="short_description"
-            value={project.short_description || ''}
+            value={project.short_description || ""}
             class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
           />
         </div>
 
         <!-- Uitgebreide beschrijving -->
         <div>
-          <label for="full_description" class="block text-sm font-medium text-firda-gray-700 mb-1">
+          <label
+            for="full_description"
+            class="block text-sm font-medium text-firda-gray-700 mb-1"
+          >
             Uitgebreide beschrijving
           </label>
           <textarea
@@ -184,24 +219,46 @@ if (Astro.request.method === 'POST') {
             name="full_description"
             rows="6"
             class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
-          >{project.full_description || ''}</textarea>
+            >{project.full_description || ""}</textarea
+          >
           <div id="paste-status" class="mt-2 hidden">
             <div class="flex items-center text-sm text-firda-blue-600">
-              <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
-                <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+              <svg
+                class="animate-spin h-4 w-4 mr-2"
+                xmlns="http://www.w3.org/2000/svg"
+                fill="none"
+                viewBox="0 0 24 24"
+              >
+                <circle
+                  class="opacity-25"
+                  cx="12"
+                  cy="12"
+                  r="10"
+                  stroke="currentColor"
+                  stroke-width="4"></circle>
+                <path
+                  class="opacity-75"
+                  fill="currentColor"
+                  d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                ></path>
               </svg>
               Afbeelding uploaden...
             </div>
           </div>
-            <div id="pasted-images" class="mt-3 grid grid-cols-2 md:grid-cols-3 gap-3 hidden">
-              <!-- previews van geplakte afbeeldingen komen hier -->
-            </div>
+          <div
+            id="pasted-images"
+            class="mt-3 grid grid-cols-2 md:grid-cols-3 gap-3 hidden"
+          >
+            <!-- previews van geplakte afbeeldingen komen hier -->
+          </div>
         </div>
 
         <!-- Doelen -->
         <div>
-          <label for="goals" class="block text-sm font-medium text-firda-gray-700 mb-1">
+          <label
+            for="goals"
+            class="block text-sm font-medium text-firda-gray-700 mb-1"
+          >
             Doelen
           </label>
           <textarea
@@ -209,7 +266,8 @@ if (Astro.request.method === 'POST') {
             name="goals"
             rows="4"
             class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
-          >{project.goals || ''}</textarea>
+            >{project.goals || ""}</textarea
+          >
         </div>
 
         <!-- Sectie afbeelding (tussen doelen en doelgroep) -->
@@ -246,11 +304,17 @@ if (Astro.request.method === 'POST') {
 
             <div id="section-image-status" class="mt-3 hidden text-sm"></div>
 
-            <div id="section-image-preview" class:list={["mt-4", project.section_image_url ? '' : 'hidden']}>
-              <div class="aspect-video w-full overflow-hidden rounded-lg border border-firda-gray-200 bg-firda-gray-50" style="max-height: 420px;">
+            <div
+              id="section-image-preview"
+              class:list={["mt-4", project.section_image_url ? "" : "hidden"]}
+            >
+              <div
+                class="aspect-video w-full overflow-hidden rounded-lg border border-firda-gray-200 bg-firda-gray-50"
+                style="max-height: 420px;"
+              >
                 <ImageMagnifier
                   id="section-image-preview-img"
-                  src={project.section_image_url || ''}
+                  src={project.section_image_url || ""}
                   alt="Project foto"
                   imgClass="h-full w-full object-cover"
                   smartFit={true}
@@ -262,42 +326,51 @@ if (Astro.request.method === 'POST') {
 
         <!-- Doelgroep -->
         <div>
-          <label for="target_audience" class="block text-sm font-medium text-firda-gray-700 mb-1">
+          <label
+            for="target_audience"
+            class="block text-sm font-medium text-firda-gray-700 mb-1"
+          >
             Doelgroep
           </label>
           <input
             type="text"
             id="target_audience"
             name="target_audience"
-            value={project.target_audience || ''}
+            value={project.target_audience || ""}
             class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
           />
         </div>
 
         <!-- Contactpersoon -->
         <div>
-          <label for="contact_person" class="block text-sm font-medium text-firda-gray-700 mb-1">
+          <label
+            for="contact_person"
+            class="block text-sm font-medium text-firda-gray-700 mb-1"
+          >
             Contactpersoon
           </label>
           <input
             type="text"
             id="contact_person"
             name="contact_person"
-            value={project.contact_person || ''}
+            value={project.contact_person || ""}
             class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
           />
         </div>
 
         <!-- Tags -->
         <div>
-          <label for="tags" class="block text-sm font-medium text-firda-gray-700 mb-1">
+          <label
+            for="tags"
+            class="block text-sm font-medium text-firda-gray-700 mb-1"
+          >
             Tags
           </label>
           <input
             type="text"
             id="tags"
             name="tags"
-            value={(project.tags || []).join(', ')}
+            value={(project.tags || []).join(", ")}
             class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
           />
           <p class="mt-1 text-sm text-firda-gray-500">
@@ -306,24 +379,29 @@ if (Astro.request.method === 'POST') {
         </div>
 
         <!-- Eigenaar (alleen voor admin) -->
-        {isAdmin && (
-          <div>
-            <label for="owner_id" class="block text-sm font-medium text-firda-gray-700 mb-1">
-              Projecteigenaar
-            </label>
-            <select
-              id="owner_id"
-              name="owner_id"
-              class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
-            >
-              {users.map(u => (
-                <option value={u.id} selected={u.id === project.owner_id}>
-                  {u.full_name || u.email} ({u.role})
-                </option>
-              ))}
-            </select>
-          </div>
-        )}
+        {
+          isAdmin && (
+            <div>
+              <label
+                for="owner_id"
+                class="block text-sm font-medium text-firda-gray-700 mb-1"
+              >
+                Projecteigenaar
+              </label>
+              <select
+                id="owner_id"
+                name="owner_id"
+                class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
+              >
+                {users.map((u) => (
+                  <option value={u.id} selected={u.id === project.owner_id}>
+                    {u.full_name || u.email} ({u.role})
+                  </option>
+                ))}
+              </select>
+            </div>
+          )
+        }
 
         <!-- Publicatie status -->
         <div class="border-t border-firda-gray-200 pt-6">
@@ -335,17 +413,23 @@ if (Astro.request.method === 'POST') {
               checked={project.is_published}
               class="w-4 h-4 text-firda-blue-600 border-firda-gray-300 rounded focus:ring-firda-blue-500"
             />
-            <label for="is_published" class="ml-2 block text-sm font-medium text-firda-gray-700">
+            <label
+              for="is_published"
+              class="ml-2 block text-sm font-medium text-firda-gray-700"
+            >
               Project publiceren op website
             </label>
           </div>
           <p class="mt-1 ml-6 text-sm text-firda-gray-500">
-            Alleen gepubliceerde projecten zijn zichtbaar op de publieke projectenpagina
+            Alleen gepubliceerde projecten zijn zichtbaar op de publieke
+            projectenpagina
           </p>
         </div>
 
         <!-- Submit buttons -->
-        <div class="flex items-center gap-4 pt-4 border-t border-firda-gray-200">
+        <div
+          class="flex items-center gap-4 pt-4 border-t border-firda-gray-200"
+        >
           <button
             type="submit"
             class="px-6 py-2 bg-firda-blue-600 text-white font-medium rounded-lg hover:bg-firda-blue-700 transition"
@@ -365,84 +449,98 @@ if (Astro.request.method === 'POST') {
 
     <!-- Sidebar met PDF's -->
     <aside class="space-y-6">
-      <PdfUpload 
-        projectId={id} 
-        uploadUrl="/api/pdf/upload" 
-      />
-      
-      <PdfList 
-        pdfs={pdfs || []} 
-        title="Projectdocumenten"
-        maxHeight="400px"
-      />
+      <PdfUpload projectId={id} uploadUrl="/api/pdf/upload" />
 
-      {pdfs && pdfs.length > 0 && (
-        <div class="bg-firda-gray-50 rounded-lg p-4">
-          <h3 class="font-semibold text-firda-gray-800 mb-3">PDF's verwijderen</h3>
-          <p class="text-sm text-firda-gray-600 mb-4">
-            Klik op de prullenbak om een PDF te verwijderen.
-          </p>
-          <div class="space-y-2">
-            {pdfs.map(pdf => (
-              <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-firda-gray-200">
-                <span class="text-sm text-firda-gray-700 truncate flex-1 mr-2">
-                  {pdf.filename}
-                </span>
-                <form action="/api/pdf/delete" method="POST" class="inline">
-                  <input type="hidden" name="pdfId" value={pdf.id} />
-                  <input type="hidden" name="redirectTo" value={`/dashboard/beheer-projecten/${id}`} />
-                  <button
-                    type="submit"
-                    class="p-1 text-firda-gray-400 hover:text-red-500 transition"
-                    onclick="return confirm('Weet je zeker dat je deze PDF wilt verwijderen?')"
-                  >
-                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                    </svg>
-                  </button>
-                </form>
-              </div>
-            ))}
+      <PdfList pdfs={pdfs || []} title="Projectdocumenten" maxHeight="400px" />
+
+      {
+        pdfs && pdfs.length > 0 && (
+          <div class="bg-firda-gray-50 rounded-lg p-4">
+            <h3 class="font-semibold text-firda-gray-800 mb-3">
+              PDF's verwijderen
+            </h3>
+            <p class="text-sm text-firda-gray-600 mb-4">
+              Klik op de prullenbak om een PDF te verwijderen.
+            </p>
+            <div class="space-y-2">
+              {pdfs.map((pdf) => (
+                <div class="flex items-center justify-between p-2 bg-white rounded-lg border border-firda-gray-200">
+                  <span class="text-sm text-firda-gray-700 truncate flex-1 mr-2">
+                    {pdf.filename}
+                  </span>
+                  <form action="/api/pdf/delete" method="POST" class="inline">
+                    <input type="hidden" name="pdfId" value={pdf.id} />
+                    <input
+                      type="hidden"
+                      name="redirectTo"
+                      value={`/dashboard/beheer-projecten/${id}`}
+                    />
+                    <button
+                      type="submit"
+                      class="p-1 text-firda-gray-400 hover:text-red-500 transition"
+                      onclick="return confirm('Weet je zeker dat je deze PDF wilt verwijderen?')"
+                    >
+                      <svg
+                        class="w-4 h-4"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          stroke-linecap="round"
+                          stroke-linejoin="round"
+                          stroke-width="2"
+                          d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                        />
+                      </svg>
+                    </button>
+                  </form>
+                </div>
+              ))}
+            </div>
           </div>
-        </div>
-      )}
+        )
+      }
     </aside>
   </div>
 </DashboardLayout>
 
 <script define:vars={{ projectId: id }}>
   // Afbeelding plakken functionaliteit
-  const textarea = document.getElementById('full_description');
-  const pasteStatus = document.getElementById('paste-status');
-  const pastedImages = document.getElementById('pasted-images');
+  const textarea = document.getElementById("full_description");
+  const pasteStatus = document.getElementById("paste-status");
+  const pastedImages = document.getElementById("pasted-images");
 
   // Sectie afbeelding upload (tussen doelen en doelgroep)
-  const sectionFile = document.getElementById('section-image-file');
-  const sectionUploadBtn = document.getElementById('section-image-upload');
-  const sectionDeleteBtn = document.getElementById('section-image-delete');
-  const sectionStatus = document.getElementById('section-image-status');
-  const sectionPreview = document.getElementById('section-image-preview');
-  const sectionPreviewImg = document.getElementById('section-image-preview-img');
+  const sectionFile = document.getElementById("section-image-file");
+  const sectionUploadBtn = document.getElementById("section-image-upload");
+  const sectionDeleteBtn = document.getElementById("section-image-delete");
+  const sectionStatus = document.getElementById("section-image-status");
+  const sectionPreview = document.getElementById("section-image-preview");
+  const sectionPreviewImg = document.getElementById(
+    "section-image-preview-img",
+  );
 
   // Probeer client-side compressie om serverlimieten te vermijden
   const maybeCompressImage = async (file) => {
     try {
-      if (!file || !file.type?.startsWith('image/')) return file;
+      if (!file || !file.type?.startsWith("image/")) return file;
 
       // Sla compressie over als het bestand al klein is
       if (file.size <= 1.5 * 1024 * 1024) return file; // ~1,5MB
 
-      const createImage = (file) => new Promise((resolve, reject) => {
-        const img = new Image();
-        img.onload = () => resolve(img);
-        img.onerror = reject;
-        const reader = new FileReader();
-        reader.onload = () => {
-          img.src = reader.result;
-        };
-        reader.onerror = reject;
-        reader.readAsDataURL(file);
-      });
+      const createImage = (file) =>
+        new Promise((resolve, reject) => {
+          const img = new Image();
+          img.onload = () => resolve(img);
+          img.onerror = reject;
+          const reader = new FileReader();
+          reader.onload = () => {
+            img.src = reader.result;
+          };
+          reader.onerror = reject;
+          reader.readAsDataURL(file);
+        });
 
       const img = await createImage(file);
       const maxDim = 1920; // maximale afmeting voor foto's
@@ -451,21 +549,23 @@ if (Astro.request.method === 'POST') {
       width = Math.round(width * ratio);
       height = Math.round(height * ratio);
 
-      const canvas = document.createElement('canvas');
+      const canvas = document.createElement("canvas");
       canvas.width = width;
       canvas.height = height;
-      const ctx = canvas.getContext('2d');
+      const ctx = canvas.getContext("2d");
       ctx.drawImage(img, 0, 0, width, height);
 
-      const outType = 'image/jpeg';
+      const outType = "image/jpeg";
       const quality = 0.85;
-      const blob = await new Promise(resolve => canvas.toBlob(resolve, outType, quality));
+      const blob = await new Promise((resolve) =>
+        canvas.toBlob(resolve, outType, quality),
+      );
       if (!blob) return file;
 
       // Als compressie niet helpt, behoud het origineel
       const better = blob.size < file.size ? blob : file;
-      const origName = file.name || 'image';
-      const newName = origName.replace(/\.(png|webp|jpeg|jpg)$/i, '') + '.jpg';
+      const origName = file.name || "image";
+      const newName = origName.replace(/\.(png|webp|jpeg|jpg)$/i, "") + ".jpg";
       return new File([better], newName, { type: better.type || outType });
     } catch {
       return file;
@@ -474,17 +574,21 @@ if (Astro.request.method === 'POST') {
 
   const setSectionStatus = (message, kind) => {
     if (!sectionStatus) return;
-    sectionStatus.classList.remove('hidden');
-    sectionStatus.classList.remove('text-firda-gray-600', 'text-green-700', 'text-red-700');
-    if (kind === 'success') sectionStatus.classList.add('text-green-700');
-    else if (kind === 'error') sectionStatus.classList.add('text-red-700');
-    else sectionStatus.classList.add('text-firda-gray-600');
+    sectionStatus.classList.remove("hidden");
+    sectionStatus.classList.remove(
+      "text-firda-gray-600",
+      "text-green-700",
+      "text-red-700",
+    );
+    if (kind === "success") sectionStatus.classList.add("text-green-700");
+    else if (kind === "error") sectionStatus.classList.add("text-red-700");
+    else sectionStatus.classList.add("text-firda-gray-600");
     sectionStatus.textContent = message;
   };
 
   const setSectionPreviewUrl = (url) => {
-    if (sectionPreviewImg) sectionPreviewImg.src = url || '';
-    if (sectionPreview) sectionPreview.classList.toggle('hidden', !url);
+    if (sectionPreviewImg) sectionPreviewImg.src = url || "";
+    if (sectionPreview) sectionPreview.classList.toggle("hidden", !url);
     if (sectionDeleteBtn) sectionDeleteBtn.disabled = !url;
   };
 
@@ -500,92 +604,100 @@ if (Astro.request.method === 'POST') {
       const ratio = w / h;
       // If ratio is <= ~1.15 (square/portrait leaning), cropping in 16:9 becomes very aggressive.
       if (ratio <= 1.15) {
-        img.classList.remove('object-cover');
-        img.classList.add('object-contain');
-        img.style.objectPosition = 'center';
+        img.classList.remove("object-cover");
+        img.classList.add("object-contain");
+        img.style.objectPosition = "center";
       } else {
-        img.classList.remove('object-contain');
-        img.classList.add('object-cover');
-        img.style.objectPosition = 'center';
+        img.classList.remove("object-contain");
+        img.classList.add("object-cover");
+        img.style.objectPosition = "center";
       }
     };
 
     if (img.complete) run();
-    else img.addEventListener('load', run, { once: true });
+    else img.addEventListener("load", run, { once: true });
   };
 
   // Init delete button state
-  setSectionPreviewUrl(sectionPreviewImg?.getAttribute('src') || null);
+  setSectionPreviewUrl(sectionPreviewImg?.getAttribute("src") || null);
   applySectionSmartFit();
 
-  sectionUploadBtn?.addEventListener('click', async () => {
+  sectionUploadBtn?.addEventListener("click", async () => {
     if (!sectionFile || !sectionFile.files || sectionFile.files.length === 0) {
-      setSectionStatus('Selecteer eerst een afbeelding.', 'error');
+      setSectionStatus("Selecteer eerst een afbeelding.", "error");
       return;
     }
 
     let file = sectionFile.files[0];
     sectionUploadBtn.disabled = true;
     if (sectionDeleteBtn) sectionDeleteBtn.disabled = true;
-    setSectionStatus('Uploaden...', 'info');
+    setSectionStatus("Uploaden...", "info");
 
     try {
       // Probeer client-side compressie voor grote bestanden
       file = await maybeCompressImage(file);
       const formData = new FormData();
-      formData.append('imageFile', file, file.name);
-      formData.append('projectId', projectId);
+      formData.append("imageFile", file, file.name);
+      formData.append("projectId", projectId);
 
-      const response = await fetch('/api/images/upload', {
-        method: 'POST',
+      const response = await fetch("/api/images/upload", {
+        method: "POST",
         body: formData,
-        credentials: 'same-origin',
+        credentials: "same-origin",
       });
 
       const result = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error(result?.error || 'Upload mislukt');
+        throw new Error(result?.error || "Upload mislukt");
       }
 
       setSectionPreviewUrl(result.url);
       applySectionSmartFit();
-      setSectionStatus('Afbeelding opgeslagen.', 'success');
-      sectionFile.value = '';
+      setSectionStatus("Afbeelding opgeslagen.", "success");
+      sectionFile.value = "";
     } catch (error) {
-      console.error('Section image upload error:', error);
-      setSectionStatus(error && error.message ? error.message : 'Upload mislukt', 'error');
+      console.error("Section image upload error:", error);
+      setSectionStatus(
+        error && error.message ? error.message : "Upload mislukt",
+        "error",
+      );
     } finally {
       sectionUploadBtn.disabled = false;
     }
   });
 
-  sectionDeleteBtn?.addEventListener('click', async () => {
-    const confirmed = confirm('Weet je zeker dat je deze projectfoto wilt verwijderen?');
+  sectionDeleteBtn?.addEventListener("click", async () => {
+    const confirmed = confirm(
+      "Weet je zeker dat je deze projectfoto wilt verwijderen?",
+    );
     if (!confirmed) return;
 
     if (sectionUploadBtn) sectionUploadBtn.disabled = true;
     sectionDeleteBtn.disabled = true;
-    setSectionStatus('Verwijderen...', 'info');
+    setSectionStatus("Verwijderen...", "info");
 
     try {
       const formData = new FormData();
-      formData.append('projectId', projectId);
+      formData.append("projectId", projectId);
 
-      const response = await fetch('/api/images/delete', {
-        method: 'POST',
+      const response = await fetch("/api/images/delete", {
+        method: "POST",
         body: formData,
       });
 
       const result = await response.json().catch(() => ({}));
       if (!response.ok) {
-        throw new Error(result?.error || 'Verwijderen mislukt');
+        throw new Error(result?.error || "Verwijderen mislukt");
       }
 
       setSectionPreviewUrl(null);
-      setSectionStatus('Afbeelding verwijderd.', 'success');
+      setSectionStatus("Afbeelding verwijderd.", "success");
     } catch (error) {
-      console.error('Section image delete error:', error);
-      setSectionStatus(error && error.message ? error.message : 'Verwijderen mislukt', 'error');
+      console.error("Section image delete error:", error);
+      setSectionStatus(
+        error && error.message ? error.message : "Verwijderen mislukt",
+        "error",
+      );
     } finally {
       if (sectionUploadBtn) sectionUploadBtn.disabled = false;
     }
@@ -593,10 +705,11 @@ if (Astro.request.method === 'POST') {
 
   const addPreview = (url, filename) => {
     if (!pastedImages) return;
-    pastedImages.classList.remove('hidden');
+    pastedImages.classList.remove("hidden");
 
-    const card = document.createElement('div');
-    card.className = 'rounded-lg border border-firda-gray-200 bg-white shadow-sm overflow-hidden';
+    const card = document.createElement("div");
+    card.className =
+      "rounded-lg border border-firda-gray-200 bg-white shadow-sm overflow-hidden";
     card.innerHTML = `
       <div class="aspect-video bg-firda-gray-50 overflow-hidden">
         <img src="${url}" alt="${filename}" class="w-full h-full object-cover" loading="lazy" />
@@ -607,52 +720,54 @@ if (Astro.request.method === 'POST') {
   };
 
   if (textarea) {
-    textarea.addEventListener('paste', async (e) => {
+    textarea.addEventListener("paste", async (e) => {
       const items = e.clipboardData?.items;
       if (!items) return;
 
       // Zoek naar afbeelding in clipboard
       for (const item of items) {
-        if (item.type.indexOf('image') !== -1) {
+        if (item.type.indexOf("image") !== -1) {
           e.preventDefault(); // Voorkom standaard paste gedrag
-          
+
           const file = item.getAsFile();
           if (!file) continue;
 
           // Vraag bevestiging
-          const confirmed = confirm('Weet je zeker dat je deze afbeelding wilt uploaden en toevoegen aan de beschrijving?');
+          const confirmed = confirm(
+            "Weet je zeker dat je deze afbeelding wilt uploaden en toevoegen aan de beschrijving?",
+          );
           if (!confirmed) {
             break; // Stop als gebruiker annuleert
           }
 
           // Toon status
-          pasteStatus.classList.remove('hidden');
+          pasteStatus.classList.remove("hidden");
 
           try {
             // Upload afbeelding
             const formData = new FormData();
-            formData.append('file', file);
-            formData.append('projectId', projectId);
+            formData.append("file", file);
+            formData.append("projectId", projectId);
 
-            const response = await fetch('/api/images/upload', {
-              method: 'POST',
-              body: formData
+            const response = await fetch("/api/images/upload", {
+              method: "POST",
+              body: formData,
             });
 
             if (!response.ok) {
-              throw new Error('Upload mislukt');
+              throw new Error("Upload mislukt");
             }
 
             const result = await response.json();
-            
+
             // Voeg markdown syntax toe op cursor positie
             const cursorPos = textarea.selectionStart;
             const textBefore = textarea.value.substring(0, cursorPos);
             const textAfter = textarea.value.substring(cursorPos);
-            
+
             const imageMarkdown = `\n![${result.filename}](${result.url})\n`;
             textarea.value = textBefore + imageMarkdown + textAfter;
-            
+
             // Zet cursor na de ingevoegde afbeelding
             const newCursorPos = cursorPos + imageMarkdown.length;
             textarea.setSelectionRange(newCursorPos, newCursorPos);
@@ -662,13 +777,13 @@ if (Astro.request.method === 'POST') {
             addPreview(result.url, result.filename);
 
             // Verberg status
-            pasteStatus.classList.add('hidden');
-
+            pasteStatus.classList.add("hidden");
           } catch (error) {
-            console.error('Error uploading image:', error);
-            pasteStatus.innerHTML = '<div class="text-sm text-red-600">❌ Upload mislukt</div>';
+            console.error("Error uploading image:", error);
+            pasteStatus.innerHTML =
+              '<div class="text-sm text-red-600">❌ Upload mislukt</div>';
             setTimeout(() => {
-              pasteStatus.classList.add('hidden');
+              pasteStatus.classList.add("hidden");
               pasteStatus.innerHTML = `
                 <div class="flex items-center text-sm text-firda-blue-600">
                   <svg class="animate-spin h-4 w-4 mr-2" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">

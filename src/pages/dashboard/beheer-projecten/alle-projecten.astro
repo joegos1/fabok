@@ -106,6 +106,7 @@ const errorMsg = url.searchParams.get('error');
         <thead>
           <tr class="border-b border-firda-gray-200">
             <th class="text-left py-3 px-4 font-semibold text-firda-gray-700">Titel</th>
+            <th class="text-left py-3 px-4 font-semibold text-firda-gray-700">Provincie</th>
             <th class="text-left py-3 px-4 font-semibold text-firda-gray-700">Eigenaar</th>
             <th class="text-left py-3 px-4 font-semibold text-firda-gray-700">Status</th>
             <th class="text-left py-3 px-4 font-semibold text-firda-gray-700">Aangemaakt</th>
@@ -116,26 +117,15 @@ const errorMsg = url.searchParams.get('error');
           {projects.map(project => (
             <tr 
               class="project-row hover:bg-firda-gray-50 transition-colors"
-              data-search-terms={`${project.title} ${project.owner?.full_name || ''} ${project.owner?.email || ''}`.toLowerCase()}
+              data-search-terms={`${project.title} ${project.province || ''} ${project.owner?.full_name || ''} ${project.owner?.email || ''}`.toLowerCase()}
             >
               <td class="py-3 px-4">
                 <a href={`/projecten/${project.id}`} class="font-medium text-firda-blue-600 hover:text-firda-blue-700">
                   {project.title}
                 </a>
-                {project.tags && project.tags.length > 0 && (
-                  <div class="flex gap-1 mt-1">
-                    {project.tags.slice(0, 2).map(tag => (
-                      <span class="text-xs px-2 py-0.5 bg-firda-gray-100 text-firda-gray-600 rounded-full">
-                        {tag}
-                      </span>
-                    ))}
-                    {project.tags.length > 2 && (
-                      <span class="text-xs text-firda-gray-500">
-                        +{project.tags.length - 2}
-                      </span>
-                    )}
-                  </div>
-                )}
+              </td>
+              <td class="py-3 px-4 text-sm text-firda-gray-600">
+                {project.province || '-'}
               </td>
               <td class="py-3 px-4 text-sm text-firda-gray-600">
                 {project.owner?.full_name || project.owner?.email || 'Onbekend'}

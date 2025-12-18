@@ -16,14 +16,6 @@ const { data: projects, error } = await supabaseAdmin
   .eq("status", "active")
   .eq("is_published", true)
   .order("created_at", { ascending: false });
-
-if (error) {
-  console.error("Error fetching projects:", error);
-}
-
-// Haal unieke tags op voor filtering
-const allTags = projects?.flatMap((p) => p.tags || []) || [];
-const uniqueTags = [...new Set(allTags)].sort();
 ---
 
 <Layout title="Projecten">
@@ -34,13 +26,13 @@ const uniqueTags = [...new Set(allTags)].sort();
         VABOK Projecten
       </h1>
       <p class="text-lg text-firda-gray-600 max-w-3xl">
-        Ontdek alle VABOK-projecten die gericht zijn op het versterken van de
-        aansluiting in de beroepskolom. Klik op een project voor meer details.
+        Ontdek alle VABOK-projecten van ons. Klik op een project voor meer
+        details.
       </p>
     </div>
 
-    <!-- Zoekbalk & Filter op tags -->
-    <div class="mb-8 space-y-6">
+    <!-- Zoekbalk & Provincie Filter -->
+    <div class="mb-8 space-y-8">
       <div class="max-w-md">
         <label for="search" class="sr-only">Zoek projecten</label>
         <div class="relative">
@@ -64,36 +56,67 @@ const uniqueTags = [...new Set(allTags)].sort();
             type="text"
             id="search"
             placeholder="Zoek op titel of beschrijving..."
-            class="block w-full pl-10 pr-3 py-2 border border-firda-gray-300 rounded-lg leading-5 bg-white placeholder-firda-gray-500 focus:outline-none focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 sm:text-sm transition-all"
+            class="block w-full pl-10 pr-3 py-2 border border-firda-gray-300 rounded-lg leading-5 bg-white placeholder-firda-gray-500 focus:outline-none focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 sm:text-sm transition-all shadow-sm"
           />
         </div>
       </div>
 
-      {
-        uniqueTags.length > 0 && (
-          <div>
-            <h2 class="text-sm font-semibold text-firda-gray-700 mb-3">
-              Filter op tags:
-            </h2>
-            <div class="flex flex-wrap gap-2">
+      <div>
+        <h2
+          class="text-sm font-semibold text-firda-gray-700 mb-4 flex items-center"
+        >
+          <svg
+            class="w-4 h-4 mr-2 text-firda-blue-500"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+            ></path>
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+          </svg>
+          Filter op provincie:
+        </h2>
+        <div class="flex flex-wrap gap-2 md:gap-3">
+          <button
+            data-filter="all"
+            class="filter-btn active px-4 py-2 text-sm font-medium rounded-xl bg-firda-blue-600 text-white shadow-sm transition-all hover:bg-firda-blue-700"
+          >
+            Alle provincies
+          </button>
+          {
+            [
+              "Friesland",
+              "Groningen",
+              "Drenthe",
+              "Overijssel",
+              "Flevoland",
+              "Gelderland",
+              "Utrecht",
+              "Noord-Holland",
+              "Zuid-Holland",
+              "Zeeland",
+              "Noord-Brabant",
+              "Limburg",
+            ].map((provincie) => (
               <button
-                data-filter="all"
-                class="filter-btn active px-3 py-1 text-sm font-medium rounded-full bg-firda-blue-600 text-white"
+                data-filter={provincie}
+                class="filter-btn px-4 py-2 text-sm font-medium rounded-xl bg-white border border-firda-gray-200 text-firda-gray-700 hover:border-firda-blue-300 hover:text-firda-blue-600 hover:bg-firda-blue-50 transition-all shadow-sm"
               >
-                Alles
+                {provincie}
               </button>
-              {uniqueTags.map((tag) => (
-                <button
-                  data-filter={tag}
-                  class="filter-btn px-3 py-1 text-sm font-medium rounded-full bg-firda-gray-200 text-firda-gray-700 hover:bg-firda-gray-300 transition"
-                >
-                  {tag}
-                </button>
-              ))}
-            </div>
-          </div>
-        )
-      }
+            ))
+          }
+        </div>
+      </div>
     </div>
 
     <!-- Projecten grid -->
@@ -128,7 +151,7 @@ const uniqueTags = [...new Set(allTags)].sort();
           {projects.map((project) => (
             <div
               class="project-item"
-              data-tags={JSON.stringify(project.tags || [])}
+              data-province={project.province || ""}
               data-title={project.title.toLowerCase()}
               data-description={(project.short_description || "").toLowerCase()}
             >
@@ -181,15 +204,16 @@ const uniqueTags = [...new Set(allTags)].sort();
     const query = searchQuery.toLowerCase().trim();
 
     projectItems.forEach((item) => {
-      const tags = JSON.parse(item.getAttribute("data-tags") || "[]");
+      const province = item.getAttribute("data-province") || "";
       const title = item.getAttribute("data-title") || "";
       const description = item.getAttribute("data-description") || "";
 
-      const matchesTag = activeFilter === "all" || tags.includes(activeFilter);
+      const matchesProvince =
+        activeFilter === "all" || province === activeFilter;
       const matchesSearch =
         !query || title.includes(query) || description.includes(query);
 
-      if (matchesTag && matchesSearch) {
+      if (matchesProvince && matchesSearch) {
         item.classList.remove("hidden");
         visibleCount++;
       } else {
@@ -207,7 +231,7 @@ const uniqueTags = [...new Set(allTags)].sort();
     }
   }
 
-  // Tag filtering
+  // Province filtering
   filterBtns.forEach((btn) => {
     btn.addEventListener("click", () => {
       activeFilter = btn.getAttribute("data-filter") || "all";
@@ -215,10 +239,28 @@ const uniqueTags = [...new Set(allTags)].sort();
       // Update active state
       filterBtns.forEach((b) => {
         b.classList.remove("active", "bg-firda-blue-600", "text-white");
-        b.classList.add("bg-firda-gray-200", "text-firda-gray-700");
+        b.classList.add(
+          "bg-white",
+          "text-firda-gray-700",
+          "border-firda-gray-200",
+        );
       });
-      btn.classList.add("active", "bg-firda-blue-600", "text-white");
-      btn.classList.remove("bg-firda-gray-200", "text-firda-gray-700");
+
+      if (activeFilter === "all") {
+        btn.classList.add("active", "bg-firda-blue-600", "text-white");
+        btn.classList.remove(
+          "bg-white",
+          "text-firda-gray-700",
+          "border-firda-gray-200",
+        );
+      } else {
+        btn.classList.add("active", "bg-firda-blue-600", "text-white");
+        btn.classList.remove(
+          "bg-white",
+          "text-firda-gray-700",
+          "border-firda-gray-200",
+        );
+      }
 
       applyFilters();
     });

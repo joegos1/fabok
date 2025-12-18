@@ -55,6 +55,7 @@ export interface Database {
           target_audience: string | null;
           contact_person: string | null;
           tags: string[] | null;
+          province: string | null;
           status: 'active' | 'archived';
           is_published: boolean;
           owner_id: string;
@@ -72,6 +73,7 @@ export interface Database {
           target_audience?: string | null;
           contact_person?: string | null;
           tags?: string[] | null;
+          province?: string | null;
           status?: 'active' | 'archived';
           is_published?: boolean;
           owner_id: string;
@@ -89,6 +91,7 @@ export interface Database {
           target_audience?: string | null;
           contact_person?: string | null;
           tags?: string[] | null;
+          province?: string | null;
           status?: 'active' | 'archived';
           is_published?: boolean;
           owner_id?: string;
