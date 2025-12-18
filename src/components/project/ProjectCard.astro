@@ -2,7 +2,8 @@
 /**
  * Project Card Component
  * ======================
- * Kaart voor weergave van project in overzichtslijst
+ * Kaart voor weergave van project in overzichtslijst.
+ * Ontworpen met een premium uitstraling die aansluit bij de Firda huisstijl.
  */
 
 import type { Project } from "../../types/database";
@@ -13,99 +14,148 @@ interface Props {
 }
 
 const { project, showStatus = false } = Astro.props;
+
+// Mock image if none exists, or a colored placeholder
+const hasImage = !!project.section_image_url;
 ---
 
 <article
-  class="bg-white rounded-xl shadow-sm hover:shadow-md transition-shadow p-6 border border-firda-gray-200"
+  class="group relative bg-white rounded-2xl border border-firda-gray-200 shadow-sm hover:shadow-xl hover:border-firda-blue-200 transition-all duration-300 overflow-hidden flex flex-col h-full"
 >
-  <div class="flex items-start justify-between">
-    <div class="flex-1">
-      <a href={`/projecten/${project.id}`} class="group">
-        <h3
-          class="text-lg font-semibold text-firda-gray-900 group-hover:text-firda-blue-600 transition"
-        >
-          {project.title}
-        </h3>
-      </a>
+  <!-- Decoratieve accent balk bovenop -->
+  <div
+    class="h-1.5 w-full bg-gradient-to-r from-firda-blue-500 to-firda-green-500 opacity-0 group-hover:opacity-100 transition-opacity duration-300"
+  >
+  </div>
 
-      {
-        project.short_description && (
-          <p class="mt-2 text-firda-gray-600 line-clamp-2">
-            {project.short_description}
-          </p>
-        )
-      }
+  <div class="p-8 flex flex-col flex-grow">
+    <div class="flex items-start justify-between mb-4">
+      <div class="flex-1">
+        <!-- Status & Tags -->
+        <div class="flex flex-wrap gap-2 mb-4">
+          {
+            showStatus && (
+              <span
+                class:list={[
+                  "px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider rounded-full",
+                  project.status === "active"
+                    ? "bg-firda-green-100 text-firda-green-700"
+                    : "bg-firda-gray-100 text-firda-gray-600",
+                ]}
+              >
+                {project.status === "active" ? "Actief" : "Gearchiveerd"}
+              </span>
+            )
+          }
+          {
+            project.tags &&
+              project.tags
+                .slice(0, 2)
+                .map((tag) => (
+                  <span class="px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-firda-blue-50 text-firda-blue-600 rounded-full border border-firda-blue-100">
+                    {tag}
+                  </span>
+                ))
+          }
+        </div>
+
+        <a href={`/projecten/${project.id}`} class="block group/title">
+          <h3
+            class="text-xl font-bold text-firda-gray-900 group-hover/title:text-firda-blue-600 transition-colors duration-200 leading-snug"
+          >
+            {project.title}
+          </h3>
+        </a>
+      </div>
     </div>
 
     {
-      showStatus && (
-        <span
-          class:list={[
-            "ml-4 px-2 py-1 text-xs font-medium rounded-full",
-            project.status === "active"
-              ? "bg-firda-green-100 text-firda-green-700"
-              : "bg-firda-gray-100 text-firda-gray-600",
-          ]}
-        >
-          {project.status === "active" ? "Actief" : "Gearchiveerd"}
-        </span>
-      )
-    }
-  </div>
-
-  <div class="mt-4 flex items-center justify-between">
-    {
-      project.contact_person && (
-        <p class="text-sm text-firda-gray-500 flex items-center gap-2">
-          <span class="font-medium">Contact:</span> {project.contact_person}
-          {project.province && (
-            <>
-              <span class="w-1 h-1 bg-firda-gray-300 rounded-full" />
-              <span class="flex items-center">
-                <svg
-                  class="w-3.4 h-3.4 mr-1 text-firda-gray-400"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
-                  />
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
-                  />
-                </svg>
-                {project.province}
-              </span>
-            </>
-          )}
+      project.short_description && (
+        <p class="text-firda-gray-600 line-clamp-3 text-sm leading-relaxed mb-6 flex-grow">
+          {project.short_description}
         </p>
       )
     }
 
-    <a
-      href={`/projecten/${project.id}`}
-      class="inline-flex items-center text-sm font-medium text-firda-blue-600 hover:text-firda-blue-700 transition"
+    <!-- Footer sectie van de kaart -->
+    <div
+      class="mt-auto pt-6 border-t border-firda-gray-100 flex items-center justify-between"
     >
-      Bekijk details
-      <svg
-        class="ml-1 w-4 h-4"
-        fill="none"
-        stroke="currentColor"
-        viewBox="0 0 24 24"
+      <div class="flex flex-col gap-1.5">
+        {
+          project.contact_person && (
+            <div class="flex items-center text-xs text-firda-gray-500">
+              <svg
+                class="w-3.5 h-3.5 mr-1.5 text-firda-blue-500"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+                />
+              </svg>
+              <span class="font-medium text-firda-gray-700">
+                {project.contact_person}
+              </span>
+            </div>
+          )
+        }
+        {
+          project.province && (
+            <div class="flex items-center text-xs text-firda-gray-400">
+              <svg
+                class="w-3.5 h-3.5 mr-1.5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"
+                />
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"
+                />
+              </svg>
+              {project.province}
+            </div>
+          )
+        }
+      </div>
+
+      <a
+        href={`/projecten/${project.id}`}
+        class="inline-flex items-center justify-center w-10 h-10 rounded-full bg-firda-gray-50 text-firda-blue-600 group-hover:bg-firda-blue-600 group-hover:text-white transition-all duration-300 shadow-sm"
+        aria-label="Bekijk details"
       >
-        <path
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          stroke-width="2"
-          d="M9 5l7 7-7 7"></path>
-      </svg>
-    </a>
+        <svg
+          class="w-5 h-5 transform group-hover:translate-x-0.5 transition-transform"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            d="M9 5l7 7-7 7"></path>
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Subtiel verloop effect onderaan bij hover -->
+  <div
+    class="absolute bottom-0 left-0 w-full h-1 bg-gradient-to-r from-firda-blue-500 to-firda-green-500 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 origin-left"
+  >
   </div>
 </article>
