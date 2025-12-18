@@ -188,14 +188,17 @@ const content = landingContent || {
     </div>
   </section>
 
-  <!-- Marquee: Rustiger en subtieler -->
+  <!-- Marquee: Terug naar krachtige merkkleuren -->
   {
     schools && schools.length > 0 && (
-      <section class="py-8 bg-firda-gray-100 border-y border-firda-gray-200">
+      <section class="py-10 bg-gradient-to-r from-firda-blue-600 to-firda-blue-700 border-y border-white/10">
         <div class="marquee-container overflow-hidden">
-          <div class="marquee-content flex items-center gap-12 text-firda-gray-500 font-medium uppercase tracking-widest text-sm">
+          <div class="marquee-content flex items-center gap-12 text-firda-green-400 font-bold uppercase tracking-widest text-sm">
             {[...schools, ...schools, ...schools].map((school) => (
-              <span class="whitespace-nowrap">{school.name}</span>
+              <span class="whitespace-nowrap flex items-center gap-6">
+                {school.name}
+                <span class="w-1.5 h-1.5 rounded-full bg-firda-green-500/50" />
+              </span>
             ))}
           </div>
         </div>
@@ -203,17 +206,37 @@ const content = landingContent || {
     )
   }
 
+  <!-- Collage Image: Verplaatst naar tussen marquee en over ons -->
+  <div class="w-full bg-white pt-12">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <Image
+        src={CollageVabok}
+        alt="VABOK Collage"
+        class="w-full h-auto rounded-3xl shadow-xl object-cover"
+        loading="lazy"
+      />
+    </div>
+  </div>
+
   <!-- Over VABOK: Centraal en leesbaar (CMS Body) -->
-  <section class="py-24 bg-white">
+  <section class="py-24 bg-white relative">
+    <!-- Subtiele kleur accent aan de zijkant -->
+    <div
+      class="absolute left-0 top-1/4 w-1 h-1/2 bg-firda-green-500 rounded-r-full opacity-30"
+    >
+    </div>
+
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="text-center mb-16">
         <span
-          class="inline-block px-4 py-1.5 bg-firda-blue-50 text-firda-blue-700 text-sm font-bold tracking-wider uppercase rounded-full mb-4"
+          class="inline-block px-4 py-1.5 bg-firda-green-100 text-firda-blue-800 text-sm font-bold tracking-wider uppercase rounded-full mb-4"
         >
-          Over ons
+          Onze visie
         </span>
         <h2 class="text-3xl lg:text-5xl font-bold text-firda-gray-900">
-          Onze visie op samenwerking
+          Samenwerking in de <span class="text-firda-blue-600"
+            >onderwijsketen</span
+          >
         </h2>
       </div>
 
@@ -232,20 +255,8 @@ const content = landingContent || {
     </div>
   </section>
 
-  <!-- Collage Image: Zonder gekke dividers -->
-  <div class="w-full bg-firda-gray-50 py-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <Image
-        src={CollageVabok}
-        alt="VABOK Collage"
-        class="w-full h-auto rounded-3xl shadow-xl object-cover"
-        loading="lazy"
-      />
-    </div>
-  </div>
-
-  <!-- Voor wie is VABOK?: Minimalistisch en strak -->
-  <section class="py-24 bg-firda-gray-50">
+  <!-- Voor wie is VABOK?: Kleurrijke accenten -->
+  <section class="py-24 bg-firda-blue-50/30 border-y border-firda-blue-100/50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="max-w-3xl mb-16">
         <h2 class="text-3xl lg:text-4xl font-bold text-firda-gray-900 mb-6">
@@ -258,12 +269,12 @@ const content = landingContent || {
       </div>
 
       <div class="grid md:grid-cols-3 gap-10">
-        <!-- Kaartjes zonder zware gradiënten -->
+        <!-- Kaartjes met merk-accenten -->
         <div
-          class="bg-white p-10 rounded-2xl border border-firda-gray-200 hover:shadow-xl transition-shadow duration-300"
+          class="bg-white p-10 rounded-2xl border-b-4 border-firda-blue-500 shadow-sm hover:shadow-xl transition-all duration-300"
         >
           <div
-            class="w-12 h-12 bg-firda-blue-50 text-firda-blue-600 rounded-xl flex items-center justify-center mb-8"
+            class="w-12 h-12 bg-firda-blue-600 text-firda-green-400 rounded-xl flex items-center justify-center mb-8 shadow-inner"
           >
             <svg
               class="w-6 h-6"
@@ -289,10 +300,10 @@ const content = landingContent || {
         </div>
 
         <div
-          class="bg-white p-10 rounded-2xl border border-firda-gray-200 hover:shadow-xl transition-shadow duration-300"
+          class="bg-white p-10 rounded-2xl border-b-4 border-firda-green-500 shadow-sm hover:shadow-xl transition-all duration-300"
         >
           <div
-            class="w-12 h-12 bg-firda-blue-50 text-firda-blue-600 rounded-xl flex items-center justify-center mb-8"
+            class="w-12 h-12 bg-firda-blue-600 text-firda-green-400 rounded-xl flex items-center justify-center mb-8 shadow-inner"
           >
             <svg
               class="w-6 h-6"
@@ -318,10 +329,10 @@ const content = landingContent || {
         </div>
 
         <div
-          class="bg-white p-10 rounded-2xl border border-firda-gray-200 hover:shadow-xl transition-shadow duration-300"
+          class="bg-white p-10 rounded-2xl border-b-4 border-firda-blue-500 shadow-sm hover:shadow-xl transition-all duration-300"
         >
           <div
-            class="w-12 h-12 bg-firda-blue-50 text-firda-blue-600 rounded-xl flex items-center justify-center mb-8"
+            class="w-12 h-12 bg-firda-blue-600 text-firda-green-400 rounded-xl flex items-center justify-center mb-8 shadow-inner"
           >
             <svg
               class="w-6 h-6"
