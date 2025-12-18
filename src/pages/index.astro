@@ -54,12 +54,12 @@ const content = landingContent || {
 <Layout title="Home">
   <!-- Hero sectie: Cleaner en professioneler -->
   <section
-    class="relative bg-firda-blue-900 text-white py-12 lg:py-24 overflow-hidden"
+    class="relative bg-firda-blue-500 text-white py-12 lg:py-24 overflow-hidden"
   >
     <!-- Subtiele achtergrond textuur of verloop -->
     <div class="absolute inset-0 opacity-20">
       <div
-        class="absolute inset-0 bg-gradient-to-br from-firda-blue-800 to-transparent"
+        class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"
       >
       </div>
     </div>
@@ -67,41 +67,43 @@ const content = landingContent || {
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="grid gap-16 lg:grid-cols-2 lg:items-center">
         <div class="max-w-2xl">
-          <h1
-            class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold mb-6 leading-tight tracking-tight"
-          >
-            {content.title}
-          </h1>
-          <p
-            class="text-lg sm:text-xl text-firda-blue-100 mb-8 leading-relaxed font-light max-w-xl"
-          >
-            {content.intro}
-          </p>
-          <div class="flex flex-wrap gap-6">
-            <a
-              href="/projecten/lijst"
-              class="inline-flex items-center px-8 py-4 bg-firda-green-500 text-firda-blue-900 font-bold rounded-lg hover:bg-firda-green-400 transition-all duration-200 shadow-lg shadow-firda-green-500/20"
+          <div class="animate-fade-in-up">
+            <h1
+              class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold mb-6 leading-tight tracking-tight"
             >
-              Bekijk projecten
-              <svg
-                class="ml-2 w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
+              {content.title}
+            </h1>
+            <p
+              class="text-lg sm:text-xl text-firda-blue-100 mb-8 leading-relaxed font-light max-w-xl"
+            >
+              {content.intro}
+            </p>
+            <div class="flex flex-wrap gap-6">
+              <a
+                href="/projecten/lijst"
+                class="inline-flex items-center px-8 py-4 bg-firda-green-500 text-firda-blue-900 font-bold rounded-lg hover:bg-firda-green-400 transition-all duration-200 shadow-lg shadow-firda-green-500/20 hover:scale-105 active:scale-95"
               >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2"
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-              </svg>
-            </a>
-            <a
-              href="#documenten"
-              class="inline-flex items-center px-8 py-4 bg-white/5 backdrop-blur-md text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-200 border border-white/20"
-            >
-              Documenten
-            </a>
+                Bekijk projecten
+                <svg
+                  class="ml-2 w-5 h-5"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2"
+                    d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+              </a>
+              <a
+                href="#documenten"
+                class="inline-flex items-center px-8 py-4 bg-white/5 backdrop-blur-md text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-200 border border-white/20"
+              >
+                Documenten
+              </a>
+            </div>
           </div>
         </div>
 
@@ -219,10 +221,10 @@ const content = landingContent || {
   </div>
 
   <!-- Over VABOK: Centraal en leesbaar (CMS Body) -->
-  <section class="py-24 bg-white relative">
+  <section class="py-32 bg-white relative">
     <!-- Subtiele kleur accent aan de zijkant -->
     <div
-      class="absolute left-0 top-1/4 w-1 h-1/2 bg-firda-green-500 rounded-r-full opacity-30"
+      class="absolute left-0 top-1/4 w-1.5 h-1/2 bg-firda-green-500 rounded-r-full opacity-40"
     >
     </div>
 
@@ -360,21 +362,35 @@ const content = landingContent || {
     </div>
   </section>
 
-  <!-- Projecten & Documenten -->
-  <section class="py-24 bg-white">
+  <!-- Projecten, Documenten & CTA Samengevoegd -->
+  <section class="py-24 bg-firda-gray-50 border-t border-firda-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid lg:grid-cols-12 gap-16">
+      <div class="grid lg:grid-cols-12 gap-16 mb-20">
         <!-- Recente Projecten -->
         <div class="lg:col-span-8">
           <div class="flex items-center justify-between mb-12">
-            <h2 class="text-3xl font-bold text-firda-gray-900">
-              Recente projecten
-            </h2>
+            <div>
+              <h2 class="text-3xl font-bold text-firda-gray-900 mb-2">
+                Recente projecten
+              </h2>
+              <div class="w-12 h-1 bg-firda-green-500 rounded-full"></div>
+            </div>
             <a
               href="/projecten/lijst"
-              class="text-firda-blue-600 font-semibold hover:underline"
+              class="text-firda-blue-600 font-semibold hover:text-firda-blue-800 transition-colors flex items-center gap-2"
             >
-              Bekijk alles →
+              Bekijk alles
+              <svg
+                class="w-4 h-4"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+                ><path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M9 5l7 7-7 7"></path></svg
+              >
             </a>
           </div>
 
@@ -386,8 +402,8 @@ const content = landingContent || {
                 ))}
               </div>
             ) : (
-              <div class="py-20 text-center bg-firda-gray-50 rounded-2xl text-firda-gray-500">
-                Geen projecten beschikbaar.
+              <div class="py-20 text-center bg-white border border-dashed border-firda-gray-300 rounded-2xl text-firda-gray-500">
+                Geen projecten beschikbaar op dit moment.
               </div>
             )
           }
@@ -395,37 +411,53 @@ const content = landingContent || {
 
         <!-- Documenten -->
         <div class="lg:col-span-4">
-          <div id="documenten" class="sticky top-24">
+          <div id="documenten" class="sticky top-28">
             <h2 class="text-3xl font-bold text-firda-gray-900 mb-12">
               Documenten
             </h2>
             <div
-              class="bg-firda-gray-50 rounded-2xl p-2 border border-firda-gray-200"
+              class="bg-white rounded-2xl p-2 border border-firda-gray-200 shadow-sm"
             >
               <PdfList pdfs={pdfs || []} title="" maxHeight="600px" />
             </div>
           </div>
         </div>
       </div>
-    </div>
-  </section>
 
-  <!-- CTA -->
-  <section class="py-24 bg-firda-blue-600 text-white">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-3xl lg:text-5xl font-bold mb-8 text-white">
-        Klaar om te ontdekken?
-      </h2>
-      <p class="text-xl text-firda-blue-100 mb-12">
-        Bekijk onze projecten en ontdek hoe we de aansluiting in de beroepskolom
-        versterken.
-      </p>
-      <a
-        href="/projecten/lijst"
-        class="inline-flex items-center px-10 py-5 bg-firda-green-500 text-firda-blue-900 font-bold rounded-xl hover:bg-firda-green-400 transition-all shadow-xl"
+      <!-- Geïntegreerde CTA -->
+      <div
+        class="relative bg-firda-blue-600 rounded-3xl overflow-hidden shadow-2xl"
       >
-        Ontdek onze projecten
-      </a>
+        <!-- Decoratieve elementen -->
+        <div
+          class="absolute top-0 right-0 -mt-12 -mr-12 w-48 h-48 bg-firda-green-500/20 rounded-full blur-3xl"
+        >
+        </div>
+        <div
+          class="absolute bottom-0 left-0 -mb-12 -ml-12 w-48 h-48 bg-firda-blue-400/20 rounded-full blur-3xl"
+        >
+        </div>
+
+        <div class="relative px-8 py-16 text-center">
+          <h2 class="text-3xl lg:text-4xl font-bold mb-6 text-white">
+            Niet gevonden wat je zocht?
+          </h2>
+          <p
+            class="text-lg text-firda-blue-100 mb-10 max-w-2xl mx-auto font-light"
+          >
+            Bekijk onze volledige bibliotheek aan projecten en ontdek hoe we de
+            aansluiting in de beroepskolom versterken.
+          </p>
+          <div class="flex flex-col sm:flex-row gap-4 justify-center">
+            <a
+              href="/projecten/lijst"
+              class="inline-flex items-center px-10 py-5 bg-firda-green-500 text-firda-blue-900 font-bold rounded-xl hover:bg-firda-green-400 transition-all shadow-xl hover:scale-105 active:scale-95"
+            >
+              Ontdek alle projecten
+            </a>
+          </div>
+        </div>
+      </div>
     </div>
   </section>
 </Layout>
@@ -494,6 +526,21 @@ const content = landingContent || {
     }
     to {
       transform: translateX(-33.33%);
+    }
+  }
+
+  .animate-fade-in-up {
+    animation: fadeInUp 0.8s ease-out forwards;
+  }
+
+  @keyframes fadeInUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
     }
   }
 </style>
