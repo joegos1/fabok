@@ -157,6 +157,7 @@ const projects = (data || []) as Project[];
               data-province={project.province || ""}
               data-title={project.title.toLowerCase()}
               data-description={(project.short_description || "").toLowerCase()}
+              data-tags={(project.tags || []).join(" ").toLowerCase()}
             >
               <ProjectCard project={project} />
             </div>
@@ -210,11 +211,15 @@ const projects = (data || []) as Project[];
       const province = item.getAttribute("data-province") || "";
       const title = item.getAttribute("data-title") || "";
       const description = item.getAttribute("data-description") || "";
+      const tags = item.getAttribute("data-tags") || "";
 
       const matchesProvince =
         activeFilter === "all" || province === activeFilter;
       const matchesSearch =
-        !query || title.includes(query) || description.includes(query);
+        !query ||
+        title.includes(query) ||
+        description.includes(query) ||
+        tags.includes(query);
 
       if (matchesProvince && matchesSearch) {
         item.classList.remove("hidden");

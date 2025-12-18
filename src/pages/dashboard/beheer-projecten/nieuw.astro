@@ -46,6 +46,12 @@ if (Astro.request.method === "POST") {
     const ownerId = formData.get("owner_id")?.toString() || profile.id;
     const province = formData.get("province")?.toString() || null;
 
+    const tagsStr = formData.get("tags")?.toString() || "";
+    const tags = tagsStr
+      .split(",")
+      .map((t) => t.trim())
+      .filter((t) => t !== "");
+
     // Maak project aan
     const { error } = await supabaseAdmin.from("projects").insert({
       title,
@@ -54,11 +60,12 @@ if (Astro.request.method === "POST") {
       goals,
       target_audience: targetAudience,
       contact_person: contactPerson,
+      tags,
       province,
       owner_id: ownerId,
       status: "active",
       is_published: false,
-    });
+    } as any);
 
     if (error) {
       console.error("Error creating project:", error);
@@ -187,6 +194,23 @@ if (Astro.request.method === "POST") {
           name="target_audience"
           class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
           placeholder="Bijv. MBO-studenten, docenten, etc."
+        />
+      </div>
+
+      <!-- Tags -->
+      <div>
+        <label
+          for="tags"
+          class="block text-sm font-medium text-firda-gray-700 mb-1"
+        >
+          Tags (gescheiden door komma's)
+        </label>
+        <input
+          type="text"
+          id="tags"
+          name="tags"
+          class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
+          placeholder="Bijv. Duurzaamheid, Techniek, Onderwijs"
         />
       </div>
 
