@@ -5,559 +5,484 @@
  * VABOK landingspagina met algemene info en PDF's
  */
 
-import Layout from '../layouts/Layout.astro';
-import PdfList from '../components/pdf/PdfList.astro';
-import ProjectCard from '../components/project/ProjectCard.astro';
-import { supabaseAdmin } from '../lib';
-import { Image } from 'astro:assets';
-import CollageVabok from '../assets/collage-vabok.png';
+import Layout from "../layouts/Layout.astro";
+import PdfList from "../components/pdf/PdfList.astro";
+import ProjectCard from "../components/project/ProjectCard.astro";
+import { supabaseAdmin } from "../lib";
+import { Image } from "astro:assets";
+import CollageVabok from "../assets/collage-vabok.png";
+import type { School } from "../types/database";
 
 // Haal landingpage content op
 const { data: landingContent } = await supabaseAdmin
-  .from('landing_page_content')
-  .select('*')
+  .from("landing_page_content")
+  .select("*")
   .single();
 
 // Haal landing page PDF's op
 const { data: pdfs } = await supabaseAdmin
-  .from('pdf_files')
-  .select('*')
-  .eq('is_landing_page', true)
-  .order('uploaded_at', { ascending: false });
+  .from("pdf_files")
+  .select("*")
+  .eq("is_landing_page", true)
+  .order("uploaded_at", { ascending: false });
 
 // Haal de laatste 4 actieve en gepubliceerde projecten op
 const { data: latestProjects } = await supabaseAdmin
-  .from('projects')
-  .select('*')
-  .eq('status', 'active')
-  .eq('is_published', true)
-  .order('created_at', { ascending: false })
+  .from("projects")
+  .select("*")
+  .eq("status", "active")
+  .eq("is_published", true)
+  .order("created_at", { ascending: false })
   .limit(4);
 
 // Haal scholen op voor marquee
-const { data: schools } = await supabaseAdmin
-  .from('schools')
-  .select('*')
-  .order('display_order', { ascending: true });
+const { data: schoolsData } = await supabaseAdmin
+  .from("schools")
+  .select("*")
+  .order("display_order", { ascending: true });
+
+const schools = (schoolsData || []) as School[];
 
 const content = landingContent || {
-  title: 'VABOK - Versterken van de Aansluiting in de Beroepskolom',
-  intro: 'Welkom bij VABOK, het platform voor informatie over onderwijsprojecten.',
-  body: 'Hier vindt u informatie over lopende projecten, hun doelen en resultaten.',
+  title: "VABOK - Versterken van de Aansluiting in de Beroepskolom",
+  intro:
+    "Welkom bij VABOK, het platform voor informatie over onderwijsprojecten.",
+  body: "Hier vindt u informatie over lopende projecten, hun doelen en resultaten.",
 };
 ---
 
 <Layout title="Home">
-  <!-- Hero sectie met animatie -->
-  <section class="relative overflow-hidden bg-gradient-to-br from-firda-blue-700 via-firda-blue-600 to-firda-blue-800 text-white py-20 lg:py-32">
-    <!-- Decoratieve achtergrond elementen -->
-    <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute -top-40 -right-40 w-80 h-80 bg-firda-green-500/10 rounded-full blur-3xl animate-pulse"></div>
-      <div class="absolute -bottom-40 -left-40 w-96 h-96 bg-firda-blue-400/20 rounded-full blur-3xl animate-pulse" style="animation-delay: 1s;"></div>
-      <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-firda-green-500/5 rounded-full blur-3xl"></div>
+  <!-- Hero sectie: Cleaner en professioneler -->
+  <section
+    class="relative bg-firda-blue-700 text-white py-24 lg:py-36 overflow-hidden"
+  >
+    <!-- Subtiele achtergrond textuur of verloop -->
+    <div class="absolute inset-0 opacity-20">
+      <div
+        class="absolute inset-0 bg-gradient-to-br from-firda-blue-800 to-transparent"
+      >
+      </div>
     </div>
-    
-    <!-- Grid patroon overlay -->
-    <div class="absolute inset-0 opacity-5" style="background-image: url('data:image/svg+xml,%3Csvg width=&quot;60&quot; height=&quot;60&quot; viewBox=&quot;0 0 60 60&quot; xmlns=&quot;http://www.w3.org/2000/svg&quot;%3E%3Cg fill=&quot;none&quot; fill-rule=&quot;evenodd&quot;%3E%3Cg fill=&quot;%23ffffff&quot; fill-opacity=&quot;0.4&quot;%3E%3Cpath d=&quot;M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z&quot;/%3E%3C/g%3E%3C/g%3E%3C/svg%3E');"></div>
-    
+
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
-        <div class="max-w-3xl hero-content">
-        <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight animate-fade-in-up">
-          {content.title}
-        </h1>
-        <p class="text-lg sm:text-xl text-firda-blue-100 mb-10 leading-relaxed animate-fade-in-up animation-delay-200">
-          {content.intro}
-        </p>
-        <div class="flex flex-wrap gap-4 animate-fade-in-up animation-delay-400">
-          <a 
-            href="/projecten/lijst" 
-            class="group inline-flex items-center px-8 py-4 bg-firda-green-500 text-firda-gray-900 font-bold rounded-xl hover:bg-firda-green-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-firda-green-500/25"
+      <div class="grid gap-16 lg:grid-cols-2 lg:items-center">
+        <div class="max-w-2xl">
+          <h1
+            class="text-4xl sm:text-5xl lg:text-7xl font-bold mb-8 leading-tight tracking-tight"
           >
-            Bekijk projecten
-            <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-            </svg>
-          </a>
-          <a 
-            href="#documenten" 
-            class="inline-flex items-center px-8 py-4 bg-white/10 backdrop-blur-sm text-white font-semibold rounded-xl hover:bg-white/20 transition-all duration-300 border border-white/20"
+            {content.title}
+          </h1>
+          <p
+            class="text-xl sm:text-2xl text-firda-blue-100 mb-12 leading-relaxed font-light"
           >
-            <svg class="mr-2 w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-            </svg>
-            Documenten
-          </a>
-        </div>
+            {content.intro}
+          </p>
+          <div class="flex flex-wrap gap-6">
+            <a
+              href="/projecten/lijst"
+              class="inline-flex items-center px-8 py-4 bg-firda-green-500 text-firda-blue-900 font-bold rounded-lg hover:bg-firda-green-400 transition-all duration-200 shadow-lg shadow-firda-green-500/20"
+            >
+              Bekijk projecten
+              <svg
+                class="ml-2 w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+              </svg>
+            </a>
+            <a
+              href="#documenten"
+              class="inline-flex items-center px-8 py-4 bg-white/5 backdrop-blur-md text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-200 border border-white/20"
+            >
+              Documenten
+            </a>
+          </div>
         </div>
 
-        <!-- Video naast hero (geen component) -->
-        <div class="relative lg:justify-self-end">
-          <div class="group relative overflow-hidden rounded-2xl border border-white/15 bg-black/20 shadow-2xl shadow-firda-blue-900/30">
-            <div class="aspect-video w-full">
-              <video
-                id="hero-video"
-                class="h-full w-full object-cover"
-                loop
-                playsinline
-                preload="metadata"
-                aria-label="Introductievideo VABOK"
+        <!-- Video: Strakker geïntegreerd -->
+        <div class="relative">
+          <div
+            class="aspect-video w-full rounded-2xl overflow-hidden shadow-2xl bg-black group relative"
+          >
+            <video
+              id="hero-video"
+              class="h-full w-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+              loop
+              playsinline
+              preload="metadata"
+            >
+              <source src="/IMG_1513 (1).mp4" type="video/mp4" />
+            </video>
+
+            <div class="absolute inset-0 flex items-center justify-center">
+              <button
+                id="hero-video-big-play"
+                type="button"
+                class="w-20 h-20 flex items-center justify-center rounded-full bg-firda-green-500 text-firda-blue-900 shadow-xl hover:scale-110 transition-transform"
               >
-                <source src="/IMG_1513 (1).mp4" type="video/mp4" />
-                Je browser ondersteunt geen video.
-              </video>
+                <svg
+                  class="w-8 h-8 translate-x-1"
+                  fill="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path d="M8 5v14l11-7z"></path>
+                </svg>
+              </button>
             </div>
 
-            <!-- YouTube-style controls linksonder -->
-            <div class="absolute bottom-0 left-0 right-0 flex items-center gap-3 p-3 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity">
+            <!-- Controls overlay -->
+            <div
+              class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity"
+            >
               <button
                 id="hero-video-toggle"
-                type="button"
-                class="grid h-10 w-10 place-items-center rounded-full bg-white/90 text-firda-gray-900 hover:bg-white transition-colors focus:outline-none"
-                aria-label="Video afspelen"
+                class="text-white hover:text-firda-green-400 transition-colors"
               >
-                <svg id="hero-video-icon-play" class="h-5 w-5 translate-x-[1px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-                <svg id="hero-video-icon-pause" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M6 5h4v14H6zm8 0h4v14h-4z" />
-                </svg>
+                <svg
+                  id="hero-video-icon-play"
+                  class="w-6 h-6"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"><path d="M8 5v14l11-7z"></path></svg
+                >
+                <svg
+                  id="hero-video-icon-pause"
+                  class="hidden w-6 h-6"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  ><path d="M6 5h4v14H6zm8 0h4v14h-4z"></path></svg
+                >
               </button>
-
               <button
                 id="hero-video-mute"
-                type="button"
-                class="grid h-10 w-10 place-items-center rounded-full bg-white/20 text-white hover:bg-white/30 transition-colors focus:outline-none"
-                aria-label="Geluid aan/uit"
+                class="text-white hover:text-firda-green-400 transition-colors"
               >
-                <svg id="hero-video-icon-unmuted" class="hidden h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z" />
-                </svg>
-                <svg id="hero-video-icon-muted" class="h-5 w-5" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z" />
-                </svg>
+                <svg
+                  id="hero-video-icon-muted"
+                  class="w-6 h-6"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  ><path
+                    d="M16.5 12c0-1.77-1.02-3.29-2.5-4.03v2.21l2.45 2.45c.03-.2.05-.41.05-.63zm2.5 0c0 .94-.2 1.82-.54 2.64l1.51 1.51C20.63 14.91 21 13.5 21 12c0-4.28-2.99-7.86-7-8.77v2.06c2.89.86 5 3.54 5 6.71zM4.27 3L3 4.27 7.73 9H3v6h4l5 5v-6.73l4.25 4.25c-.67.52-1.42.93-2.25 1.18v2.06c1.38-.31 2.63-.95 3.69-1.81L19.73 21 21 19.73l-9-9L4.27 3zM12 4L9.91 6.09 12 8.18V4z"
+                  ></path></svg
+                >
+                <svg
+                  id="hero-video-icon-unmuted"
+                  class="hidden w-6 h-6"
+                  viewBox="0 0 24 24"
+                  fill="currentColor"
+                  ><path
+                    d="M3 9v6h4l5 5V4L7 9H3zm13.5 3c0-1.77-1.02-3.29-2.5-4.03v8.05c1.48-.73 2.5-2.25 2.5-4.02zM14 3.23v2.06c2.89.86 5 3.54 5 6.71s-2.11 5.85-5 6.71v2.06c4.01-.91 7-4.49 7-8.77s-2.99-7.86-7-8.77z"
+                  ></path></svg
+                >
               </button>
             </div>
-
-            <!-- Grote play-knop (verdwijnt na eerste klik) -->
-            <button
-              id="hero-video-big-play"
-              type="button"
-              class="absolute inset-0 grid place-items-center focus:outline-none bg-black/30 hover:bg-black/20 transition-colors"
-              aria-label="Video afspelen"
-            >
-              <span class="grid h-16 w-16 place-items-center rounded-full bg-white/90 text-firda-gray-900 shadow-lg">
-                <svg class="h-7 w-7 translate-x-[2px]" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true">
-                  <path d="M8 5v14l11-7z" />
-                </svg>
-              </span>
-            </button>
           </div>
         </div>
       </div>
-    </div>
-    
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 animate-bounce hidden lg:block">
-      <svg class="w-6 h-6 text-white/50" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path>
-      </svg>
     </div>
   </section>
 
-  <script>
-    const video = document.getElementById('hero-video');
-    const toggle = document.getElementById('hero-video-toggle');
-    const bigPlay = document.getElementById('hero-video-big-play');
-    const muteBtn = document.getElementById('hero-video-mute');
-    const iconPlay = document.getElementById('hero-video-icon-play');
-    const iconPause = document.getElementById('hero-video-icon-pause');
-    const iconMuted = document.getElementById('hero-video-icon-muted');
-    const iconUnmuted = document.getElementById('hero-video-icon-unmuted');
+  <!-- Marquee: Rustiger en subtieler -->
+  {
+    schools && schools.length > 0 && (
+      <section class="py-8 bg-firda-gray-100 border-y border-firda-gray-200">
+        <div class="marquee-container overflow-hidden">
+          <div class="marquee-content flex items-center gap-12 text-firda-gray-500 font-medium uppercase tracking-widest text-sm">
+            {[...schools, ...schools, ...schools].map((school) => (
+              <span class="whitespace-nowrap">{school.name}</span>
+            ))}
+          </div>
+        </div>
+      </section>
+    )
+  }
 
-    function setPlayUi(isPlaying) {
-      iconPlay?.classList.toggle('hidden', isPlaying);
-      iconPause?.classList.toggle('hidden', !isPlaying);
-      toggle?.setAttribute('aria-label', isPlaying ? 'Video pauzeren' : 'Video afspelen');
-    }
-
-    function setMuteUi(isMuted) {
-      iconMuted?.classList.toggle('hidden', !isMuted);
-      iconUnmuted?.classList.toggle('hidden', isMuted);
-      muteBtn?.setAttribute('aria-label', isMuted ? 'Geluid aan' : 'Geluid uit');
-    }
-
-    async function playVideo() {
-      if (!video) return;
-      try {
-        await video.play();
-        setPlayUi(true);
-        bigPlay?.classList.add('hidden');
-      } catch {
-        setPlayUi(false);
-      }
-    }
-
-    function pauseVideo() {
-      if (!video) return;
-      video.pause();
-      setPlayUi(false);
-    }
-
-    // Grote play-knop: eerste keer klikken start video met geluid
-    bigPlay?.addEventListener('click', async () => {
-      if (!video) return;
-      video.muted = false;
-      setMuteUi(false);
-      await playVideo();
-    });
-
-    // Kleine play/pause toggle
-    toggle?.addEventListener('click', async () => {
-      if (!video) return;
-      if (video.paused) {
-        await playVideo();
-      } else {
-        pauseVideo();
-      }
-    });
-
-    // Mute toggle
-    muteBtn?.addEventListener('click', () => {
-      if (!video) return;
-      video.muted = !video.muted;
-      setMuteUi(video.muted);
-    });
-
-    // Sync UI met video events
-    video?.addEventListener('play', () => setPlayUi(true));
-    video?.addEventListener('pause', () => setPlayUi(false));
-    video?.addEventListener('volumechange', () => setMuteUi(video?.muted ?? true));
-
-    // Init UI
-    setPlayUi(false);
-    setMuteUi(true);
-  </script>
-
-   <!-- School Marquee -->
-  {schools && schools.length > 0 && (
-    <section class="py-12 bg-gradient-to-r from-firda-blue-600 to-firda-green-500 overflow-hidden">
-      <div class="mb-6 text-center">
-        <h2 class="text-2xl lg:text-3xl font-bold text-white">
-          Samenwerkende scholen
+  <!-- Over VABOK: Centraal en leesbaar (CMS Body) -->
+  <section class="py-24 bg-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-16">
+        <span
+          class="inline-block px-4 py-1.5 bg-firda-blue-50 text-firda-blue-700 text-sm font-bold tracking-wider uppercase rounded-full mb-4"
+        >
+          Over ons
+        </span>
+        <h2 class="text-3xl lg:text-5xl font-bold text-firda-gray-900">
+          Onze visie op samenwerking
         </h2>
       </div>
-      <div class="marquee-container relative">
-        <div class="marquee-content">
-          {/* Duplicate content for seamless loop */}
-          {[...schools, ...schools, ...schools].map((school, index) => (
-            <span key={`${school.id}-${index}`} class="marquee-item text-white text-lg lg:text-xl font-semibold px-8 whitespace-nowrap">
-              {school.name}
-            </span>
-          ))}
-        </div>
+
+      <div
+        class="prose prose-lg lg:prose-xl max-w-none text-firda-gray-600 leading-relaxed font-serif"
+      >
+        {
+          content.body
+            ?.split("\n")
+            .map(
+              (paragraph) =>
+                paragraph.trim() && <p class="mb-8">{paragraph}</p>,
+            )
+        }
       </div>
-    </section>
-  )}
-  <!-- ruimte boven de foto -->
-  <div class="relative h-12 lg:h-16 bg-gradient-to-b from-white to-white overflow-hidden">
-    <svg class="absolute bottom-0 w-full h-12 lg:h-16" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,0 L1440,40 L1440,120 L0,120 Z" fill="#ffffff" />
-    </svg>
-  </div>
+    </div>
+  </section>
 
-  <!-- Collage Image -->
-  <div class="w-full">
-    <Image src={CollageVabok} alt="VABOK Collage" class="w-full h-auto object-cover" loading="lazy" />
-  </div>
-
-  <!-- ruimte onder de foto -->
-  <div class="relative h-12 lg:h-16 bg-gradient-to-b from-white to-white overflow-hidden">
-    <svg class="absolute bottom-0 w-full h-12 lg:h-16" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,0 L1440,40 L1440,120 L0,120 Z" fill="#ffffff" />
-    </svg>
-  </div>
-
-  <!-- Info blokken -->
-  <section class="py-16 lg:py-20 bg-white">
+  <!-- Collage Image: Zonder gekke dividers -->
+  <div class="w-full bg-firda-gray-50 py-12">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-12">
-        <h2 class="text-3xl lg:text-4xl font-bold text-firda-gray-900 mb-4">
+      <Image
+        src={CollageVabok}
+        alt="VABOK Collage"
+        class="w-full h-auto rounded-3xl shadow-xl object-cover"
+        loading="lazy"
+      />
+    </div>
+  </div>
+
+  <!-- Voor wie is VABOK?: Minimalistisch en strak -->
+  <section class="py-24 bg-firda-gray-50">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="max-w-3xl mb-16">
+        <h2 class="text-3xl lg:text-4xl font-bold text-firda-gray-900 mb-6">
           Voor wie is VABOK?
         </h2>
-        <p class="text-lg text-firda-gray-600 max-w-2xl mx-auto">
-          Ons platform biedt waardevolle informatie voor verschillende doelgroepen
+        <p class="text-xl text-firda-gray-600">
+          Wij verbinden studenten, docenten en professionals voor een betere
+          aansluiting in de beroepskolom.
         </p>
       </div>
-      
-      <div class="grid md:grid-cols-3 gap-8">
-        <!-- Docenten -->
-        <div class="group relative bg-gradient-to-br from-firda-gray-50 to-white rounded-2xl p-8 border border-firda-gray-100 hover:border-firda-blue-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-firda-blue-500 to-firda-blue-600 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="w-14 h-14 bg-firda-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-firda-blue-200 transition-all">
-            <svg class="w-7 h-7 text-firda-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"></path>
+
+      <div class="grid md:grid-cols-3 gap-10">
+        <!-- Kaartjes zonder zware gradiënten -->
+        <div
+          class="bg-white p-10 rounded-2xl border border-firda-gray-200 hover:shadow-xl transition-shadow duration-300"
+        >
+          <div
+            class="w-12 h-12 bg-firda-blue-50 text-firda-blue-600 rounded-xl flex items-center justify-center mb-8"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253"
+              ></path>
             </svg>
           </div>
-          <h3 class="text-xl font-bold text-firda-gray-900 mb-3">
+          <h3 class="text-2xl font-bold text-firda-gray-900 mb-4">
             Voor docenten
           </h3>
           <p class="text-firda-gray-600 leading-relaxed">
-            Vind informatie over projecten. En ontdek onderwijsinnovaties.
+            Ontdek onderwijsinnovaties en deel kennis over projecten binnen de
+            beroepskolom.
           </p>
-          <div class="mt-6 flex items-center text-firda-blue-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-            Meer informatie
-            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </div>
         </div>
 
-        <!-- Projectleiders -->
-        <div class="group relative bg-gradient-to-br from-firda-gray-50 to-white rounded-2xl p-8 border border-firda-gray-100 hover:border-firda-green-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-firda-green-500 to-firda-green-600 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="w-14 h-14 bg-firda-green-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-firda-green-200 transition-all">
-            <svg class="w-7 h-7 text-firda-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"></path>
+        <div
+          class="bg-white p-10 rounded-2xl border border-firda-gray-200 hover:shadow-xl transition-shadow duration-300"
+        >
+          <div
+            class="w-12 h-12 bg-firda-blue-50 text-firda-blue-600 rounded-xl flex items-center justify-center mb-8"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01"
+              ></path>
             </svg>
           </div>
-          <h3 class="text-xl font-bold text-firda-gray-900 mb-3">
+          <h3 class="text-2xl font-bold text-firda-gray-900 mb-4">
             Voor projectleiders
           </h3>
           <p class="text-firda-gray-600 leading-relaxed">
-            Beheer projectinformatie en deel resultaten met belanghebbenden. Houd alle stakeholders op de hoogte.
+            Beheer projectinformatie en deel resultaten effectief met alle
+            betrokken stakeholders.
           </p>
-          <div class="mt-6 flex items-center text-firda-green-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-            Meer informatie
-            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </div>
         </div>
 
-        <!-- OCW -->
-        <div class="group relative bg-gradient-to-br from-firda-gray-50 to-white rounded-2xl p-8 border border-firda-gray-100 hover:border-firda-blue-200 hover:shadow-xl hover:-translate-y-2 transition-all duration-300">
-          <div class="absolute top-0 left-0 w-full h-1 bg-gradient-to-r from-firda-blue-500 to-firda-blue-600 rounded-t-2xl opacity-0 group-hover:opacity-100 transition-opacity"></div>
-          <div class="w-14 h-14 bg-firda-blue-100 rounded-2xl flex items-center justify-center mb-6 group-hover:scale-110 group-hover:bg-firda-blue-200 transition-all">
-            <svg class="w-7 h-7 text-firda-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path>
+        <div
+          class="bg-white p-10 rounded-2xl border border-firda-gray-200 hover:shadow-xl transition-shadow duration-300"
+        >
+          <div
+            class="w-12 h-12 bg-firda-blue-50 text-firda-blue-600 rounded-xl flex items-center justify-center mb-8"
+          >
+            <svg
+              class="w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"
+              ></path>
             </svg>
           </div>
-          <h3 class="text-xl font-bold text-firda-gray-900 mb-3">
+          <h3 class="text-2xl font-bold text-firda-gray-900 mb-4">
             Voor het OCW
           </h3>
           <p class="text-firda-gray-600 leading-relaxed">
-            Inzicht in projectvoortgang en borging van onderwijsverbetering. Volg de resultaten en impact.
+            Krijg inzicht in projectvoortgang en de borging van duurzame
+            onderwijsverbetering.
           </p>
-          <div class="mt-6 flex items-center text-firda-blue-600 font-medium opacity-0 group-hover:opacity-100 transition-opacity">
-            Meer informatie
-            <svg class="ml-2 w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
-            </svg>
-          </div>
         </div>
       </div>
     </div>
   </section>
-  
-  <!-- Diagonal divider -->
-  <div class="relative h-24 lg:h-32 bg-white overflow-hidden">
-    <svg class="absolute bottom-0 w-full h-24 lg:h-32" viewBox="0 0 1440 120" preserveAspectRatio="none" xmlns="http://www.w3.org/2000/svg">
-      <path d="M0,0 L1440,40 L1440,120 L0,120 Z" fill="#f9fafb" />
-    </svg>
-  </div>
-  
-  <!-- VABOK Uitleg sectie -->
-  <section class="py-16 lg:py-20 bg-gradient-to-b from-firda-gray-50 via-white to-white relative overflow-hidden">
+
+  <!-- Projecten & Documenten -->
+  <section class="py-24 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid lg:grid-cols-3 gap-8">
-        <!-- Hoofdcontent -->
-        <div class="lg:col-span-2 space-y-8">
-          <!-- Over VABOK kaart -->
-          <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-8 lg:p-10 border border-firda-gray-100">
-            <div class="flex items-center gap-3 mb-6">
-              <div class="w-10 h-10 bg-gradient-to-br from-firda-blue-500 to-firda-blue-600 rounded-xl flex items-center justify-center">
-                <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                </svg>
-              </div>
-              <h2 class="text-2xl lg:text-3xl font-bold text-firda-gray-900">
-                Over VABOK
-              </h2>
-            </div>
-            <div class="prose prose-lg max-w-none text-firda-gray-600 leading-relaxed">
-              {content.body?.split('\n').map(paragraph => (
-                paragraph.trim() && <p class="mb-4">{paragraph}</p>
-              ))}
-            </div>
+      <div class="grid lg:grid-cols-12 gap-16">
+        <!-- Recente Projecten -->
+        <div class="lg:col-span-8">
+          <div class="flex items-center justify-between mb-12">
+            <h2 class="text-3xl font-bold text-firda-gray-900">
+              Recente projecten
+            </h2>
+            <a
+              href="/projecten/lijst"
+              class="text-firda-blue-600 font-semibold hover:underline"
+            >
+              Bekijk alles →
+            </a>
           </div>
 
-          <!-- Recente projecten -->
-          <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-8 lg:p-10 border border-firda-gray-100">
-            <div class="flex items-center justify-between mb-8">
-              <div class="flex items-center gap-3">
-                <div class="w-10 h-10 bg-gradient-to-br from-firda-green-500 to-firda-green-600 rounded-xl flex items-center justify-center">
-                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path>
-                  </svg>
-                </div>
-                <h2 class="text-2xl lg:text-3xl font-bold text-firda-gray-900">
-                  Recente projecten van VABOK
-                </h2>
-              </div>
-              <a 
-                href="/projecten/lijst" 
-                class="group inline-flex items-center text-firda-blue-600 font-semibold hover:text-firda-blue-700 transition"
-              >
-                Naar alle projecten
-                <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                </svg>
-              </a>
-            </div>
-            
-            {latestProjects && latestProjects.length > 0 ? (
-              <div class="grid gap-4">
-                {latestProjects.map(project => (
+          {
+            latestProjects && latestProjects.length > 0 ? (
+              <div class="grid gap-6">
+                {latestProjects.map((project) => (
                   <ProjectCard project={project} />
                 ))}
               </div>
             ) : (
-              <div class="text-center py-12 bg-firda-gray-50 rounded-xl">
-                <svg class="w-12 h-12 text-firda-gray-300 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 13V6a2 2 0 00-2-2H6a2 2 0 00-2 2v7m16 0v5a2 2 0 01-2 2H6a2 2 0 01-2-2v-5m16 0h-2.586a1 1 0 00-.707.293l-2.414 2.414a1 1 0 01-.707.293h-3.172a1 1 0 01-.707-.293l-2.414-2.414A1 1 0 006.586 13H4"></path>
-                </svg>
-                <p class="text-firda-gray-500">
-                  Er zijn momenteel nog geen projecten beschikbaar.
-                </p>
+              <div class="py-20 text-center bg-firda-gray-50 rounded-2xl text-firda-gray-500">
+                Geen projecten beschikbaar.
               </div>
-            )}
-          </div>
+            )
+          }
         </div>
 
-        <!-- Sidebar met PDF's -->
-        <aside id="documenten" class="lg:col-span-1">
-          <div class="sticky top-8">
-            <div class="bg-white rounded-2xl shadow-md hover:shadow-xl transition-all duration-300 p-6 border border-firda-gray-100">
-              <div class="flex items-center gap-3 mb-6">
-                <div class="w-10 h-10 bg-gradient-to-br from-firda-blue-500 to-firda-blue-600 rounded-xl flex items-center justify-center">
-                  <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path>
-                  </svg>
-                </div>
-                <h3 class="text-xl font-bold text-firda-gray-900">Documenten</h3>
-              </div>
-              <PdfList 
-                pdfs={pdfs || []} 
-                title="" 
-                maxHeight="500px"
-              />
+        <!-- Documenten -->
+        <div class="lg:col-span-4">
+          <div id="documenten" class="sticky top-24">
+            <h2 class="text-3xl font-bold text-firda-gray-900 mb-12">
+              Documenten
+            </h2>
+            <div
+              class="bg-firda-gray-50 rounded-2xl p-2 border border-firda-gray-200"
+            >
+              <PdfList pdfs={pdfs || []} title="" maxHeight="600px" />
             </div>
           </div>
-        </aside>
+        </div>
       </div>
     </div>
   </section>
 
-  <!-- Call to Action -->
-  <section class="py-16 lg:py-20 bg-gradient-to-br from-firda-blue-700 via-firda-blue-600 to-firda-blue-800 text-white relative overflow-hidden">
-    <div class="absolute inset-0 overflow-hidden">
-      <div class="absolute -top-20 -right-20 w-60 h-60 bg-firda-green-500/10 rounded-full blur-3xl"></div>
-      <div class="absolute -bottom-20 -left-20 w-80 h-80 bg-firda-blue-400/20 rounded-full blur-3xl"></div>
-    </div>
-    <div class="relative max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-3xl lg:text-4xl font-bold mb-6">
+  <!-- CTA -->
+  <section class="py-24 bg-firda-blue-600 text-white">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-3xl lg:text-5xl font-bold mb-8 text-white">
         Klaar om te ontdekken?
       </h2>
-      <p class="text-lg text-firda-blue-100 mb-10 max-w-2xl mx-auto">
-        Bekijk onze projecten en ontdek hoe we samen werken aan de versterking van de aansluiting in de beroepskolom.
+      <p class="text-xl text-firda-blue-100 mb-12">
+        Bekijk onze projecten en ontdek hoe we de aansluiting in de beroepskolom
+        versterken.
       </p>
-      <div class="flex flex-wrap justify-center gap-4">
-        <a 
-          href="/projecten/lijst" 
-          class="group inline-flex items-center px-8 py-4 bg-firda-green-500 text-firda-gray-900 font-bold rounded-xl hover:bg-firda-green-400 hover:scale-105 transition-all duration-300 shadow-lg shadow-firda-green-500/25"
-        >
-          Ontdek onze projecten
-          <svg class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-          </svg>
-        </a>
-      </div>
+      <a
+        href="/projecten/lijst"
+        class="inline-flex items-center px-10 py-5 bg-firda-green-500 text-firda-blue-900 font-bold rounded-xl hover:bg-firda-green-400 transition-all shadow-xl"
+      >
+        Ontdek onze projecten
+      </a>
     </div>
   </section>
 </Layout>
 
+<script>
+  const video = document.getElementById("hero-video") as HTMLVideoElement;
+  const toggle = document.getElementById("hero-video-toggle");
+  const bigPlay = document.getElementById("hero-video-big-play");
+  const muteBtn = document.getElementById("hero-video-mute");
+  const iconPlay = document.getElementById("hero-video-icon-play");
+  const iconPause = document.getElementById("hero-video-icon-pause");
+  const iconMuted = document.getElementById("hero-video-icon-muted");
+  const iconUnmuted = document.getElementById("hero-video-icon-unmuted");
+
+  function setPlayUi(isPlaying: boolean) {
+    iconPlay?.classList.toggle("hidden", isPlaying);
+    iconPause?.classList.toggle("hidden", !isPlaying);
+  }
+
+  function setMuteUi(isMuted: boolean) {
+    iconMuted?.classList.toggle("hidden", !isMuted);
+    iconUnmuted?.classList.toggle("hidden", isMuted);
+  }
+
+  async function playVideo() {
+    if (!video) return;
+    try {
+      await video.play();
+      setPlayUi(true);
+      bigPlay?.classList.add("hidden");
+    } catch (e) {
+      console.error("Video play failed", e);
+    }
+  }
+
+  bigPlay?.addEventListener("click", () => {
+    video.muted = false;
+    setMuteUi(false);
+    playVideo();
+  });
+
+  toggle?.addEventListener("click", () => {
+    if (video.paused) {
+      playVideo();
+    } else {
+      video.pause();
+      setPlayUi(false);
+    }
+  });
+
+  muteBtn?.addEventListener("click", () => {
+    video.muted = !video.muted;
+    setMuteUi(video.muted);
+  });
+</script>
+
 <style>
-  @keyframes fade-in {
-    from { opacity: 0; }
-    to { opacity: 1; }
+  .marquee-content {
+    animation: marquee 60s linear infinite;
+    width: max-content;
   }
-  
-  @keyframes fade-in-up {
-    from { 
-      opacity: 0;
-      transform: translateY(20px);
-    }
-    to { 
-      opacity: 1;
-      transform: translateY(0);
-    }
-  }
-  
+
   @keyframes marquee {
-    0% {
+    from {
       transform: translateX(0);
     }
-    100% {
-      transform: translateX(-33.333%);
+    to {
+      transform: translateX(-33.33%);
     }
-  }
-  
-  .animate-fade-in {
-    animation: fade-in 0.6s ease-out forwards;
-  }
-  
-  .animate-fade-in-up {
-    animation: fade-in-up 0.6s ease-out forwards;
-  }
-  
-  .animation-delay-200 {
-    animation-delay: 0.2s;
-    opacity: 0;
-  }
-  
-  .animation-delay-400 {
-    animation-delay: 0.4s;
-    opacity: 0;
-  }
-  
-  .marquee-container {
-    width: 100%;
-    overflow: hidden;
-  }
-  
-  .marquee-content {
-    display: flex;
-    width: max-content;
-    animation: marquee 40s linear infinite;
-  }
-  
-  .marquee-content:hover {
-    animation-play-state: paused;
-  }
-  
-  .marquee-item {
-    display: inline-flex;
-    align-items: center;
-  }
-  
-  .marquee-item::after {
-    content: "•";
-    margin-left: 2rem;
-    opacity: 0.5;
-  }
-  
-  .marquee-item:last-child::after {
-    content: none;
   }
 </style>
