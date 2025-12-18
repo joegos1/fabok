@@ -53,18 +53,6 @@ const { project, showStatus = false } = Astro.props;
     }
   </div>
 
-  {
-    project.tags && project.tags.length > 0 && (
-      <div class="mt-4 flex flex-wrap gap-2">
-        {project.tags.map((tag) => (
-          <span class="px-2 py-1 text-xs font-medium rounded-full bg-firda-blue-50 text-firda-blue-600">
-            {tag}
-          </span>
-        ))}
-      </div>
-    )
-  }
-
   <div class="mt-4 flex items-center justify-between">
     {
       project.contact_person && (

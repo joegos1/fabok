@@ -9,6 +9,7 @@ import ImageMagnifier from "../../../components/common/ImageMagnifier.astro";
 import PdfList from "../../../components/pdf/PdfList.astro";
 import PdfUpload from "../../../components/pdf/PdfUpload.astro";
 import { requireAuth, canEditProject, supabaseAdmin } from "../../../lib";
+import type { Project } from "../../../types/database";
 
 // Check authenticatie
 const auth = await requireAuth(Astro.request);
@@ -34,11 +35,13 @@ if (!canEdit) {
 }
 
 // Haal project op
-const { data: project, error: projectError } = await supabaseAdmin
+const { data, error: projectError } = await supabaseAdmin
   .from("projects")
   .select("*")
   .eq("id", id)
   .single();
+
+const project = data as unknown as Project;
 
 if (projectError || !project) {
   return Astro.redirect("/dashboard/beheer-projecten/alle-projecten");
@@ -80,18 +83,11 @@ if (Astro.request.method === "POST") {
     const goals = formData.get("goals")?.toString() || null;
     const targetAudience = formData.get("target_audience")?.toString() || null;
     const contactPerson = formData.get("contact_person")?.toString() || null;
-    const tagsString = formData.get("tags")?.toString() || "";
     const ownerId = isAdmin
       ? formData.get("owner_id")?.toString() || project.owner_id
       : project.owner_id;
     const province = formData.get("province")?.toString() || project.province;
     const isPublished = formData.get("is_published") === "on";
-
-    // Parse tags
-    const tags = tagsString
-      .split(",")
-      .map((t) => t.trim())
-      .filter((t) => t.length > 0);
 
     // Update project
     const { error } = await supabaseAdmin
@@ -103,7 +99,6 @@ if (Astro.request.method === "POST") {
         goals,
         target_audience: targetAudience,
         contact_person: contactPerson,
-        tags,
         province,
         owner_id: ownerId,
         is_published: isPublished,
@@ -358,24 +353,44 @@ if (Astro.request.method === "POST") {
           />
         </div>
 
-        <!-- Tags -->
+        <!-- Provincie -->
         <div>
           <label
-            for="tags"
+            for="province"
             class="block text-sm font-medium text-firda-gray-700 mb-1"
           >
-            Tags
+            Provincie <span class="text-red-500">*</span>
           </label>
-          <input
-            type="text"
-            id="tags"
-            name="tags"
-            value={(project.tags || []).join(", ")}
+          <select
+            id="province"
+            name="province"
+            required
             class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500"
-          />
-          <p class="mt-1 text-sm text-firda-gray-500">
-            Scheid tags met komma's
-          </p>
+          >
+            <option value="" disabled selected={!project.province}
+              >Selecteer een provincie</option
+            >
+            {
+              [
+                "Groningen",
+                "Friesland",
+                "Drenthe",
+                "Overijssel",
+                "Flevoland",
+                "Gelderland",
+                "Utrecht",
+                "Noord-Holland",
+                "Zuid-Holland",
+                "Zeeland",
+                "Noord-Brabant",
+                "Limburg",
+              ].map((p) => (
+                <option value={p} selected={project.province === p}>
+                  {p}
+                </option>
+              ))
+            }
+          </select>
         </div>
 
         <!-- Eigenaar (alleen voor admin) -->

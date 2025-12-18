@@ -8,14 +8,17 @@
 import Layout from "../../layouts/Layout.astro";
 import ProjectCard from "../../components/project/ProjectCard.astro";
 import { supabaseAdmin } from "../../lib";
+import type { Project } from "../../types/database";
 
 // Haal alle actieve EN gepubliceerde projecten op
-const { data: projects, error } = await supabaseAdmin
+const { data, error } = await supabaseAdmin
   .from("projects")
   .select("*")
   .eq("status", "active")
   .eq("is_published", true)
   .order("created_at", { ascending: false });
+
+const projects = (data || []) as Project[];
 ---
 
 <Layout title="Projecten">
@@ -183,7 +186,7 @@ const { data: projects, error } = await supabaseAdmin
         Geen projecten gevonden
       </h3>
       <p class="text-firda-gray-600">
-        Er zijn geen projecten met de geselecteerde tag.
+        Er zijn geen projecten met de geselecteerde provincie.
       </p>
     </div>
   </div>
