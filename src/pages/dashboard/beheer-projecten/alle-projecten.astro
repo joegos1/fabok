@@ -40,10 +40,24 @@ const errorMsg = url.searchParams.get('error');
 ---
 
 <DashboardLayout title="Projecten beheren" profile={profile}>
-  <div class="flex items-center justify-between mb-6">
+  <div class="flex flex-col sm:flex-row sm:items-center justify-between mb-6 gap-4">
     <h1 class="text-2xl font-bold text-firda-gray-900">
       Alle projecten
     </h1>
+    
+    <div class="relative max-w-sm w-full">
+      <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+        <svg class="h-5 w-5 text-firda-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+        </svg>
+      </div>
+      <input 
+        type="text" 
+        id="admin-search" 
+        placeholder="Zoek op titel of eigenaar..." 
+        class="block w-full pl-10 pr-3 py-2 border border-firda-gray-300 rounded-lg leading-5 bg-white placeholder-firda-gray-500 focus:outline-none focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 sm:text-sm transition-all"
+      >
+    </div>
   </div>
 
   <!-- Success/error messages -->
@@ -100,7 +114,10 @@ const errorMsg = url.searchParams.get('error');
         </thead>
         <tbody class="divide-y divide-firda-gray-100">
           {projects.map(project => (
-            <tr class="hover:bg-firda-gray-50">
+            <tr 
+              class="project-row hover:bg-firda-gray-50 transition-colors"
+              data-search-terms={`${project.title} ${project.owner?.full_name || ''} ${project.owner?.email || ''}`.toLowerCase()}
+            >
               <td class="py-3 px-4">
                 <a href={`/projecten/${project.id}`} class="font-medium text-firda-blue-600 hover:text-firda-blue-700">
                   {project.title}
@@ -251,3 +268,21 @@ const errorMsg = url.searchParams.get('error');
     </div>
   )}
 </DashboardLayout>
+
+<script>
+  const adminSearch = document.getElementById('admin-search') as HTMLInputElement;
+  const projectRows = document.querySelectorAll('.project-row');
+
+  adminSearch?.addEventListener('input', (e) => {
+    const query = (e.target as HTMLInputElement).value.toLowerCase().trim();
+    
+    projectRows.forEach(row => {
+      const searchTerms = row.getAttribute('data-search-terms') || '';
+      if (!query || searchTerms.includes(query)) {
+        row.classList.remove('hidden');
+      } else {
+        row.classList.add('hidden');
+      }
+    });
+  });
+</script>
