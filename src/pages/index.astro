@@ -63,69 +63,61 @@ const content = landingContent || {
 ---
 
 <Layout title="Home">
-  <!-- Hero sectie: Cleaner en professioneler -->
+  <!-- Hero sectie: Compacter en overzichtelijker -->
   <section
-    class="relative bg-firda-blue-500 text-white py-12 lg:py-24 overflow-hidden"
+    class="relative bg-firda-blue-500 text-white py-16 lg:py-20 overflow-hidden"
   >
-    <!-- Subtiele achtergrond textuur of verloop -->
-    <div class="absolute inset-0 opacity-20">
-      <div
-        class="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent"
-      >
-      </div>
+    <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent">
     </div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid gap-16 lg:grid-cols-2 lg:items-center">
-        <div class="max-w-2xl">
-          <div class="animate-fade-in-up">
-            <h1
-              class="text-3xl sm:text-4xl lg:text-5xl xl:text-6xl font-extrabold mb-6 leading-tight tracking-tight"
+      <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+        <!-- Tekst content -->
+        <div class="max-w-xl animate-fade-in-up">
+          <h1
+            class="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-5 leading-tight"
+          >
+            {content.title}
+          </h1>
+          <p class="text-lg text-firda-blue-100 mb-8 leading-relaxed">
+            {content.intro}
+          </p>
+          <div class="flex flex-wrap gap-4">
+            <a
+              href="/projecten/lijst"
+              class="inline-flex items-center px-6 py-3 bg-firda-green-500 text-firda-blue-900 font-bold rounded-lg hover:bg-firda-green-400 transition-all duration-200 shadow-lg hover:scale-105"
             >
-              {content.title}
-            </h1>
-            <p
-              class="text-lg sm:text-xl text-firda-blue-100 mb-8 leading-relaxed font-light max-w-xl"
+              Bekijk projecten
+              <svg
+                class="ml-2 w-5 h-5"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+              >
+                <path
+                  stroke-linecap="round"
+                  stroke-linejoin="round"
+                  stroke-width="2"
+                  d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+              </svg>
+            </a>
+            <a
+              href="#documenten"
+              class="inline-flex items-center px-6 py-3 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-all duration-200 border border-white/20"
             >
-              {content.intro}
-            </p>
-            <div class="flex flex-wrap gap-6">
-              <a
-                href="/projecten/lijst"
-                class="inline-flex items-center px-8 py-4 bg-firda-green-500 text-firda-blue-900 font-bold rounded-lg hover:bg-firda-green-400 transition-all duration-200 shadow-lg shadow-firda-green-500/20 hover:scale-105 active:scale-95"
-              >
-                Bekijk projecten
-                <svg
-                  class="ml-2 w-5 h-5"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2"
-                    d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-                </svg>
-              </a>
-              <a
-                href="#documenten"
-                class="inline-flex items-center px-8 py-4 bg-white/5 backdrop-blur-md text-white font-semibold rounded-lg hover:bg-white/10 transition-all duration-200 border border-white/20"
-              >
-                Documenten
-              </a>
-            </div>
+              Documenten
+            </a>
           </div>
         </div>
 
-        <!-- Video: Strakker geïntegreerd -->
+        <!-- Video -->
         <div class="relative">
           <div
-            class="aspect-video w-full rounded-2xl overflow-hidden shadow-2xl bg-black group relative"
+            class="aspect-video w-full rounded-xl overflow-hidden shadow-2xl bg-black group"
           >
             <video
               id="hero-video"
-              class="h-full w-full object-cover opacity-80 group-hover:opacity-100 transition-opacity"
+              class="h-full w-full object-cover opacity-90 group-hover:opacity-100 transition-opacity"
               loop
               playsinline
               preload="metadata"
@@ -137,10 +129,10 @@ const content = landingContent || {
               <button
                 id="hero-video-big-play"
                 type="button"
-                class="w-20 h-20 flex items-center justify-center rounded-full bg-firda-green-500 text-firda-blue-900 shadow-xl hover:scale-110 transition-transform"
+                class="w-16 h-16 flex items-center justify-center rounded-full bg-firda-green-500 text-firda-blue-900 shadow-xl hover:scale-110 transition-transform"
               >
                 <svg
-                  class="w-8 h-8 translate-x-1"
+                  class="w-6 h-6 translate-x-0.5"
                   fill="currentColor"
                   viewBox="0 0 24 24"
                 >
@@ -149,9 +141,8 @@ const content = landingContent || {
               </button>
             </div>
 
-            <!-- Controls overlay -->
             <div
-              class="absolute bottom-0 inset-x-0 p-4 bg-gradient-to-t from-black/80 to-transparent flex items-center gap-4 opacity-0 group-hover:opacity-100 transition-opacity"
+              class="absolute bottom-0 inset-x-0 p-3 bg-gradient-to-t from-black/80 to-transparent flex items-center gap-3 opacity-0 group-hover:opacity-100 transition-opacity"
             >
               <button
                 id="hero-video-toggle"
@@ -159,13 +150,13 @@ const content = landingContent || {
               >
                 <svg
                   id="hero-video-icon-play"
-                  class="w-6 h-6"
+                  class="w-5 h-5"
                   viewBox="0 0 24 24"
                   fill="currentColor"><path d="M8 5v14l11-7z"></path></svg
                 >
                 <svg
                   id="hero-video-icon-pause"
-                  class="hidden w-6 h-6"
+                  class="hidden w-5 h-5"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   ><path d="M6 5h4v14H6zm8 0h4v14h-4z"></path></svg
@@ -177,7 +168,7 @@ const content = landingContent || {
               >
                 <svg
                   id="hero-video-icon-muted"
-                  class="w-6 h-6"
+                  class="w-5 h-5"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   ><path
@@ -186,7 +177,7 @@ const content = landingContent || {
                 >
                 <svg
                   id="hero-video-icon-unmuted"
-                  class="hidden w-6 h-6"
+                  class="hidden w-5 h-5"
                   viewBox="0 0 24 24"
                   fill="currentColor"
                   ><path
@@ -201,16 +192,16 @@ const content = landingContent || {
     </div>
   </section>
 
-  <!-- Marquee: Terug naar krachtige merkkleuren -->
+  <!-- Scholen Marquee -->
   {
     schools && schools.length > 0 && (
-      <section class="py-10 bg-gradient-to-r from-firda-blue-600 to-firda-blue-700 border-y border-white/10">
+      <section class="py-6 bg-firda-blue-600 border-y border-white/10">
         <div class="marquee-container overflow-hidden">
-          <div class="marquee-content flex items-center gap-12 text-firda-green-400 font-bold uppercase tracking-widest text-sm">
+          <div class="marquee-content flex items-center gap-10 text-firda-green-400 font-bold uppercase tracking-widest text-xs">
             {[...schools, ...schools, ...schools].map((school) => (
-              <span class="whitespace-nowrap flex items-center gap-6">
+              <span class="whitespace-nowrap flex items-center gap-4">
                 {school.name}
-                <span class="w-1.5 h-1.5 rounded-full bg-firda-green-500/50" />
+                <span class="w-1 h-1 rounded-full bg-firda-green-500/50" />
               </span>
             ))}
           </div>
@@ -219,34 +210,28 @@ const content = landingContent || {
     )
   }
 
-  <!-- Collage Image: Verplaatst naar tussen marquee en over ons -->
-  <div class="w-full bg-white pt-12">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+  <!-- Collage -->
+  <div class="w-full bg-white py-8">
+    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
       <Image
         src={CollageVabok}
         alt="VABOK Collage"
-        class="w-full h-auto"
+        class="w-full h-auto rounded-xl shadow-sm"
         loading="lazy"
       />
     </div>
   </div>
 
-  <!-- Over VABOK: Centraal en leesbaar (CMS Body) -->
-  <section class="py-32 bg-white relative">
-    <!-- Subtiele kleur accent aan de zijkant -->
-    <div
-      class="absolute left-0 top-1/4 w-1.5 h-1/2 bg-firda-green-500 rounded-r-full opacity-40"
-    >
-    </div>
-
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="text-center mb-16">
+  <!-- Over VABOK (CMS Body) -->
+  <section class="py-20 bg-white">
+    <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
         <span
-          class="inline-block px-4 py-1.5 bg-firda-green-100 text-firda-blue-800 text-sm font-bold tracking-wider uppercase rounded-full mb-4"
+          class="inline-block px-3 py-1 bg-firda-green-100 text-firda-blue-800 text-xs font-bold tracking-wider uppercase rounded-full mb-3"
         >
           Onze visie
         </span>
-        <h2 class="text-3xl lg:text-5xl font-bold text-firda-gray-900">
+        <h2 class="text-2xl lg:text-4xl font-bold text-firda-gray-900">
           Samenwerking in de <span class="text-firda-blue-600"
             >onderwijsketen</span
           >
@@ -254,43 +239,42 @@ const content = landingContent || {
       </div>
 
       <div
-        class="prose prose-lg lg:prose-xl max-w-none text-firda-gray-600 leading-relaxed font-serif"
+        class="prose prose-lg max-w-none text-firda-gray-600 leading-relaxed"
       >
         {
           content.body
             ?.split("\n")
             .map(
               (paragraph) =>
-                paragraph.trim() && <p class="mb-8">{paragraph}</p>,
+                paragraph.trim() && <p class="mb-6">{paragraph}</p>,
             )
         }
       </div>
     </div>
   </section>
 
-  <!-- Voor wie is VABOK?: Kleurrijke accenten -->
-  <section class="py-24 bg-firda-blue-50/30 border-y border-firda-blue-100/50">
+  <!-- Voor wie is VABOK? -->
+  <section class="py-16 bg-firda-gray-50 border-y border-firda-gray-200">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="max-w-3xl mb-16">
-        <h2 class="text-3xl lg:text-4xl font-bold text-firda-gray-900 mb-6">
+      <div class="text-center mb-12">
+        <h2 class="text-2xl lg:text-3xl font-bold text-firda-gray-900 mb-3">
           Voor wie is VABOK?
         </h2>
-        <p class="text-xl text-firda-gray-600">
+        <p class="text-lg text-firda-gray-600 max-w-2xl mx-auto">
           Wij verbinden studenten, docenten en professionals voor een betere
           aansluiting in de beroepskolom.
         </p>
       </div>
 
-      <div class="grid md:grid-cols-3 gap-10">
-        <!-- Kaartjes met merk-accenten -->
+      <div class="grid md:grid-cols-3 gap-6">
         <div
-          class="bg-white p-10 rounded-2xl border-b-4 border-firda-blue-500 shadow-sm hover:shadow-xl transition-all duration-300"
+          class="bg-white p-6 rounded-xl border-l-4 border-firda-blue-500 shadow-sm hover:shadow-md transition-shadow"
         >
           <div
-            class="w-12 h-12 bg-firda-blue-600 text-firda-green-400 rounded-xl flex items-center justify-center mb-8 shadow-inner"
+            class="w-10 h-10 bg-firda-blue-600 text-firda-green-400 rounded-lg flex items-center justify-center mb-4"
           >
             <svg
-              class="w-6 h-6"
+              class="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -303,23 +287,23 @@ const content = landingContent || {
               ></path>
             </svg>
           </div>
-          <h3 class="text-2xl font-bold text-firda-gray-900 mb-4">
+          <h3 class="text-lg font-bold text-firda-gray-900 mb-2">
             Voor docenten
           </h3>
-          <p class="text-firda-gray-600 leading-relaxed">
+          <p class="text-firda-gray-600 text-sm">
             Ontdek onderwijsinnovaties en deel kennis over projecten binnen de
             beroepskolom.
           </p>
         </div>
 
         <div
-          class="bg-white p-10 rounded-2xl border-b-4 border-firda-green-500 shadow-sm hover:shadow-xl transition-all duration-300"
+          class="bg-white p-6 rounded-xl border-l-4 border-firda-green-500 shadow-sm hover:shadow-md transition-shadow"
         >
           <div
-            class="w-12 h-12 bg-firda-blue-600 text-firda-green-400 rounded-xl flex items-center justify-center mb-8 shadow-inner"
+            class="w-10 h-10 bg-firda-blue-600 text-firda-green-400 rounded-lg flex items-center justify-center mb-4"
           >
             <svg
-              class="w-6 h-6"
+              class="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -332,23 +316,23 @@ const content = landingContent || {
               ></path>
             </svg>
           </div>
-          <h3 class="text-2xl font-bold text-firda-gray-900 mb-4">
+          <h3 class="text-lg font-bold text-firda-gray-900 mb-2">
             Voor projectleiders
           </h3>
-          <p class="text-firda-gray-600 leading-relaxed">
+          <p class="text-firda-gray-600 text-sm">
             Beheer projectinformatie en deel resultaten effectief met alle
             betrokken stakeholders.
           </p>
         </div>
 
         <div
-          class="bg-white p-10 rounded-2xl border-b-4 border-firda-blue-500 shadow-sm hover:shadow-xl transition-all duration-300"
+          class="bg-white p-6 rounded-xl border-l-4 border-firda-blue-500 shadow-sm hover:shadow-md transition-shadow"
         >
           <div
-            class="w-12 h-12 bg-firda-blue-600 text-firda-green-400 rounded-xl flex items-center justify-center mb-8 shadow-inner"
+            class="w-10 h-10 bg-firda-blue-600 text-firda-green-400 rounded-lg flex items-center justify-center mb-4"
           >
             <svg
-              class="w-6 h-6"
+              class="w-5 h-5"
               fill="none"
               stroke="currentColor"
               viewBox="0 0 24 24"
@@ -361,10 +345,10 @@ const content = landingContent || {
               ></path>
             </svg>
           </div>
-          <h3 class="text-2xl font-bold text-firda-gray-900 mb-4">
+          <h3 class="text-lg font-bold text-firda-gray-900 mb-2">
             Voor het OCW
           </h3>
-          <p class="text-firda-gray-600 leading-relaxed">
+          <p class="text-firda-gray-600 text-sm">
             Krijg inzicht in projectvoortgang en de borging van duurzame
             onderwijsverbetering.
           </p>
@@ -373,65 +357,22 @@ const content = landingContent || {
     </div>
   </section>
 
-  <!-- Agenda Sectie -->
-  <section class="py-24 bg-white">
+  <!-- Hoofdcontent: Projecten, Agenda en Documenten in duidelijke grid -->
+  <section class="py-16 bg-white">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid lg:grid-cols-12 gap-16">
-        <div class="lg:col-span-4">
-          <h2 class="text-3xl font-bold text-firda-gray-900 mb-6">
-            Aankomende <span class="text-firda-blue-600">evenementen</span>
-          </h2>
-          <p class="text-lg text-firda-gray-600 mb-8">
-            Blijf op de hoogte van belangrijke bijeenkomsten, workshops en
-            deadlines binnen de VABOK projecten.
-          </p>
-          <a
-            href="/projecten/agenda"
-            class="inline-flex items-center text-firda-blue-600 font-semibold hover:text-firda-blue-800 transition-colors group"
-          >
-            Bekijk de volledige agenda
-            <svg
-              class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-            </svg>
-          </a>
-        </div>
-        <div class="lg:col-span-8">
-          <AgendaSection
-            events={events}
-            showProject={true}
-            title=""
-            emptyMessage="Er zijn momenteel geen aankomende evenementen gepland."
-          />
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- Projecten, Documenten & CTA Samengevoegd -->
-  <section class="py-24 bg-firda-gray-50 border-t border-firda-gray-200">
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid lg:grid-cols-12 gap-16 mb-20">
-        <!-- Recente Projecten -->
-        <div class="lg:col-span-8">
-          <div class="flex items-center justify-between mb-12">
+      <!-- Sectie headers -->
+      <div class="grid lg:grid-cols-3 gap-8 mb-10">
+        <div class="lg:col-span-2">
+          <div class="flex items-center justify-between">
             <div>
-              <h2 class="text-3xl font-bold text-firda-gray-900 mb-2">
+              <h2 class="text-2xl font-bold text-firda-gray-900">
                 Recente projecten
               </h2>
-              <div class="w-12 h-1 bg-firda-green-500 rounded-full"></div>
+              <div class="w-10 h-1 bg-firda-green-500 rounded-full mt-2"></div>
             </div>
             <a
               href="/projecten/lijst"
-              class="text-firda-blue-600 font-semibold hover:text-firda-blue-800 transition-colors flex items-center gap-2"
+              class="text-firda-blue-600 font-semibold hover:text-firda-blue-800 transition-colors flex items-center gap-1 text-sm"
             >
               Bekijk alles
               <svg
@@ -447,71 +388,102 @@ const content = landingContent || {
               >
             </a>
           </div>
+        </div>
+        <div id="documenten">
+          <h2 class="text-2xl font-bold text-firda-gray-900">Documenten</h2>
+          <div class="w-10 h-1 bg-firda-blue-500 rounded-full mt-2"></div>
+        </div>
+      </div>
 
+      <!-- Content grid -->
+      <div class="grid lg:grid-cols-3 gap-8">
+        <!-- Projecten (2 kolommen) -->
+        <div class="lg:col-span-2">
           {
             latestProjects && latestProjects.length > 0 ? (
-              <div class="grid gap-6">
+              <div class="grid sm:grid-cols-2 gap-4">
                 {latestProjects.map((project) => (
                   <ProjectCard project={project} />
                 ))}
               </div>
             ) : (
-              <div class="py-20 text-center bg-white border border-dashed border-firda-gray-300 rounded-2xl text-firda-gray-500">
+              <div class="py-16 text-center bg-firda-gray-50 border border-dashed border-firda-gray-300 rounded-xl text-firda-gray-500">
                 Geen projecten beschikbaar op dit moment.
               </div>
             )
           }
         </div>
 
-        <!-- Documenten -->
-        <div class="lg:col-span-4">
-          <div id="documenten" class="sticky top-28">
-            <h2 class="text-3xl font-bold text-firda-gray-900 mb-12">
-              Documenten
-            </h2>
-            <div
-              class="bg-white rounded-2xl p-2 border border-firda-gray-200 shadow-sm"
-            >
-              <PdfList pdfs={pdfs || []} title="" maxHeight="600px" />
-            </div>
-          </div>
-        </div>
-      </div>
-
-      <!-- Geïntegreerde CTA -->
-      <div
-        class="relative bg-firda-blue-600 rounded-3xl overflow-hidden shadow-2xl"
-      >
-        <!-- Decoratieve elementen -->
-        <div
-          class="absolute top-0 right-0 -mt-12 -mr-12 w-48 h-48 bg-firda-green-500/20 rounded-full blur-3xl"
-        >
-        </div>
-        <div
-          class="absolute bottom-0 left-0 -mb-12 -ml-12 w-48 h-48 bg-firda-blue-400/20 rounded-full blur-3xl"
-        >
-        </div>
-
-        <div class="relative px-8 py-16 text-center">
-          <h2 class="text-3xl lg:text-4xl font-bold mb-6 text-white">
-            Niet gevonden wat je zocht?
-          </h2>
-          <p
-            class="text-lg text-firda-blue-100 mb-10 max-w-2xl mx-auto font-light"
+        <!-- Documenten sidebar -->
+        <div>
+          <div
+            class="bg-firda-gray-50 rounded-xl p-4 border border-firda-gray-200"
           >
-            Bekijk onze volledige bibliotheek aan projecten en ontdek hoe we de
-            aansluiting in de beroepskolom versterken.
-          </p>
-          <div class="flex flex-col sm:flex-row gap-4 justify-center">
-            <a
-              href="/projecten/lijst"
-              class="inline-flex items-center px-10 py-5 bg-firda-green-500 text-firda-blue-900 font-bold rounded-xl hover:bg-firda-green-400 transition-all shadow-xl hover:scale-105 active:scale-95"
-            >
-              Ontdek alle projecten
-            </a>
+            <PdfList pdfs={pdfs || []} title="" maxHeight="500px" />
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- Agenda Sectie -->
+  <section class="py-16 bg-firda-blue-50/50 border-y border-firda-blue-100">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-3 gap-10">
+        <div>
+          <h2 class="text-2xl font-bold text-firda-gray-900 mb-4">
+            Aankomende <span class="text-firda-blue-600">evenementen</span>
+          </h2>
+          <p class="text-firda-gray-600 mb-6">
+            Blijf op de hoogte van bijeenkomsten, workshops en deadlines.
+          </p>
+          <a
+            href="/projecten/agenda"
+            class="inline-flex items-center text-firda-blue-600 font-semibold hover:text-firda-blue-800 transition-colors text-sm group"
+          >
+            Bekijk volledige agenda
+            <svg
+              class="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </a>
+        </div>
+        <div class="lg:col-span-2">
+          <AgendaSection
+            events={events}
+            showProject={true}
+            title=""
+            emptyMessage="Er zijn momenteel geen aankomende evenementen gepland."
+          />
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="py-16 bg-firda-blue-600">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl lg:text-3xl font-bold mb-4 text-white">
+        Niet gevonden wat je zocht?
+      </h2>
+      <p class="text-firda-blue-100 mb-8 max-w-xl mx-auto">
+        Bekijk onze volledige bibliotheek aan projecten en ontdek hoe we de
+        aansluiting in de beroepskolom versterken.
+      </p>
+      <a
+        href="/projecten/lijst"
+        class="inline-flex items-center px-8 py-4 bg-firda-green-500 text-firda-blue-900 font-bold rounded-lg hover:bg-firda-green-400 transition-all shadow-lg hover:scale-105"
+      >
+        Ontdek alle projecten
+      </a>
     </div>
   </section>
 </Layout>
