@@ -1,7 +1,7 @@
 # build output
 dist/
 .vercel/
-
+vercel.json
 # generated types
 .astro/
 

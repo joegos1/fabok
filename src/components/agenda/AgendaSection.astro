@@ -1,0 +1,72 @@
+---
+/**
+ * AgendaSection Component
+ * =======================
+ * Toont een lijst met aankomende evenementen.
+ */
+
+import EventCard from "./EventCard.astro";
+import type { ProjectEvent } from "../../types/database";
+
+interface Props {
+    events: (ProjectEvent & { projects?: { title: string } })[];
+    title?: string;
+    showProject?: boolean;
+    emptyMessage?: string;
+}
+
+const {
+    events,
+    title = "Agenda",
+    showProject = false,
+    emptyMessage = "Er zijn momenteel geen aankomende evenementen.",
+} = Astro.props;
+
+// Sorteer op datum (bij de query al gedaan meestal, maar voor de zekerheid)
+const sortedEvents = [...events].sort(
+    (a, b) =>
+        new Date(a.start_date).getTime() - new Date(b.start_date).getTime(),
+);
+---
+
+<div class="space-y-6">
+    {
+        title && (
+            <div class="flex items-center justify-between">
+                <h2 class="text-2xl font-bold text-firda-gray-900">{title}</h2>
+                <div class="h-1 w-12 bg-firda-green-500 rounded-full" />
+            </div>
+        )
+    }
+
+    {
+        sortedEvents.length > 0 ? (
+            <div class="grid gap-4">
+                {sortedEvents.map((event) => (
+                    <EventCard
+                        event={event}
+                        showProject={showProject}
+                        projectName={event.projects?.title}
+                    />
+                ))}
+            </div>
+        ) : (
+            <div class="py-12 px-6 text-center bg-firda-gray-50 rounded-2xl border border-dashed border-firda-gray-300">
+                <svg
+                    class="mx-auto h-12 w-12 text-firda-gray-300 mb-4"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v14a2 2 0 002 2z"
+                    />
+                </svg>
+                <p class="text-firda-gray-500 font-medium">{emptyMessage}</p>
+            </div>
+        )
+    }
+</div>

@@ -209,6 +209,41 @@ export interface Database {
           created_at?: string;
         };
       };
+      project_events: {
+        Row: {
+          id: string;
+          project_id: string;
+          title: string;
+          description: string | null;
+          start_date: string;
+          end_date: string | null;
+          location: string | null;
+          created_at: string;
+          updated_at: string;
+        };
+        Insert: {
+          id?: string;
+          project_id: string;
+          title: string;
+          description?: string | null;
+          start_date: string;
+          end_date?: string | null;
+          location?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+        Update: {
+          id?: string;
+          project_id?: string;
+          title?: string;
+          description?: string | null;
+          start_date?: string;
+          end_date?: string | null;
+          location?: string | null;
+          created_at?: string;
+          updated_at?: string;
+        };
+      };
     };
     Views: {};
     Functions: {
@@ -230,3 +265,4 @@ export type LandingPageContent = Database['public']['Tables']['landing_page_cont
 export type PdfFile = Database['public']['Tables']['pdf_files']['Row'];
 export type AuditLog = Database['public']['Tables']['audit_log']['Row'];
 export type School = Database['public']['Tables']['schools']['Row'];
+export type ProjectEvent = Database['public']['Tables']['project_events']['Row'];

@@ -12,6 +12,7 @@ import { supabaseAdmin } from "../lib";
 import { Image } from "astro:assets";
 import CollageVabok from "../assets/collage-vabok.png";
 import type { School } from "../types/database";
+import AgendaSection from "../components/agenda/AgendaSection.astro";
 
 // Haal landingpage content op
 const { data: landingContent } = await supabaseAdmin
@@ -42,6 +43,16 @@ const { data: schoolsData } = await supabaseAdmin
   .order("display_order", { ascending: true });
 
 const schools = (schoolsData || []) as School[];
+
+// Haal aankomende evenementen op (volgende 3)
+const { data: eventsData } = await supabaseAdmin
+  .from("project_events")
+  .select("*, projects(title)")
+  .gte("start_date", new Date().toISOString())
+  .order("start_date", { ascending: true })
+  .limit(3);
+
+const events = (eventsData || []) as any[];
 
 const content = landingContent || {
   title: "VABOK - Versterken van de Aansluiting in de Beroepskolom",
@@ -357,6 +368,49 @@ const content = landingContent || {
             Krijg inzicht in projectvoortgang en de borging van duurzame
             onderwijsverbetering.
           </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Agenda Sectie -->
+  <section class="py-24 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-16">
+        <div class="lg:col-span-4">
+          <h2 class="text-3xl font-bold text-firda-gray-900 mb-6">
+            Aankomende <span class="text-firda-blue-600">evenementen</span>
+          </h2>
+          <p class="text-lg text-firda-gray-600 mb-8">
+            Blijf op de hoogte van belangrijke bijeenkomsten, workshops en
+            deadlines binnen de VABOK projecten.
+          </p>
+          <a
+            href="/projecten/agenda"
+            class="inline-flex items-center text-firda-blue-600 font-semibold hover:text-firda-blue-800 transition-colors group"
+          >
+            Bekijk de volledige agenda
+            <svg
+              class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </a>
+        </div>
+        <div class="lg:col-span-8">
+          <AgendaSection
+            events={events}
+            showProject={true}
+            title=""
+            emptyMessage="Er zijn momenteel geen aankomende evenementen gepland."
+          />
         </div>
       </div>
     </div>
