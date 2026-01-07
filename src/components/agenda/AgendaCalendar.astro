@@ -38,8 +38,8 @@ const startOffset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
 // Vorige/Volgende maand links
 const prevDate = new Date(year, month - 1, 1);
 const nextDate = new Date(year, month + 1, 1);
-const prevLink = `?month=${prevDate.getMonth() + 1}&year=${prevDate.getFullYear()}`;
-const nextLink = `?month=${nextDate.getMonth() + 1}&year=${nextDate.getFullYear()}`;
+const prevLink = `?month=${prevDate.getMonth() + 1}&year=${prevDate.getFullYear()}#agenda`;
+const nextLink = `?month=${nextDate.getMonth() + 1}&year=${nextDate.getFullYear()}#agenda`;
 
 // Filter events voor deze maand (voor de grid indicatoren)
 const eventsThisMonth = events.filter(e => {
@@ -107,25 +107,29 @@ const isToday = (day: number) =>
       const day = i + 1;
       const dayEvents = getEventsForDay(day);
       const isCurrent = isToday(day);
+      const hasEvents = dayEvents.length > 0;
       
       return (
-        <div class={`relative aspect-square border-r border-b border-firda-gray-100 p-1 sm:p-2 group hover:bg-white transition-colors ${i % 7 === 6 - startOffset ? 'border-r-0' : ''}`}>
+        <div class={`relative aspect-square border-r border-b border-firda-gray-100 p-0.5 sm:p-1 group hover:bg-white transition-colors ${i % 7 === 6 - startOffset ? 'border-r-0' : ''}`}>
+          {/* Subtle background for days with events */}
+          {hasEvents && !isCurrent && (
+            <div class="absolute inset-0 bg-firda-green-50/50 group-hover:bg-firda-green-50 transition-colors" />
+          )}
+
           <div class={`
-            flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-sm font-bold transition-all
+            relative z-10 flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-sm font-bold transition-all
             ${isCurrent ? 'bg-firda-blue-600 text-white shadow-md' : 'text-firda-gray-700 group-hover:text-firda-blue-600'}
+            ${hasEvents && !isCurrent ? 'text-firda-green-700' : ''}
           `}>
             {day}
           </div>
           
           <!-- Event indicators -->
-          {dayEvents.length > 0 && (
-            <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1 px-1">
+          {hasEvents && (
+            <div class="absolute bottom-1.5 left-0 right-0 z-10 flex justify-center gap-0.5 px-1">
               {dayEvents.slice(0, 3).map(() => (
-                <div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-firda-green-500 shadow-sm" />
+                <div class={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full shadow-sm ${isCurrent ? 'bg-white' : 'bg-firda-green-500'}`} />
               ))}
-              {dayEvents.length > 3 && (
-                <div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-firda-gray-300" />
-              )}
             </div>
           )}
 
