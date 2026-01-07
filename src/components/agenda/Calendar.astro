@@ -65,7 +65,9 @@ function dayHasEvents(day: number): boolean {
 }
 
 // Helper: Get events for a specific day
-function getEventsForDay(day: number): (ProjectEvent & { projects?: { title: string } })[] {
+function getEventsForDay(
+    day: number,
+): (ProjectEvent & { projects?: { title: string } })[] {
     if (!day) return [];
     const date = new Date(currentYear, currentMonth, day);
     const dateString = date.toISOString().split("T")[0];
@@ -102,7 +104,8 @@ const yearLabel = currentYear;
         <!-- Month/Year Header and Navigation -->
         <div class="flex items-center justify-between mb-6">
             <h3 class="text-lg font-bold text-firda-gray-900">
-                {monthLabel} {yearLabel}
+                {monthLabel}
+                {yearLabel}
             </h3>
             <div class="flex gap-2">
                 <button
@@ -170,20 +173,25 @@ const yearLabel = currentYear;
                         <button
                             data-day={day}
                             class={`aspect-square rounded-lg border-2 transition-all text-sm font-medium flex items-center justify-center relative
-                                ${!isCurrentMonth
-                                    ? "bg-firda-gray-50 border-transparent text-firda-gray-300 cursor-default"
-                                    : isToday
-                                      ? "border-firda-blue-600 bg-firda-blue-50 text-firda-gray-900 font-bold"
-                                      : hasEvents
-                                        ? "border-firda-green-500 bg-firda-green-50 text-firda-gray-900 cursor-pointer hover:shadow-md"
-                                        : "border-firda-gray-200 text-firda-gray-700 hover:border-firda-blue-300 hover:bg-firda-blue-50"
-                            }`}
-                            onclick={!isCurrentMonth ? undefined : `window.selectDay(${day})`}
+                                ${
+                                    !isCurrentMonth
+                                        ? "bg-firda-gray-50 border-transparent text-firda-gray-300 cursor-default"
+                                        : isToday
+                                          ? "border-firda-blue-600 bg-firda-blue-50 text-firda-gray-900 font-bold"
+                                          : hasEvents
+                                            ? "border-firda-green-500 bg-firda-green-50 text-firda-gray-900 cursor-pointer hover:shadow-md"
+                                            : "border-firda-gray-200 text-firda-gray-700 hover:border-firda-blue-300 hover:bg-firda-blue-50"
+                                }`}
+                            onclick={
+                                !isCurrentMonth
+                                    ? undefined
+                                    : `window.selectDay(${day})`
+                            }
                             disabled={!isCurrentMonth}
                         >
                             <span>{day}</span>
                             {hasEvents && (
-                                <span class="absolute bottom-1 right-1 w-2 h-2 bg-firda-green-500 rounded-full"></span>
+                                <span class="absolute bottom-1 right-1 w-2 h-2 bg-firda-green-500 rounded-full" />
                             )}
                         </button>
                     );
@@ -202,7 +210,7 @@ const yearLabel = currentYear;
 <script define:vars={{ calendarEvents: events }}>
     // Make events available globally for modal and day selection
     window.__CALENDAR_EVENTS__ = calendarEvents;
-    
+
     // Global state for calendar
     interface Window {
         selectedDay: number | null;
@@ -270,26 +278,58 @@ const yearLabel = currentYear;
             const location = event.location || "Locatie n.v.t.";
 
             html += `
-                <div class="group bg-white rounded-xl border border-firda-gray-200 p-4 hover:border-firda-blue-300 hover:shadow-md transition-all duration-300 cursor-pointer" onclick="window.openEventModal('${event.id}')">
-                    <div class="flex items-start gap-4">
-                        <div class="flex-shrink-0 w-16 h-16 bg-firda-blue-50 rounded-lg flex flex-col items-center justify-center border border-firda-blue-100 group-hover:bg-firda-blue-600 group-hover:border-firda-blue-600 transition-colors duration-300">
-                            <span class="text-2xl font-bold text-firda-blue-600 group-hover:text-white leading-none">${day}</span>
-                            <span class="text-xs font-bold text-firda-blue-400 group-hover:text-firda-blue-100 uppercase tracking-wider">${month}</span>
+                <div class="group relative bg-white rounded-2xl border border-firda-gray-200 p-5 hover:border-firda-green-400 hover:shadow-xl hover:shadow-firda-blue-500/5 transition-all duration-500 ease-out hover:-translate-y-1 overflow-hidden cursor-pointer" onclick="window.openEventModal('${event.id}')">
+                    <!-- Background Accent -->
+                    <div class="absolute top-0 right-0 -mr-8 -mt-8 w-24 h-24 bg-firda-green-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl"></div>
+
+                    <div class="flex items-center gap-5 relative z-10">
+                        <!-- Datum badge -->
+                        <div class="flex-shrink-0 w-16 h-16 bg-white rounded-xl flex flex-col items-center justify-center border-2 border-firda-blue-50 shadow-sm group-hover:border-firda-green-500 group-hover:bg-firda-green-500 transition-all duration-300 transform group-hover:scale-105">
+                            <span class="text-2xl font-black text-firda-blue-600 group-hover:text-white leading-none tracking-tight">${day}</span>
+                            <span class="text-[10px] font-black text-firda-blue-400 group-hover:text-firda-green-50 uppercase tracking-[0.15em] mt-0.5">${month}</span>
                         </div>
+
+                        <!-- Content -->
                         <div class="flex-grow min-w-0">
-                            <div class="flex items-start justify-between gap-2 mb-1">
-                                <h3 class="font-bold text-firda-gray-900 truncate group-hover:text-firda-blue-600 transition-colors">${event.title}</h3>
-                                <span class="text-xs font-medium text-firda-gray-500 whitespace-nowrap bg-firda-gray-100 px-2 py-0.5 rounded">${time}</span>
+                            <div class="flex items-center gap-2 mb-0.5">
+                                ${
+                                    event.projects
+                                        ? `
+                                    <span class="text-[10px] font-bold text-firda-green-600 bg-firda-green-50 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                                        ${event.projects.title}
+                                    </span>
+                                `
+                                        : ""
+                                }
                             </div>
-                            <div class="flex items-center text-sm text-firda-gray-500 gap-3">
-                                <div class="flex items-center gap-1.5 truncate">
-                                    <svg class="w-4 h-4 flex-shrink-0 text-firda-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            
+                            <h3 class="text-lg font-bold text-firda-gray-900 leading-snug truncate group-hover:text-firda-blue-600 transition-colors">${event.title}</h3>
+
+                            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2">
+                                <!-- Tijd -->
+                                <div class="flex items-center gap-1.5 text-firda-blue-600 font-bold bg-firda-blue-50/50 px-2.5 py-1 rounded-lg border border-firda-blue-100/50 group-hover:bg-firda-green-50 group-hover:border-firda-green-200 group-hover:text-firda-green-700 transition-colors">
+                                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                                    </svg>
+                                    <span class="text-sm tracking-tight">${time}</span>
+                                </div>
+
+                                <!-- Locatie -->
+                                <div class="flex items-center gap-1.5 text-firda-gray-500">
+                                    <svg class="w-4 h-4 flex-shrink-0 text-firda-gray-300 group-hover:text-firda-green-500 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                                     </svg>
-                                    <span class="truncate">${location}</span>
+                                    <span class="text-xs font-medium truncate">${location}</span>
                                 </div>
                             </div>
+                        </div>
+
+                        <!-- Arrow indicator -->
+                        <div class="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-firda-gray-50 text-firda-gray-400 group-hover:bg-firda-green-500 group-hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M9 5l7 7-7 7" />
+                            </svg>
                         </div>
                     </div>
                 </div>
