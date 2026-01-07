@@ -9,11 +9,10 @@ import Layout from "../../layouts/Layout.astro";
 import AgendaSection from "../../components/agenda/AgendaSection.astro";
 import { supabaseAdmin } from "../../lib";
 
-// Haal alle aankomende evenementen op
+// Haal alle evenementen op (we filteren ze in de component op maand)
 const { data: eventsData } = await supabaseAdmin
     .from("project_events")
     .select("*, projects(title)")
-    .gte("start_date", new Date().toISOString())
     .order("start_date", { ascending: true });
 
 const events = (eventsData || []) as any[];
@@ -29,7 +28,8 @@ const events = (eventsData || []) as any[];
                 >
                     <li>
                         <a href="/" class="hover:text-firda-blue-600 transition"
-                            >Home</a>
+                            >Home</a
+                        >
                     </li>
                     <li>
                         <svg

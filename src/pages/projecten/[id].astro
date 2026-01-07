@@ -49,7 +49,6 @@ const { data: projectEventsData } = await supabaseAdmin
   .from("project_events")
   .select("*")
   .eq("project_id", id)
-  .gte("start_date", new Date().toISOString())
   .order("start_date", { ascending: true });
 
 const projectEvents = (projectEventsData || []) as any[];

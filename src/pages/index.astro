@@ -44,13 +44,11 @@ const { data: schoolsData } = await supabaseAdmin
 
 const schools = (schoolsData || []) as School[];
 
-// Haal aankomende evenementen op (volgende 3)
+// Haal aankomende en recente evenementen op voor de kalender
 const { data: eventsData } = await supabaseAdmin
   .from("project_events")
   .select("*, projects(title)")
-  .gte("start_date", new Date().toISOString())
-  .order("start_date", { ascending: true })
-  .limit(3);
+  .order("start_date", { ascending: true });
 
 const events = (eventsData || []) as any[];
 

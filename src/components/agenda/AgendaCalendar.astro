@@ -1,0 +1,166 @@
+---
+/**
+ * AgendaCalendar Component
+ * ========================
+ * Toont een interactief maandoverzicht van de agenda.
+ * Gebruikt server-side navigatie voor de maanden.
+ */
+
+import type { ProjectEvent } from "../../types/database";
+
+interface Props {
+  events: (ProjectEvent & { projects?: { title: string } })[];
+  currentDate?: Date;
+  showProject?: boolean;
+}
+
+const { events, currentDate = new Date(), showProject = false } = Astro.props;
+
+// Navigatie logica (bepaald in de parent of hier via URL)
+const month = currentDate.getMonth();
+const year = currentDate.getFullYear();
+
+// Namen van de maanden
+const monthNames = [
+  "Januari", "Februari", "Maart", "April", "Mei", "Juni",
+  "Juli", "Augustus", "September", "Oktober", "November", "December"
+];
+
+const dayNames = ["Ma", "Di", "Wo", "Do", "Vr", "Za", "Zo"];
+
+// Bereken dagen in de maand
+const daysInMonth = new Date(year, month + 1, 0).getDate();
+const firstDayOfMonth = new Date(year, month, 1).getDay(); // 0 is zondag
+
+// Adjust for Monday start (0=Ma, 6=Zo)
+const startOffset = firstDayOfMonth === 0 ? 6 : firstDayOfMonth - 1;
+
+// Vorige/Volgende maand links
+const prevDate = new Date(year, month - 1, 1);
+const nextDate = new Date(year, month + 1, 1);
+const prevLink = `?month=${prevDate.getMonth() + 1}&year=${prevDate.getFullYear()}`;
+const nextLink = `?month=${nextDate.getMonth() + 1}&year=${nextDate.getFullYear()}`;
+
+// Filter events voor deze maand (voor de grid indicatoren)
+const eventsThisMonth = events.filter(e => {
+  const d = new Date(e.start_date);
+  return d.getMonth() === month && d.getFullYear() === year;
+});
+
+// Helper om events per dag te krijgen
+const getEventsForDay = (day: number) => {
+  return eventsThisMonth.filter(e => new Date(e.start_date).getDate() === day);
+};
+
+const today = new Date();
+const isToday = (day: number) => 
+  day === today.getDate() && 
+  month === today.getMonth() && 
+  year === today.getFullYear();
+---
+
+<div class="calendar-container bg-white rounded-2xl border border-firda-gray-200 overflow-hidden shadow-sm">
+  <!-- Calendar Header -->
+  <div class="flex items-center justify-between p-4 border-b border-firda-gray-100 bg-firda-gray-50/50">
+    <h3 class="text-xl font-bold text-firda-gray-900">
+      {monthNames[month]} <span class="text-firda-blue-600 font-medium">{year}</span>
+    </h3>
+    <div class="flex gap-2">
+      <a 
+        href={prevLink} 
+        class="p-2 hover:bg-white rounded-lg border border-firda-gray-200 text-firda-gray-600 hover:text-firda-blue-600 transition-all shadow-sm"
+        title="Vorige maand"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" />
+        </svg>
+      </a>
+      <a 
+        href={nextLink} 
+        class="p-2 hover:bg-white rounded-lg border border-firda-gray-200 text-firda-gray-600 hover:text-firda-blue-600 transition-all shadow-sm"
+        title="Volgende maand"
+      >
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+        </svg>
+      </a>
+    </div>
+  </div>
+
+  <!-- Calendar Grid -->
+  <div class="grid grid-cols-7 text-center border-b border-firda-gray-100 bg-white">
+    {dayNames.map(day => (
+      <div class="py-3 text-[10px] font-black text-firda-gray-400 uppercase tracking-widest border-r border-firda-gray-50 last:border-0">
+        {day}
+      </div>
+    ))}
+  </div>
+
+  <div class="grid grid-cols-7 bg-firda-gray-50/20">
+    <!-- Padding voor de start van de maand -->
+    {Array.from({ length: startOffset }).map((_, i) => (
+      <div class="aspect-square bg-firda-gray-50/50 border-r border-b border-firda-gray-100" />
+    ))}
+
+    <!-- Dagen van de maand -->
+    {Array.from({ length: daysInMonth }).map((_, i) => {
+      const day = i + 1;
+      const dayEvents = getEventsForDay(day);
+      const isCurrent = isToday(day);
+      
+      return (
+        <div class={`relative aspect-square border-r border-b border-firda-gray-100 p-1 sm:p-2 group hover:bg-white transition-colors ${i % 7 === 6 - startOffset ? 'border-r-0' : ''}`}>
+          <div class={`
+            flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-sm font-bold transition-all
+            ${isCurrent ? 'bg-firda-blue-600 text-white shadow-md' : 'text-firda-gray-700 group-hover:text-firda-blue-600'}
+          `}>
+            {day}
+          </div>
+          
+          <!-- Event indicators -->
+          {dayEvents.length > 0 && (
+            <div class="absolute bottom-2 left-0 right-0 flex justify-center gap-1 px-1">
+              {dayEvents.slice(0, 3).map(() => (
+                <div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-firda-green-500 shadow-sm" />
+              ))}
+              {dayEvents.length > 3 && (
+                <div class="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-firda-gray-300" />
+              )}
+            </div>
+          )}
+
+          <!-- Tooltip-achtige hover info (Desktop only) -->
+          {dayEvents.length > 0 && (
+            <div class="absolute invisible group-hover:visible z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-white rounded-xl shadow-xl border border-firda-gray-100 p-3 text-left animate-fade-in">
+              <div class="text-[10px] font-bold text-firda-blue-600 uppercase tracking-wider mb-2">{day} {monthNames[month]}</div>
+              <div class="space-y-2">
+                {dayEvents.map(e => (
+                  <div class="text-xs">
+                    <div class="font-bold text-firda-gray-900 leading-tight">{e.title}</div>
+                    {showProject && e.projects?.title && <div class="text-[10px] text-firda-gray-400">{e.projects.title}</div>}
+                  </div>
+                ))}
+              </div>
+              <div class="absolute bottom-[-6px] left-1/2 -translate-x-1/2 w-3 h-3 bg-white border-r border-b border-firda-gray-100 rotate-45" />
+            </div>
+          )}
+        </div>
+      );
+    })}
+
+    <!-- Padding voor het einde van de maand -->
+    {Array.from({ length: (7 - ((daysInMonth + startOffset) % 7)) % 7 }).map((_, i) => (
+      <div class="aspect-square bg-firda-gray-50/50 border-r border-b border-firda-gray-100 last:border-r-0" />
+    ))}
+  </div>
+</div>
+
+<style>
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translate(-50%, 10px); }
+    to { opacity: 1; transform: translate(-50%, 0); }
+  }
+  .animate-fade-in {
+    animation: fadeIn 0.2s ease-out forwards;
+  }
+</style>

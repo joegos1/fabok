@@ -6,6 +6,7 @@
  */
 
 import EventCard from "./EventCard.astro";
+import AgendaCalendar from "./AgendaCalendar.astro";
 import type { ProjectEvent } from "../../types/database";
 
 interface Props {
@@ -22,14 +23,17 @@ const {
     emptyMessage = "Er zijn momenteel geen aankomende evenementen.",
 } = Astro.props;
 
-// Sorteer op datum (bij de query al gedaan meestal, maar voor de zekerheid)
-const sortedEvents = [...events].sort(
-    (a, b) =>
-        new Date(a.start_date).getTime() - new Date(b.start_date).getTime(),
-);
+// Haal maand/jaar op uit URL (voor navigatie) of gebruik huidige datum
+const url = new URL(Astro.url);
+const urlMonth = url.searchParams.get("month");
+const urlYear = url.searchParams.get("year");
+
+const currentMonth = urlMonth ? parseInt(urlMonth) - 1 : new Date().getMonth();
+const currentYear = urlYear ? parseInt(urlYear) : new Date().getFullYear();
+const currentDate = new Date(currentYear, currentMonth, 1);
 ---
 
-<div class="space-y-6">
+<div class="space-y-8">
     {
         title && (
             <div class="flex items-center justify-between">
@@ -39,34 +43,58 @@ const sortedEvents = [...events].sort(
         )
     }
 
-    {
-        sortedEvents.length > 0 ? (
-            <div class="grid gap-4">
-                {sortedEvents.map((event) => (
-                    <EventCard
-                        event={event}
-                        showProject={showProject}
-                        projectName={event.projects?.title}
-                    />
-                ))}
-            </div>
-        ) : (
-            <div class="py-12 px-6 text-center bg-firda-gray-50 rounded-2xl border border-dashed border-firda-gray-300">
-                <svg
-                    class="mx-auto h-12 w-12 text-firda-gray-300 mb-4"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
-                >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v14a2 2 0 002 2z"
-                    />
-                </svg>
-                <p class="text-firda-gray-500 font-medium">{emptyMessage}</p>
-            </div>
-        )
-    }
+    <!-- Kalender weergave -->
+    <AgendaCalendar
+        events={events}
+        currentDate={currentDate}
+        showProject={showProject}
+    />
+
+    <!-- Lijst met evenementen voor de geselecteerde maand (voor extra duidelijkheid) -->
+    <div class="space-y-4">
+        <h4
+            class="text-sm font-bold text-firda-gray-400 uppercase tracking-widest px-1"
+        >
+            Evenementen in deze maand
+        </h4>
+
+        {
+            events.filter((e) => {
+                const d = new Date(e.start_date);
+                return (
+                    d.getMonth() === currentMonth &&
+                    d.getFullYear() === currentYear
+                );
+            }).length > 0 ? (
+                <div class="grid gap-4">
+                    {events
+                        .filter((e) => {
+                            const d = new Date(e.start_date);
+                            return (
+                                d.getMonth() === currentMonth &&
+                                d.getFullYear() === currentYear
+                            );
+                        })
+                        .sort(
+                            (a, b) =>
+                                new Date(a.start_date).getTime() -
+                                new Date(b.start_date).getTime(),
+                        )
+                        .map((event) => (
+                            <EventCard
+                                event={event}
+                                showProject={showProject}
+                                projectName={event.projects?.title}
+                            />
+                        ))}
+                </div>
+            ) : (
+                <div class="py-10 px-6 text-center bg-white rounded-2xl border border-firda-gray-100 shadow-sm">
+                    <p class="text-firda-gray-500 font-medium">
+                        Geen evenementen gevonden voor deze maand.
+                    </p>
+                </div>
+            )
+        }
+    </div>
 </div>
