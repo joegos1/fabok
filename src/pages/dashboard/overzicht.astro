@@ -6,7 +6,6 @@
  */
 
 import DashboardLayout from "../../layouts/DashboardLayout.astro";
-import Calendar from "../../components/agenda/Calendar.astro";
 import { requireAuth, supabaseAdmin } from "../../lib";
 
 // Check authenticatie
@@ -54,23 +53,6 @@ if (isProjectEditor && !isAdmin) {
     .select("*", { count: "exact", head: true })
     .eq("owner_id", profile.id);
   myProjectCount = mpc || 0;
-}
-
-// Haal aankomende events op voor maandagenda
-let events: any[] = [];
-try {
-  const { data, error } = await supabaseAdmin
-    .from("project_events")
-    .select("*, projects(title)")
-    .gte("start_date", new Date().toISOString().split("T")[0])
-    .order("start_date", { ascending: true })
-    .limit(100);
-
-  if (!error && data) {
-    events = data;
-  }
-} catch (e) {
-  console.error("Error fetching events:", e);
 }
 ---
 
@@ -432,11 +414,4 @@ try {
       </div>
     </a>
   </div>
-
-  <!-- Maandagenda -->
-  {events.length > 0 && (
-    <div class="mt-12 pt-8 border-t border-firda-gray-200">
-      <Calendar events={events} />
-    </div>
-  )}
 </DashboardLayout>
