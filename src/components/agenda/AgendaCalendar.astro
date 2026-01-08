@@ -143,14 +143,23 @@ const isToday = (day: number) =>
 
           <!-- Tooltip-achtige hover info (Desktop only) -->
           {hasEvents && (
-            <div class="absolute invisible group-hover:visible z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-white rounded-xl shadow-xl border border-firda-gray-100 p-3 text-left animate-fade-in pointer-events-none">
-              <div class="text-[10px] font-bold text-firda-blue-600 uppercase tracking-wider mb-2">{day} {monthNames[month]}</div>
-              <div class="space-y-3">
+            <div class="absolute invisible group-hover:visible z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 w-64 bg-white rounded-xl shadow-2xl border border-firda-gray-100 p-4 text-left animate-fade-in pointer-events-none">
+              <div class="text-[10px] font-black text-firda-blue-600 uppercase tracking-widest mb-3 pb-2 border-b border-firda-gray-50">{day} {monthNames[month]}</div>
+              <div class="space-y-4">
                 {dayEvents.map(e => (
-                  <div class="text-xs">
-                    <div class="font-bold text-firda-gray-900 leading-tight mb-1">{e.title}</div>
-                    {e.description && <div class="text-[10px] text-firda-gray-500 line-clamp-2 mb-1">{e.description}</div>}
-                    {showProject && e.projects?.title && <div class="text-[9px] font-bold text-firda-green-600 uppercase tracking-tighter">{e.projects.title}</div>}
+                  <div class="group/item">
+                    <div class="text-[8px] font-black text-firda-gray-400 uppercase tracking-widest mb-1">Evenement</div>
+                    <div class="text-sm font-bold text-firda-gray-900 leading-tight group-hover/item:text-firda-blue-600 transition-all">
+                      {e.title}
+                    </div>
+                    {e.description && <div class="text-[11px] text-firda-gray-500 mt-1 line-clamp-2">{e.description}</div>}
+                    
+                    {showProject && e.projects?.title && (
+                      <div class="mt-2 flex items-center gap-1.5">
+                        <span class="text-[8px] font-black text-firda-blue-400 uppercase">Project:</span>
+                        <span class="text-[10px] font-bold text-firda-blue-600">{e.projects.title}</span>
+                      </div>
+                    )}
                   </div>
                 ))}
               </div>

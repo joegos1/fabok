@@ -38,7 +38,7 @@ const isPast = startDate < now;
     <!-- Background Accent -->
     {
         !isPast && (
-            <div class="absolute top-0 right-0 -mr-8 -mt-8 w-16 h-16 bg-firda-green-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl"></div>
+            <div class="absolute top-0 right-0 -mr-8 -mt-8 w-16 h-16 bg-firda-green-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl" />
         )
     }
 
@@ -59,11 +59,14 @@ const isPast = startDate < now;
 
         <!-- Content -->
         <div class="flex-grow min-w-0 pt-0.5">
-            <div class="flex items-center gap-2 mb-1">
+            <div
+                class="flex items-center gap-1.5 mb-1.5 uppercase tracking-widest text-[8px] font-black"
+            >
+                <span class="text-firda-gray-400 italic">Project:</span>
                 {
                     showProject && projectName && (
                         <span
-                            class={`text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${isPast ? "bg-firda-gray-200 text-firda-gray-500" : "bg-firda-green-50 text-firda-green-600"}`}
+                            class={`font-bold transition-colors ${isPast ? "text-firda-gray-500" : "text-firda-green-600"}`}
                         >
                             {projectName}
                         </span>
@@ -71,8 +74,13 @@ const isPast = startDate < now;
                 }
             </div>
 
+            <div
+                class="text-[8px] font-black text-firda-gray-300 uppercase tracking-[0.2em] mb-0.5"
+            >
+                Onderwerp
+            </div>
             <h3
-                class={`text-base font-bold leading-snug truncate transition-colors ${isPast ? "text-firda-gray-500" : "text-firda-gray-900 group-hover:text-firda-blue-600"}`}
+                class={`text-base font-bold leading-snug truncate transition-all duration-300 ${isPast ? "text-firda-gray-500" : "text-firda-gray-900 group-hover:text-[17px] group-hover:text-firda-blue-600"}`}
             >
                 {event.title}
             </h3>
