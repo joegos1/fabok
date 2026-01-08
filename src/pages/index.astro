@@ -69,25 +69,25 @@ const content = landingContent || {
     </div>
 
     <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid gap-12 lg:grid-cols-2 lg:items-center">
+      <div class="grid gap-12 lg:grid-cols-5 lg:items-center">
         <!-- Tekst content -->
-        <div class="max-w-xl animate-fade-in-up">
+        <div class="lg:col-span-3 max-w-2xl animate-fade-in-up">
           <h1
-            class="text-3xl sm:text-4xl lg:text-5xl font-extrabold mb-5 leading-tight"
+            class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight"
           >
             {content.title}
           </h1>
-          <p class="text-lg text-firda-blue-100 mb-8 leading-relaxed">
+          <p class="text-xl text-firda-blue-100 mb-10 leading-relaxed">
             {content.intro}
           </p>
-          <div class="flex flex-wrap gap-4">
+          <div class="flex flex-wrap gap-5">
             <a
               href="/projecten/lijst"
-              class="inline-flex items-center px-6 py-3 bg-firda-green-500 text-firda-blue-900 font-bold rounded-lg hover:bg-firda-green-400 transition-all duration-200 shadow-lg hover:scale-105"
+              class="inline-flex items-center px-8 py-4 bg-firda-green-500 text-firda-blue-900 font-black rounded-xl hover:bg-firda-green-400 transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 text-lg"
             >
               Bekijk projecten
               <svg
-                class="ml-2 w-5 h-5"
+                class="ml-2 w-6 h-6"
                 fill="none"
                 stroke="currentColor"
                 viewBox="0 0 24 24"
@@ -95,32 +95,34 @@ const content = landingContent || {
                 <path
                   stroke-linecap="round"
                   stroke-linejoin="round"
-                  stroke-width="2"
+                  stroke-width="2.5"
                   d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
               </svg>
             </a>
             <a
               href="#documenten"
-              class="inline-flex items-center px-6 py-3 bg-white/10 text-white font-semibold rounded-lg hover:bg-white/20 transition-all duration-200 border border-white/20"
+              class="inline-flex items-center px-8 py-4 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-all duration-300 border border-white/20 text-lg"
             >
               Documenten
             </a>
           </div>
         </div>
 
-        <!-- Agenda Widget in Hero -->
-        <div class="relative animate-fade-in-up" style="animation-delay: 0.2s;">
+        <!-- Agenda Widget in Hero (Lowkey version) -->
+        <div
+          class="lg:col-span-2 relative animate-fade-in-up"
+          style="animation-delay: 0.2s;"
+        >
           <div
-            class="bg-white/10 backdrop-blur-md rounded-2xl border border-white/20 p-2 shadow-2xl"
+            class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-1.5 shadow-2xl"
           >
-            <div
-              class="bg-white rounded-xl overflow-hidden shadow-lg p-4 sm:p-6"
-            >
+            <div class="bg-white rounded-xl overflow-hidden shadow-inner">
               <AgendaSection
                 events={events}
                 showProject={true}
-                title="Live Agenda"
+                title=""
                 fullWidth={true}
+                showList={false}
               />
             </div>
           </div>
