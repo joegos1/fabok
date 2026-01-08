@@ -427,41 +427,13 @@ const content = landingContent || {
   <!-- Agenda Sectie -->
   <section class="py-16 bg-firda-blue-50/50 border-y border-firda-blue-100">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid lg:grid-cols-3 gap-10">
-        <div>
-          <h2 class="text-2xl font-bold text-firda-gray-900 mb-4">
-            Aankomende <span class="text-firda-blue-600">evenementen</span>
-          </h2>
-          <p class="text-firda-gray-600 mb-6">
-            Blijf op de hoogte van bijeenkomsten, workshops en deadlines.
-          </p>
-          <a
-            href="/projecten/agenda"
-            class="inline-flex items-center text-firda-blue-600 font-semibold hover:text-firda-blue-800 transition-colors text-sm group"
-          >
-            Bekijk volledige agenda
-            <svg
-              class="ml-1 w-4 h-4 group-hover:translate-x-1 transition-transform"
-              fill="none"
-              stroke="currentColor"
-              viewBox="0 0 24 24"
-            >
-              <path
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                stroke-width="2"
-                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-            </svg>
-          </a>
-        </div>
-        <div class="lg:col-span-2">
-          <AgendaSection
-            events={events}
-            showProject={true}
-            title=""
-            emptyMessage="Er zijn momenteel geen aankomende evenementen gepland."
-          />
-        </div>
+      <div class="max-w-4xl mx-auto">
+        <AgendaSection
+          events={events}
+          showProject={true}
+          title="Agenda"
+          emptyMessage="Er zijn momenteel geen aankomende evenementen gepland."
+        />
       </div>
     </div>
   </section>

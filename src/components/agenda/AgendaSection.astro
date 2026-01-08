@@ -33,12 +33,12 @@ const currentYear = urlYear ? parseInt(urlYear) : new Date().getFullYear();
 const currentDate = new Date(currentYear, currentMonth, 1);
 ---
 
-<div id="agenda" class="space-y-8">
+<div id="agenda" class="space-y-6 max-w-2xl mx-auto">
     {
         title && (
-            <div class="flex items-center justify-between">
+            <div class="text-center space-y-2">
                 <h2 class="text-2xl font-bold text-firda-gray-900">{title}</h2>
-                <div class="h-1 w-12 bg-firda-green-500 rounded-full" />
+                <div class="h-1 w-12 bg-firda-green-500 rounded-full mx-auto" />
             </div>
         )
     }
@@ -50,10 +50,10 @@ const currentDate = new Date(currentYear, currentMonth, 1);
         showProject={showProject}
     />
 
-    <!-- Lijst met evenementen voor de geselecteerde maand (voor extra duidelijkheid) -->
+    <!-- Lijst met evenementen voor de geselecteerde maand -->
     <div class="space-y-4">
         <h4
-            class="text-sm font-bold text-firda-gray-400 uppercase tracking-widest px-1"
+            class="text-xs font-bold text-firda-gray-400 uppercase tracking-widest text-center"
         >
             Evenementen in deze maand
         </h4>

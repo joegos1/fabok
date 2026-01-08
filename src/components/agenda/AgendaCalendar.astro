@@ -61,11 +61,11 @@ const isToday = (day: number) =>
 
 <div class="calendar-container bg-white rounded-2xl border border-firda-gray-200 overflow-hidden shadow-sm">
   <!-- Calendar Header -->
-  <div class="flex items-center justify-between p-4 border-b border-firda-gray-100 bg-firda-gray-50/50">
-    <h3 class="text-xl font-bold text-firda-gray-900">
+  <div class="flex items-center justify-between p-3 border-b border-firda-gray-100 bg-firda-gray-50/50">
+    <h3 class="text-lg font-bold text-firda-gray-900">
       {monthNames[month]} <span class="text-firda-blue-600 font-medium">{year}</span>
     </h3>
-    <div class="flex gap-2">
+    <div class="flex gap-1.5">
       <a 
         href={prevLink} 
         class="p-2 hover:bg-white rounded-lg border border-firda-gray-200 text-firda-gray-600 hover:text-firda-blue-600 transition-all shadow-sm"
@@ -109,17 +109,25 @@ const isToday = (day: number) =>
       const isCurrent = isToday(day);
       const hasEvents = dayEvents.length > 0;
       
+      // Check of de dag in het verleden ligt
+      const cellDate = new Date(year, month, day, 23, 59, 59);
+      const isPast = cellDate < today && !isCurrent;
+      
       return (
         <div class={`relative aspect-square border-r border-b border-firda-gray-100 p-0.5 sm:p-1 group hover:bg-white transition-colors ${i % 7 === 6 - startOffset ? 'border-r-0' : ''}`}>
-          {/* Subtle background for days with events */}
-          {hasEvents && !isCurrent && (
-            <div class="absolute inset-0 bg-firda-green-50/50 group-hover:bg-firda-green-50 transition-colors" />
+          {/* Background for days with events */}
+          {hasEvents && (
+            <div class={`
+              absolute inset-0 transition-colors
+              ${isPast ? 'bg-firda-gray-100' : 'bg-firda-green-100 group-hover:bg-firda-green-200'}
+              border-2 ${isPast ? 'border-firda-gray-200' : 'border-firda-green-500 shadow-inner'}
+            `} />
           )}
 
           <div class={`
             relative z-10 flex items-center justify-center w-7 h-7 sm:w-8 sm:h-8 rounded-lg text-sm font-bold transition-all
-            ${isCurrent ? 'bg-firda-blue-600 text-white shadow-md' : 'text-firda-gray-700 group-hover:text-firda-blue-600'}
-            ${hasEvents && !isCurrent ? 'text-firda-green-700' : ''}
+            ${isCurrent ? 'bg-firda-blue-600 text-white shadow-md' : isPast ? 'text-firda-gray-400' : 'text-firda-gray-700 group-hover:text-firda-blue-600'}
+            ${hasEvents && !isCurrent && !isPast ? 'text-firda-green-800' : ''}
           `}>
             {day}
           </div>
@@ -128,20 +136,21 @@ const isToday = (day: number) =>
           {hasEvents && (
             <div class="absolute bottom-1.5 left-0 right-0 z-10 flex justify-center gap-0.5 px-1">
               {dayEvents.slice(0, 3).map(() => (
-                <div class={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full shadow-sm ${isCurrent ? 'bg-white' : 'bg-firda-green-500'}`} />
+                <div class={`w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full shadow-sm ${isCurrent ? 'bg-white' : isPast ? 'bg-firda-gray-300' : 'bg-firda-green-600'}`} />
               ))}
             </div>
           )}
 
           <!-- Tooltip-achtige hover info (Desktop only) -->
-          {dayEvents.length > 0 && (
-            <div class="absolute invisible group-hover:visible z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 w-48 bg-white rounded-xl shadow-xl border border-firda-gray-100 p-3 text-left animate-fade-in">
+          {hasEvents && (
+            <div class="absolute invisible group-hover:visible z-30 bottom-full left-1/2 -translate-x-1/2 mb-2 w-56 bg-white rounded-xl shadow-xl border border-firda-gray-100 p-3 text-left animate-fade-in pointer-events-none">
               <div class="text-[10px] font-bold text-firda-blue-600 uppercase tracking-wider mb-2">{day} {monthNames[month]}</div>
-              <div class="space-y-2">
+              <div class="space-y-3">
                 {dayEvents.map(e => (
                   <div class="text-xs">
-                    <div class="font-bold text-firda-gray-900 leading-tight">{e.title}</div>
-                    {showProject && e.projects?.title && <div class="text-[10px] text-firda-gray-400">{e.projects.title}</div>}
+                    <div class="font-bold text-firda-gray-900 leading-tight mb-1">{e.title}</div>
+                    {e.description && <div class="text-[10px] text-firda-gray-500 line-clamp-2 mb-1">{e.description}</div>}
+                    {showProject && e.projects?.title && <div class="text-[9px] font-bold text-firda-green-600 uppercase tracking-tighter">{e.projects.title}</div>}
                   </div>
                 ))}
               </div>

@@ -26,38 +26,45 @@ const time = startDate.toLocaleTimeString("nl-NL", {
 });
 
 const location = event.location || "Locatie n.v.t.";
+
+// Check of het event in het verleden ligt
+const now = new Date();
+const isPast = startDate < now;
 ---
 
 <div
-    class="group relative bg-white rounded-2xl border border-firda-gray-200 p-5 hover:border-firda-green-400 hover:shadow-xl hover:shadow-firda-blue-500/5 transition-all duration-500 ease-out hover:-translate-y-1 overflow-hidden"
+    class={`group relative bg-white rounded-xl border p-4 transition-all duration-300 overflow-hidden ${isPast ? "border-firda-gray-200 bg-firda-gray-50/50 grayscale-[0.5] opacity-80" : "border-firda-gray-200 hover:border-firda-green-400 hover:shadow-lg hover:shadow-firda-blue-500/5"}`}
 >
     <!-- Background Accent -->
-    <div
-        class="absolute top-0 right-0 -mr-8 -mt-8 w-24 h-24 bg-firda-green-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl"
-    >
-    </div>
+    {
+        !isPast && (
+            <div class="absolute top-0 right-0 -mr-8 -mt-8 w-16 h-16 bg-firda-green-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl"></div>
+        )
+    }
 
-    <div class="flex items-center gap-5 relative z-10">
+    <div class="flex items-start gap-4 relative z-10">
         <!-- Datum badge -->
         <div
-            class="flex-shrink-0 w-16 h-16 bg-white rounded-xl flex flex-col items-center justify-center border-2 border-firda-blue-50 shadow-sm group-hover:border-firda-green-500 group-hover:bg-firda-green-500 transition-all duration-300 transform group-hover:scale-105"
+            class={`flex-shrink-0 w-12 h-12 rounded-lg flex flex-col items-center justify-center border transition-all duration-300 ${isPast ? "bg-firda-gray-100 border-firda-gray-200" : "bg-white border-firda-blue-50 group-hover:border-firda-green-500 group-hover:bg-firda-green-500 shadow-sm"}`}
         >
             <span
-                class="text-2xl font-black text-firda-blue-600 group-hover:text-white leading-none tracking-tight"
+                class={`text-xl font-black leading-none tracking-tight ${isPast ? "text-firda-gray-500" : "text-firda-blue-600 group-hover:text-white"}`}
                 >{day}</span
             >
             <span
-                class="text-[10px] font-black text-firda-blue-400 group-hover:text-firda-green-50 uppercase tracking-[0.15em] mt-0.5"
+                class={`text-[8px] font-black uppercase tracking-[0.1em] mt-0.5 ${isPast ? "text-firda-gray-400" : "text-firda-blue-400 group-hover:text-firda-green-50"}`}
                 >{month}</span
             >
         </div>
 
         <!-- Content -->
-        <div class="flex-grow min-w-0">
-            <div class="flex items-center gap-2 mb-0.5">
+        <div class="flex-grow min-w-0 pt-0.5">
+            <div class="flex items-center gap-2 mb-1">
                 {
                     showProject && projectName && (
-                        <span class="text-[10px] font-bold text-firda-green-600 bg-firda-green-50 px-2 py-0.5 rounded-full uppercase tracking-wider">
+                        <span
+                            class={`text-[8px] font-bold px-1.5 py-0.5 rounded-full uppercase tracking-wider ${isPast ? "bg-firda-gray-200 text-firda-gray-500" : "bg-firda-green-50 text-firda-green-600"}`}
+                        >
                             {projectName}
                         </span>
                     )
@@ -65,18 +72,28 @@ const location = event.location || "Locatie n.v.t.";
             </div>
 
             <h3
-                class="text-lg font-bold text-firda-gray-900 leading-snug truncate group-hover:text-firda-blue-600 transition-colors"
+                class={`text-base font-bold leading-snug truncate transition-colors ${isPast ? "text-firda-gray-500" : "text-firda-gray-900 group-hover:text-firda-blue-600"}`}
             >
                 {event.title}
             </h3>
 
-            <div class="flex flex-wrap items-center gap-x-4 gap-y-1 mt-2">
-                <!-- Tijd (Nu prominenter) -->
+            {
+                event.description && (
+                    <p
+                        class={`text-xs mt-1 line-clamp-2 ${isPast ? "text-firda-gray-400" : "text-firda-gray-600"}`}
+                    >
+                        {event.description}
+                    </p>
+                )
+            }
+
+            <div class="flex flex-wrap items-center gap-x-3 gap-y-1 mt-2">
+                <!-- Tijd -->
                 <div
-                    class="flex items-center gap-1.5 text-firda-blue-600 font-bold bg-firda-blue-50/50 px-2.5 py-1 rounded-lg border border-firda-blue-100/50 group-hover:bg-firda-green-50 group-hover:border-firda-green-200 group-hover:text-firda-green-700 transition-colors"
+                    class={`flex items-center gap-1 font-bold px-2 py-0.5 rounded-md border text-[10px] transition-colors ${isPast ? "bg-firda-gray-100 border-firda-gray-200 text-firda-gray-400" : "bg-firda-blue-50/50 border-firda-blue-100/50 text-firda-blue-600 group-hover:bg-firda-green-50 group-hover:border-firda-green-200 group-hover:text-firda-green-700"}`}
                 >
                     <svg
-                        class="w-4 h-4"
+                        class="w-3 h-3"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -88,13 +105,15 @@ const location = event.location || "Locatie n.v.t.";
                             d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"
                         ></path>
                     </svg>
-                    <span class="text-sm tracking-tight">{time}</span>
+                    <span class="tracking-tight">{time}</span>
                 </div>
 
                 <!-- Locatie -->
-                <div class="flex items-center gap-1.5 text-firda-gray-500">
+                <div
+                    class={`flex items-center gap-1 text-[10px] ${isPast ? "text-firda-gray-400" : "text-firda-gray-500"}`}
+                >
                     <svg
-                        class="w-4 h-4 flex-shrink-0 text-firda-gray-300 group-hover:text-firda-green-500 transition-colors"
+                        class={`w-3 h-3 flex-shrink-0 transition-colors ${isPast ? "text-firda-gray-300" : "text-firda-gray-300 group-hover:text-firda-green-500"}`}
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -111,7 +130,7 @@ const location = event.location || "Locatie n.v.t.";
                             stroke-width="2"
                             d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
                     </svg>
-                    <span class="text-xs font-medium truncate">{location}</span>
+                    <span class="font-medium truncate">{location}</span>
                 </div>
             </div>
         </div>
