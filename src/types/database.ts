@@ -59,6 +59,12 @@ export interface Database {
           status: 'active' | 'archived';
           is_published: boolean;
           owner_id: string;
+          website_url: string | null;
+          linkedin_url: string | null;
+          facebook_url: string | null;
+          instagram_url: string | null;
+          x_url: string | null;
+          youtube_url: string | null;
           created_at: string;
           updated_at: string;
         };
@@ -77,6 +83,12 @@ export interface Database {
           status?: 'active' | 'archived';
           is_published?: boolean;
           owner_id: string;
+          website_url?: string | null;
+          linkedin_url?: string | null;
+          facebook_url?: string | null;
+          instagram_url?: string | null;
+          x_url?: string | null;
+          youtube_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };
@@ -95,6 +107,12 @@ export interface Database {
           status?: 'active' | 'archived';
           is_published?: boolean;
           owner_id?: string;
+          website_url?: string | null;
+          linkedin_url?: string | null;
+          facebook_url?: string | null;
+          instagram_url?: string | null;
+          x_url?: string | null;
+          youtube_url?: string | null;
           created_at?: string;
           updated_at?: string;
         };
