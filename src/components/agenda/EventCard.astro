@@ -52,7 +52,7 @@ const isPast = startDate < now;
                 >{day}</span
             >
             <span
-                class={`text-[8px] font-black uppercase tracking-[0.1em] mt-0.5 ${isPast ? "text-firda-gray-400" : "text-firda-blue-400 group-hover:text-firda-green-50"}`}
+                class={`text-[10px] font-black uppercase tracking-[0.1em] mt-0.5 ${isPast ? "text-firda-gray-400" : "text-firda-blue-400 group-hover:text-firda-green-50"}`}
                 >{month}</span
             >
         </div>
@@ -60,9 +60,9 @@ const isPast = startDate < now;
         <!-- Content -->
         <div class="flex-grow min-w-0 pt-0.5">
             <div
-                class="flex items-center gap-1.5 mb-1.5 uppercase tracking-widest text-[8px] font-black"
+                class="flex items-center gap-1.5 mb-1.5 uppercase tracking-widest text-[10px] font-black"
             >
-                <span class="text-firda-gray-400 italic">Project:</span>
+                <span class="text-firda-gray-500 italic">Project:</span>
                 {
                     showProject && projectName && (
                         <span
@@ -75,12 +75,12 @@ const isPast = startDate < now;
             </div>
 
             <div
-                class="text-[8px] font-black text-firda-gray-300 uppercase tracking-[0.2em] mb-0.5"
+                class="text-[10px] font-black text-firda-gray-500 uppercase tracking-[0.2em] mb-0.5"
             >
                 Onderwerp
             </div>
             <h3
-                class={`text-lg font-bold leading-snug truncate transition-all duration-300 ${isPast ? "text-firda-gray-500" : "text-firda-gray-900 group-hover:text-[19px] group-hover:text-firda-blue-600"}`}
+                class={`text-lg font-bold leading-snug transition-all duration-300 ${isPast ? "text-firda-gray-500" : "text-firda-gray-900 group-hover:text-[19px] group-hover:text-firda-blue-600"}`}
             >
                 {event.title}
             </h3>
@@ -88,7 +88,7 @@ const isPast = startDate < now;
             {
                 event.description && (
                     <div class="mt-2">
-                        <div class="text-[8px] font-black text-firda-gray-300 uppercase tracking-[0.2em] mb-0.5">
+                        <div class="text-[10px] font-black text-firda-gray-500 uppercase tracking-[0.2em] mb-0.5">
                             Omschrijving
                         </div>
                         <p
@@ -108,7 +108,7 @@ const isPast = startDate < now;
                     class={`flex items-center gap-2 font-bold px-2.5 py-1 rounded-md border text-xs transition-colors ${isPast ? "bg-firda-gray-100 border-firda-gray-200 text-firda-gray-400" : "bg-firda-blue-50/50 border-firda-blue-100/50 text-firda-blue-600 group-hover:bg-firda-green-50 group-hover:border-firda-green-200 group-hover:text-firda-green-700"}`}
                 >
                     <span
-                        class="text-[9px] font-black uppercase tracking-wider text-firda-blue-300"
+                        class="text-[10px] font-black uppercase tracking-wider text-firda-blue-500"
                         >Tijd:</span
                     >
                     <span class="tracking-tight">{time}</span>
@@ -119,7 +119,7 @@ const isPast = startDate < now;
                     class={`flex items-center gap-2 text-xs ${isPast ? "text-firda-gray-400" : "text-firda-gray-500"}`}
                 >
                     <span
-                        class="text-[9px] font-black uppercase tracking-wider text-firda-gray-300"
+                        class="text-[10px] font-black uppercase tracking-wider text-firda-gray-500"
                         >Locatie:</span
                     >
                     <span class="font-medium truncate">{location}</span>
