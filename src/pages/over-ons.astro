@@ -1,0 +1,190 @@
+---
+/**
+ * Over Ons Pagina
+ * ===============
+ * Pagina over de makers van VABOK
+ */
+
+import Layout from "../layouts/Layout.astro";
+---
+
+<Layout
+    title="Over Ons"
+    description="Leer meer over de makers van VABOK - Jorg & Jens"
+>
+    <!-- Video Hero Sectie -->
+    <section
+        class="relative h-[60vh] min-h-[400px] max-h-[600px] overflow-hidden"
+    >
+        <video
+            autoplay
+            muted
+            loop
+            playsinline
+            class="absolute inset-0 w-full h-full object-cover"
+        >
+            <source src="/IMG_1513 (1).mp4" type="video/mp4" />
+        </video>
+
+        <!-- Overlay -->
+        <div
+            class="absolute inset-0 bg-gradient-to-t from-firda-blue-900/80 via-firda-blue-900/40 to-transparent"
+        >
+        </div>
+
+        <!-- Hero Content -->
+        <div class="relative h-full flex items-end">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-12 w-full">
+                <span
+                    class="inline-block px-3 py-1 bg-firda-green-500/20 text-firda-green-400 text-xs font-bold tracking-wider uppercase rounded-full mb-4 backdrop-blur-sm border border-firda-green-500/30"
+                >
+                    De makers
+                </span>
+                <h1
+                    class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 leading-tight"
+                >
+                    Over Ons
+                </h1>
+                <p class="text-xl text-firda-blue-100 max-w-2xl">
+                    De studenten achter VABOK
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Introductie -->
+    <section class="py-16 bg-white">
+        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-10">
+                <h2
+                    class="text-2xl lg:text-3xl font-bold text-firda-gray-900 mb-4"
+                >
+                    Gemaakt bij de <span class="text-firda-blue-600"
+                        >IT Innovation Gateway</span
+                    >
+                </h2>
+                <div class="w-16 h-1 bg-firda-green-500 rounded-full mx-auto">
+                </div>
+            </div>
+
+            <div
+                class="prose prose-lg max-w-none text-firda-gray-600 leading-relaxed text-center"
+            >
+                <p class="mb-6">
+                    Wij zijn Jorg en Jens, twee scholieren die deze website
+                    hebben ontwikkeld tijdens ons project bij de IT Innovation
+                    Gateway. Met passie voor technologie en een frisse blik
+                    hebben we VABOK tot leven gebracht.
+                </p>
+                <p>
+                    De IT Innovation Gateway biedt studenten de kans om echte
+                    projecten te realiseren en zo praktijkervaring op te doen.
+                    Dit platform is het resultaat van onze samenwerking en laat
+                    zien wat mogelijk is wanneer onderwijs en innovatie
+                    samenkomen.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Team Sectie -->
+    <section class="py-16 bg-firda-gray-50 border-y border-firda-gray-200">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="text-center mb-12">
+                <h2
+                    class="text-2xl lg:text-3xl font-bold text-firda-gray-900 mb-3"
+                >
+                    Het team
+                </h2>
+                <p class="text-firda-gray-600">De mensen achter dit project</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Jorg -->
+                <div
+                    class="bg-white rounded-xl p-8 shadow-sm border border-firda-gray-200 hover:shadow-md transition-shadow"
+                >
+                    <div
+                        class="w-20 h-20 bg-firda-blue-600 rounded-full flex items-center justify-center mb-6 mx-auto"
+                    >
+                        <span class="text-3xl font-bold text-white">J</span>
+                    </div>
+                    <h3
+                        class="text-xl font-bold text-firda-gray-900 text-center mb-2"
+                    >
+                        Jorg
+                    </h3>
+                    <p
+                        class="text-firda-blue-600 font-medium text-center text-sm mb-4"
+                    >
+                        Developer
+                    </p>
+                    <p
+                        class="text-firda-gray-600 text-center text-sm leading-relaxed"
+                    >
+                        [Hier komt jouw beschrijving. Vertel iets over jezelf,
+                        je rol in het project, wat je leuk vindt aan
+                        programmeren, of wat je hebt geleerd.]
+                    </p>
+                </div>
+
+                <!-- Jens -->
+                <div
+                    class="bg-white rounded-xl p-8 shadow-sm border border-firda-gray-200 hover:shadow-md transition-shadow"
+                >
+                    <div
+                        class="w-20 h-20 bg-firda-green-500 rounded-full flex items-center justify-center mb-6 mx-auto"
+                    >
+                        <span class="text-3xl font-bold text-firda-blue-900"
+                            >J</span
+                        >
+                    </div>
+                    <h3
+                        class="text-xl font-bold text-firda-gray-900 text-center mb-2"
+                    >
+                        Jens
+                    </h3>
+                    <p
+                        class="text-firda-blue-600 font-medium text-center text-sm mb-4"
+                    >
+                        Developer
+                    </p>
+                    <p
+                        class="text-firda-gray-600 text-center text-sm leading-relaxed"
+                    >
+                        [Hier komt jouw beschrijving. Vertel iets over jezelf,
+                        je rol in het project, wat je leuk vindt aan
+                        programmeren, of wat je hebt geleerd.]
+                    </p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA terug naar projecten -->
+    <section class="py-12 bg-firda-blue-600">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+            <h2 class="text-xl lg:text-2xl font-bold mb-4 text-white">
+                Benieuwd naar ons werk?
+            </h2>
+            <a
+                href="/projecten/lijst"
+                class="inline-flex items-center px-6 py-3 bg-firda-green-500 text-firda-blue-900 font-bold rounded-lg hover:bg-firda-green-400 transition-all shadow-lg hover:scale-105"
+            >
+                Bekijk de projecten
+                <svg
+                    class="ml-2 w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+            </a>
+        </div>
+    </section>
+</Layout>
