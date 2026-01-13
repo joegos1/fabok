@@ -34,7 +34,12 @@ const geojson = {
     class="relative w-full h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-firda-gray-200"
 >
     <!-- Map Container -->
-    <div id="school-map" class="w-full h-full bg-firda-gray-100"></div>
+    <div
+        id="school-map"
+        class="w-full h-full bg-firda-gray-100"
+        data-geojson={JSON.stringify(geojson)}
+    >
+    </div>
 
     <!-- Province Filters Overlay -->
     <div
@@ -101,11 +106,19 @@ const geojson = {
     rel="stylesheet"
 />
 
-<script define:vars={{ geojson }}>
+<script>
     import maplibregl from "maplibre-gl";
 
     // Wacht tot de DOM geladen is
     document.addEventListener("DOMContentLoaded", () => {
+        const mapElement = document.getElementById("school-map");
+        if (!mapElement) return;
+
+        // Haal data op uit het data-attribute
+        const geojson = JSON.parse(
+            mapElement.getAttribute("data-geojson") || "{}",
+        );
+
         const map = new maplibregl.Map({
             container: "school-map",
             style: "https://tiles.openfreemap.org/styles/liberty", // OpenFreeMap style
@@ -192,40 +205,46 @@ const geojson = {
                 const features = map.queryRenderedFeatures(e.point, {
                     layers: ["clusters"],
                 });
-                const clusterId = features[0].properties.cluster_id;
-                map.getSource("schools").getClusterExpansionZoom(
-                    clusterId,
-                    (err, zoom) => {
-                        if (err) return;
-                        map.easeTo({
-                            center: features[0].geometry.coordinates,
-                            zoom: zoom,
-                        });
-                    },
-                );
+                const clusterId = features[0].properties?.cluster_id;
+                const source = map.getSource(
+                    "schools",
+                ) as maplibregl.GeoJSONSource;
+
+                source.getClusterExpansionZoom(clusterId, (err, zoom) => {
+                    if (err) return;
+                    map.easeTo({
+                        center: (features[0].geometry as any).coordinates,
+                        zoom: zoom || 10,
+                    });
+                });
             });
 
             // Interactie: Klik op losse school voor popup
             map.on("click", "unclustered-point", (e) => {
-                const coordinates = e.features[0].geometry.coordinates.slice();
-                const { name, city, address } = e.features[0].properties;
+                if (!e.features || e.features.length === 0) return;
+
+                const feature = e.features[0];
+                const coordinates = (
+                    feature.geometry as any
+                ).coordinates.slice();
+                const { name, city, address } = feature.properties || {};
 
                 new maplibregl.Popup({ className: "firda-popup" })
-                    .setLngLat(coordinates)
+                    .setLngLat(coordinates as [number, number])
                     .setHTML(
                         `
-            <div class="p-2">
-              <h3 class="font-black text-firda-blue-900 text-lg leading-tight mb-1">${name}</h3>
-              <p class="text-sm text-firda-gray-600">${address}, ${city}</p>
-              <div class="mt-3 flex gap-2">
-                <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(name + " " + city)}" 
-                   target="_blank" 
-                   class="text-[10px] bg-firda-gray-100 px-2 py-1 rounded-md font-bold uppercase hover:bg-firda-gray-200 transition-colors">
-                  Route
-                </a>
-              </div>
-            </div>
-          `,
+                        <div class="p-2">
+                            <h3 class="font-black text-firda-blue-900 text-lg leading-tight mb-1">${name}</h3>
+                            <p class="text-sm text-firda-gray-600">${address}, ${city}</p>
+                            <div class="mt-3 flex gap-2">
+                                <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent((name || "") + " " + (city || ""))}" 
+                                   target="_blank" 
+                                   class="text-[10px] bg-firda-gray-100 px-2 py-1 rounded-md font-bold uppercase hover:bg-firda-gray-200 transition-colors">
+                                    Route
+                                </a>
+                            </div>
+                        </div>
+                    `,
                     )
                     .addTo(map);
             });
