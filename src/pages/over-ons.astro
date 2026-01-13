@@ -183,82 +183,164 @@ import Layout from "../layouts/Layout.astro";
         </div>
     </section>
 
-    <!-- Team Sectie -->
-    <section class="py-16 bg-firda-gray-50 border-y border-firda-gray-200">
-        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-12">
+    <!-- Team Sectie: Modern Editorial (Concept 2) -->
+    <section class="py-32 bg-white overflow-hidden">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <!-- Grote Achtergrond Tekst (Editorial Style) -->
+            <div class="relative mb-24 lg:mb-32">
                 <h2
-                    class="text-2xl lg:text-3xl font-bold text-firda-gray-900 mb-3"
+                    class="text-[12vw] font-black text-firda-gray-100 absolute -top-12 -left-4 select-none leading-none z-0"
                 >
-                    Het team
+                    THE MAKERS
                 </h2>
-                <p class="text-firda-gray-600">De mensen achter dit project</p>
+                <div class="relative z-10 pt-12 lg:pt-20 lg:pl-12">
+                    <span
+                        class="inline-block px-2 py-0.5 bg-firda-blue-600 text-white text-[10px] font-bold uppercase tracking-[0.3em] mb-4"
+                    >
+                        Het Team
+                    </span>
+                    <h3
+                        class="text-4xl lg:text-7xl font-black text-firda-gray-900 leading-[0.9] tracking-tighter"
+                    >
+                        TWEE STUDENTEN,<br />
+                        <span class="text-firda-blue-600">ÉÉN MISSIE.</span>
+                    </h3>
+                </div>
             </div>
 
-            <div class="grid md:grid-cols-2 gap-8">
-                <!-- Jorg -->
+            <!-- Asymmetrische Team Layout -->
+            <div class="relative space-y-32 lg:space-y-48">
+                <!-- Jorg Sectie (Asymmetrisch Links) -->
                 <div
-                    class="bg-white rounded-xl p-8 shadow-sm border border-firda-gray-200 hover:shadow-md transition-shadow"
+                    class="relative flex flex-col lg:flex-row items-center lg:items-start gap-12 lg:gap-0"
                 >
-                    <div
-                        class="w-20 h-20 bg-firda-blue-600 rounded-full flex items-center justify-center mb-6 mx-auto"
-                    >
-                        <span class="text-3xl font-bold text-white">J</span>
+                    <div class="w-full lg:w-1/2 relative">
+                        <!-- Portret/Avatar Frame -->
+                        <div
+                            class="relative w-64 h-80 lg:w-80 lg:h-[450px] bg-firda-gray-200 shadow-2xl mx-auto lg:mx-0 group overflow-hidden"
+                        >
+                            <div
+                                class="absolute inset-0 bg-firda-blue-600 flex items-center justify-center"
+                            >
+                                <span
+                                    class="text-[150px] font-black text-firda-blue-500/30"
+                                    >J</span
+                                >
+                            </div>
+                            <!-- Tape effect -->
+                            <div
+                                class="absolute -top-2 left-1/2 -translate-x-1/2 w-24 h-8 bg-white/40 backdrop-blur-md -rotate-2 z-20"
+                            >
+                            </div>
+                        </div>
+                        <!-- Naam die over de foto loopt -->
+                        <div
+                            class="absolute -bottom-8 -right-4 lg:-right-12 z-20"
+                        >
+                            <h4
+                                class="text-6xl lg:text-9xl font-black text-firda-gray-900 leading-none"
+                            >
+                                JORG
+                            </h4>
+                            <div
+                                class="inline-block px-3 py-1 bg-firda-green-500 text-firda-blue-900 text-xs font-black uppercase tracking-widest mt-2 ml-4"
+                            >
+                                LEAD DEVELOPER
+                            </div>
+                        </div>
                     </div>
-                    <h3
-                        class="text-xl font-bold text-firda-gray-900 text-center mb-2"
-                    >
-                        Jorg
-                    </h3>
-                    <p
-                        class="text-firda-blue-600 font-medium text-center text-sm mb-4"
-                    >
-                        Developer
-                    </p>
-                    <p
-                        class="text-firda-gray-600 text-center text-sm leading-relaxed"
-                    >
-                        [Hier komt jouw beschrijving. Vertel iets over jezelf,
-                        je rol in het project, wat je leuk vindt aan
-                        programmeren, of wat je hebt geleerd.]
-                    </p>
+
+                    <div class="w-full lg:w-1/2 lg:pt-32 lg:pl-12">
+                        <div class="max-w-md">
+                            <p
+                                class="text-2xl lg:text-3xl font-bold text-firda-gray-800 leading-tight mb-6"
+                            >
+                                "Code is voor mij de manier om ideeën tastbaar
+                                te maken voor iedereen."
+                            </p>
+                            <div class="w-12 h-1 bg-firda-blue-600 mb-6"></div>
+                            <p
+                                class="text-firda-gray-600 leading-relaxed text-lg italic"
+                            >
+                                [Vertel hier je verhaal over hoe je aan dit
+                                project bent begonnen en wat je het leukst vond
+                                om te bouwen.]
+                            </p>
+                        </div>
+                    </div>
                 </div>
 
-                <!-- Jens -->
+                <!-- Jens Sectie (Asymmetrisch Rechts - Gespiegeld & Verschoven) -->
                 <div
-                    class="bg-white rounded-xl p-8 shadow-sm border border-firda-gray-200 hover:shadow-md transition-shadow"
+                    class="relative flex flex-col-reverse lg:flex-row items-center lg:items-start gap-12 lg:gap-0"
                 >
                     <div
-                        class="w-20 h-20 bg-firda-green-500 rounded-full flex items-center justify-center mb-6 mx-auto"
+                        class="w-full lg:w-1/2 lg:pt-32 lg:pr-12 lg:text-right flex flex-col items-center lg:items-end"
                     >
-                        <span class="text-3xl font-bold text-firda-blue-900"
-                            >J</span
-                        >
+                        <div class="max-w-md">
+                            <p
+                                class="text-2xl lg:text-3xl font-bold text-firda-gray-800 leading-tight mb-6"
+                            >
+                                "Het gaat niet alleen om de techniek, maar om de
+                                impact die we maken."
+                            </p>
+                            <div
+                                class="w-12 h-1 bg-firda-green-500 lg:ml-auto mb-6"
+                            >
+                            </div>
+                            <p
+                                class="text-firda-gray-600 leading-relaxed text-lg italic"
+                            >
+                                [Jouw stukje tekst: Wat was de grootste
+                                uitdaging voor jou en waar ben je het meest
+                                trots op?]
+                            </p>
+                        </div>
                     </div>
-                    <h3
-                        class="text-xl font-bold text-firda-gray-900 text-center mb-2"
+
+                    <div
+                        class="w-full lg:w-1/2 relative lg:flex lg:justify-end"
                     >
-                        Jens
-                    </h3>
-                    <p
-                        class="text-firda-blue-600 font-medium text-center text-sm mb-4"
-                    >
-                        Developer
-                    </p>
-                    <p
-                        class="text-firda-gray-600 text-center text-sm leading-relaxed"
-                    >
-                        [Hier komt jouw beschrijving. Vertel iets over jezelf,
-                        je rol in het project, wat je leuk vindt aan
-                        programmeren, of wat je hebt geleerd.]
-                    </p>
+                        <div
+                            class="relative w-64 h-80 lg:w-80 lg:h-[450px] bg-firda-gray-200 shadow-2xl mx-auto lg:mx-0 group overflow-hidden"
+                        >
+                            <div
+                                class="absolute inset-0 bg-firda-green-500 flex items-center justify-center"
+                            >
+                                <span
+                                    class="text-[150px] font-black text-firda-green-600/30"
+                                    >J</span
+                                >
+                            </div>
+                            <!-- Tape effect -->
+                            <div
+                                class="absolute -top-2 left-1/2 -translate-x-1/2 w-24 h-8 bg-white/40 backdrop-blur-md rotate-2 z-20"
+                            >
+                            </div>
+                        </div>
+                        <!-- Naam die over de foto loopt -->
+                        <div
+                            class="absolute -bottom-8 -left-4 lg:-left-12 z-20"
+                        >
+                            <h4
+                                class="text-6xl lg:text-9xl font-black text-firda-gray-900 leading-none"
+                            >
+                                JENS
+                            </h4>
+                            <div
+                                class="inline-block px-3 py-1 bg-firda-blue-600 text-white text-xs font-black uppercase tracking-widest mt-2 ml-4"
+                            >
+                                TECHNICAL ARCHITECT
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
     </section>
 
     <!-- CTA terug naar projecten -->
-    <section class="py-12 bg-firda-blue-600">
+    <section class="py-24 bg-firda-blue-600 relative overflow-hidden">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
             <h2 class="text-xl lg:text-2xl font-bold mb-4 text-white">
                 Benieuwd naar ons werk?
