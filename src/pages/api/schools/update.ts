@@ -64,8 +64,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
             name: schoolName,
             address,
             city,
-            province,
-            updated_at: new Date().toISOString()
+            province
         };
 
         // Alleen coördinaten updaten als geocoding is gelukt
@@ -78,7 +77,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
         // Voer update uit
         const { error } = await supabaseAdmin
             .from('schools')
-            .update(updateData)
+            .update(updateData as any)
             .eq('id', schoolId);
 
         if (error) {
