@@ -13,39 +13,137 @@ import Layout from "../layouts/Layout.astro";
     description="Leer meer over de makers van VABOK - Jorg & Jens"
 >
     <!-- Video Hero Sectie -->
-    <section class="bg-firda-blue-600">
-        <!-- Hero tekst -->
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 lg:py-16">
-            <span
-                class="inline-block px-3 py-1 bg-firda-green-500/20 text-firda-green-400 text-xs font-bold tracking-wider uppercase rounded-full mb-4 border border-firda-green-500/30"
-            >
-                De makers
-            </span>
-            <h1
-                class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 leading-tight"
-            >
-                Over Ons
-            </h1>
-            <p class="text-xl text-firda-blue-100 max-w-2xl">
-                De studenten achter VABOK
-            </p>
+    <section
+        class="relative h-[70vh] min-h-[500px] max-h-[700px] overflow-hidden"
+    >
+        <video
+            id="hero-video"
+            autoplay
+            muted
+            loop
+            playsinline
+            class="absolute inset-0 w-full h-full object-cover"
+        >
+            <source src="/IMG_1513 (1).mp4" type="video/mp4" />
+        </video>
+
+        <!-- Overlay -->
+        <div
+            class="absolute inset-0 bg-gradient-to-t from-firda-blue-900/80 via-firda-blue-900/40 to-transparent"
+        >
         </div>
 
-        <!-- Video met controls -->
-        <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 pb-12">
-            <div
-                class="rounded-xl overflow-hidden shadow-2xl border-4 border-white/10"
+        <!-- Video Controls -->
+        <div class="absolute bottom-4 right-4 flex items-center gap-2 z-10">
+            <button
+                id="play-pause-btn"
+                class="p-3 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors text-white"
+                title="Afspelen/Pauzeren"
             >
-                <video
-                    controls
-                    loop
-                    playsinline
-                    class="w-full h-auto aspect-video bg-black"
-                    poster=""
+                <svg
+                    id="pause-icon"
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
                 >
-                    <source src="/IMG_1513 (1).mp4" type="video/mp4" />
-                    Je browser ondersteunt geen video.
-                </video>
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M10 9v6m4-6v6"></path>
+                </svg>
+                <svg
+                    id="play-icon"
+                    class="w-5 h-5 hidden"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M14.752 11.168l-3.197-2.132A1 1 0 0010 9.87v4.263a1 1 0 001.555.832l3.197-2.132a1 1 0 000-1.664z"
+                    ></path>
+                </svg>
+            </button>
+            <button
+                id="mute-btn"
+                class="p-3 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors text-white"
+                title="Geluid aan/uit"
+            >
+                <svg
+                    id="muted-icon"
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                    ></path>
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17 14l2-2m0 0l2-2m-2 2l-2-2m2 2l2 2"></path>
+                </svg>
+                <svg
+                    id="unmuted-icon"
+                    class="w-5 h-5 hidden"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"
+                    ></path>
+                </svg>
+            </button>
+            <button
+                id="fullscreen-btn"
+                class="p-3 bg-white/20 backdrop-blur-sm rounded-full hover:bg-white/30 transition-colors text-white"
+                title="Volledig scherm"
+            >
+                <svg
+                    class="w-5 h-5"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M4 8V4m0 0h4M4 4l5 5m11-1V4m0 0h-4m4 0l-5 5M4 16v4m0 0h4m-4 0l5-5m11 5l-5-5m5 5v-4m0 4h-4"
+                    ></path>
+                </svg>
+            </button>
+        </div>
+
+        <!-- Hero Content -->
+        <div class="relative h-full flex items-end">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 w-full">
+                <span
+                    class="inline-block px-3 py-1 bg-firda-green-500/20 text-firda-green-400 text-xs font-bold tracking-wider uppercase rounded-full mb-4 backdrop-blur-sm border border-firda-green-500/30"
+                >
+                    De makers
+                </span>
+                <h1
+                    class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 leading-tight"
+                >
+                    Over Ons
+                </h1>
+                <p class="text-xl text-firda-blue-100 max-w-2xl">
+                    De studenten achter VABOK
+                </p>
             </div>
         </div>
     </section>
@@ -186,3 +284,62 @@ import Layout from "../layouts/Layout.astro";
         </div>
     </section>
 </Layout>
+
+<script>
+    const video = document.getElementById("hero-video") as HTMLVideoElement;
+    const playPauseBtn = document.getElementById("play-pause-btn");
+    const muteBtn = document.getElementById("mute-btn");
+    const fullscreenBtn = document.getElementById("fullscreen-btn");
+
+    const playIcon = document.getElementById("play-icon");
+    const pauseIcon = document.getElementById("pause-icon");
+    const mutedIcon = document.getElementById("muted-icon");
+    const unmutedIcon = document.getElementById("unmuted-icon");
+
+    // Play/Pause logic
+    playPauseBtn?.addEventListener("click", () => {
+        if (video.paused) {
+            video.play();
+            playIcon?.classList.add("hidden");
+            pauseIcon?.classList.remove("hidden");
+        } else {
+            video.pause();
+            playIcon?.classList.remove("hidden");
+            pauseIcon?.classList.add("hidden");
+        }
+    });
+
+    // Mute/Unmute logic
+    muteBtn?.addEventListener("click", () => {
+        video.muted = !video.muted;
+        if (video.muted) {
+            mutedIcon?.classList.remove("hidden");
+            unmutedIcon?.classList.add("hidden");
+        } else {
+            mutedIcon?.classList.add("hidden");
+            unmutedIcon?.classList.remove("hidden");
+        }
+    });
+
+    // Initial state check for mute icon (since it starts muted via HTML attribute)
+    if (video.muted) {
+        mutedIcon?.classList.remove("hidden");
+        unmutedIcon?.classList.add("hidden");
+    } else {
+        mutedIcon?.classList.add("hidden");
+        unmutedIcon?.classList.remove("hidden");
+    }
+
+    // Fullscreen logic
+    fullscreenBtn?.addEventListener("click", () => {
+        if (video.requestFullscreen) {
+            video.requestFullscreen();
+        } else if ((video as any).webkitRequestFullscreen) {
+            /* Safari */
+            (video as any).webkitRequestFullscreen();
+        } else if ((video as any).msRequestFullscreen) {
+            /* IE11 */
+            (video as any).msRequestFullscreen();
+        }
+    });
+</script>
