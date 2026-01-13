@@ -30,20 +30,20 @@ if (!isLandingPageEditor(profile.role)) {
 const { data: content } = await supabaseAdmin
   .from("landing_page_content")
   .select("*")
-  .single();
+  .single() as { data: any | null };
 
 // Haal PDF's op
 const { data: pdfs } = await supabaseAdmin
   .from("pdf_files")
   .select("*")
   .eq("is_landing_page", true)
-  .order("uploaded_at", { ascending: false });
+  .order("uploaded_at", { ascending: false }) as { data: any[] | null };
 
 // Haal scholen op
 const { data: schools } = await supabaseAdmin
   .from("schools")
   .select("*")
-  .order("display_order", { ascending: true });
+  .order("display_order", { ascending: true }) as { data: any[] | null };
 
 // Check voor message
 const url = new URL(Astro.request.url);
@@ -69,7 +69,7 @@ if (Astro.request.method === "POST") {
           body,
           updated_by: profile.id,
           updated_at: new Date().toISOString(),
-        })
+        } as any)
         .eq("id", content.id);
 
       if (error) {
@@ -85,7 +85,7 @@ if (Astro.request.method === "POST") {
           intro,
           body,
           updated_by: profile.id,
-        });
+        } as any);
 
       if (error) {
         console.error("Error creating content:", error);
@@ -302,108 +302,137 @@ const currentContent = content || {
           schools && schools.length > 0 ? (
             <div class="space-y-2">
               {schools.map((school, index) => (
-                <div class="flex items-center justify-between p-3 bg-firda-gray-50 rounded-lg border border-firda-gray-200">
-                  <div class="flex items-center gap-3">
-                    <span class="text-sm font-medium text-firda-gray-500 w-8">
-                      #{index + 1}
-                    </span>
-                    <span class="text-firda-gray-900 font-medium">
-                      {school.name}
-                    </span>
-                  </div>
-                  <div class="flex items-center gap-2">
-                    {index > 0 && (
-                      <form
-                        action="/api/schools/reorder"
-                        method="POST"
-                        class="inline"
-                      >
-                        <input
-                          type="hidden"
-                          name="schoolId"
-                          value={school.id}
-                        />
-                        <input type="hidden" name="direction" value="up" />
-                        <button
-                          type="submit"
-                          class="p-1 text-firda-gray-400 hover:text-firda-blue-600 transition"
-                          title="Omhoog"
-                        >
-                          <svg
-                            class="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M5 15l7-7 7 7"
-                            />
-                          </svg>
-                        </button>
-                      </form>
-                    )}
-                    {index < schools.length - 1 && (
-                      <form
-                        action="/api/schools/reorder"
-                        method="POST"
-                        class="inline"
-                      >
-                        <input
-                          type="hidden"
-                          name="schoolId"
-                          value={school.id}
-                        />
-                        <input type="hidden" name="direction" value="down" />
-                        <button
-                          type="submit"
-                          class="p-1 text-firda-gray-400 hover:text-firda-blue-600 transition"
-                          title="Omlaag"
-                        >
-                          <svg
-                            class="w-5 h-5"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                          >
-                            <path
-                              stroke-linecap="round"
-                              stroke-linejoin="round"
-                              stroke-width="2"
-                              d="M19 9l-7 7-7-7"
-                            />
-                          </svg>
-                        </button>
-                      </form>
-                    )}
-                    <form
-                      action="/api/schools/delete"
-                      method="POST"
-                      class="inline"
-                    >
-                      <input type="hidden" name="schoolId" value={school.id} />
+                <div class="p-4 bg-firda-gray-50 rounded-xl border border-firda-gray-200 shadow-sm transition-all hover:shadow-md">
+                  <div class="flex items-center justify-between">
+                    <div class="flex items-center gap-3">
+                      <span class="text-xs font-bold text-firda-gray-400 w-6">
+                        {index + 1}
+                      </span>
+                      <div>
+                        <span class="text-firda-gray-900 font-bold block">
+                          {school.name}
+                        </span>
+                        <span class="text-[10px] text-firda-gray-500 uppercase font-bold tracking-tight">
+                          {school.city || 'Geen stad'} — {school.province || 'Geen provincie'}
+                        </span>
+                      </div>
+                    </div>
+                    
+                    <div class="flex items-center gap-1">
+                      <!-- Edit Button -->
                       <button
-                        type="submit"
-                        class="p-1 text-firda-gray-400 hover:text-red-500 transition"
-                        onclick="return confirm('Weet je zeker dat je deze school wilt verwijderen?')"
-                        title="Verwijderen"
+                        type="button"
+                        class="p-2 text-firda-gray-400 hover:text-firda-blue-600 hover:bg-white rounded-lg transition-all"
+                        onclick={`document.getElementById('edit-form-${school.id}').classList.toggle('hidden')`}
+                        title="Bewerken"
                       >
-                        <svg
-                          class="w-5 h-5"
-                          fill="none"
-                          stroke="currentColor"
-                          viewBox="0 0 24 24"
-                        >
-                          <path
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            stroke-width="2"
-                            d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                          />
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
                         </svg>
                       </button>
+
+                      <!-- Reorder Up -->
+                      {index > 0 && (
+                        <form action="/api/schools/reorder" method="POST" class="inline">
+                          <input type="hidden" name="schoolId" value={school.id} />
+                          <input type="hidden" name="direction" value="up" />
+                          <button type="submit" class="p-2 text-firda-gray-400 hover:text-firda-blue-600 hover:bg-white rounded-lg transition-all" title="Omhoog">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 15l7-7 7 7" /></svg>
+                          </button>
+                        </form>
+                      )}
+
+                      <!-- Reorder Down -->
+                      {index < schools.length - 1 && (
+                        <form action="/api/schools/reorder" method="POST" class="inline">
+                          <input type="hidden" name="schoolId" value={school.id} />
+                          <input type="hidden" name="direction" value="down" />
+                          <button type="submit" class="p-2 text-firda-gray-400 hover:text-firda-blue-600 hover:bg-white rounded-lg transition-all" title="Omlaag">
+                            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" /></svg>
+                          </button>
+                        </form>
+                      )}
+
+                      <!-- Delete -->
+                      <form action="/api/schools/delete" method="POST" class="inline">
+                        <input type="hidden" name="schoolId" value={school.id} />
+                        <button
+                          type="submit"
+                          class="p-2 text-firda-gray-400 hover:text-red-500 hover:bg-white rounded-lg transition-all"
+                          onclick="return confirm('Weet je zeker dat je deze school wilt verwijderen?')"
+                          title="Verwijderen"
+                        >
+                          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" /></svg>
+                        </button>
+                      </form>
+                    </div>
+                  </div>
+
+                  <!-- Inline Edit Form (Hidden by default) -->
+                  <div id={`edit-form-${school.id}`} class="hidden mt-4 pt-4 border-t border-firda-gray-200 animate-fade-in">
+                    <form action="/api/schools/update" method="POST" class="space-y-4">
+                      <input type="hidden" name="schoolId" value={school.id} />
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        <div class="md:col-span-2">
+                          <label class="block text-[10px] font-black text-firda-gray-400 uppercase mb-1 ml-1">Naam School</label>
+                          <input
+                            type="text"
+                            name="schoolName"
+                            required
+                            value={school.name}
+                            class="w-full px-3 py-1.5 text-sm border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label class="block text-[10px] font-black text-firda-gray-400 uppercase mb-1 ml-1">Adres</label>
+                          <input
+                            type="text"
+                            name="address"
+                            value={school.address || ''}
+                            class="w-full px-3 py-1.5 text-sm border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label class="block text-[10px] font-black text-firda-gray-400 uppercase mb-1 ml-1">Stad</label>
+                          <input
+                            type="text"
+                            name="city"
+                            value={school.city || ''}
+                            class="w-full px-3 py-1.5 text-sm border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 bg-white"
+                          />
+                        </div>
+                        <div>
+                          <label class="block text-[10px] font-black text-firda-gray-400 uppercase mb-1 ml-1">Provincie</label>
+                          <select
+                            name="province"
+                            class="w-full px-3 py-1.5 text-sm border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 bg-white"
+                          >
+                            <option value="">Selecteer...</option>
+                            {[
+                              'Friesland', 'Groningen', 'Drenthe', 'Overijssel', 'Flevoland', 
+                              'Gelderland', 'Utrecht', 'Noord-Holland', 'Zuid-Holland', 
+                              'Zeeland', 'Noord-Brabant', 'Limburg'
+                            ].map(p => (
+                              <option value={p} selected={school.province === p}>{p}</option>
+                            ))}
+                          </select>
+                        </div>
+                        <div class="flex items-end gap-2 text-right">
+                          <button
+                            type="button"
+                            onclick={`document.getElementById('edit-form-${school.id}').classList.add('hidden')`}
+                            class="px-4 py-1.5 text-xs font-bold text-firda-gray-500 hover:text-firda-gray-700 transition"
+                          >
+                            Annuleren
+                          </button>
+                          <button
+                            type="submit"
+                            class="flex-1 px-4 py-1.5 bg-firda-blue-600 text-white text-xs font-black rounded-lg hover:bg-firda-blue-700 transition shadow-sm uppercase tracking-wider"
+                          >
+                            Opslaan
+                          </button>
+                        </div>
+                      </div>
                     </form>
                   </div>
                 </div>
