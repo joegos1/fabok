@@ -211,18 +211,33 @@ export interface Database {
         Row: {
           id: string;
           name: string;
+          address: string | null;
+          city: string | null;
+          province: string | null;
+          latitude: number | null;
+          longitude: number | null;
           display_order: number;
           created_at: string;
         };
         Insert: {
           id?: string;
           name: string;
+          address?: string | null;
+          city?: string | null;
+          province?: string | null;
+          latitude?: number | null;
+          longitude?: number | null;
           display_order?: number;
           created_at?: string;
         };
         Update: {
           id?: string;
           name?: string;
+          address?: string | null;
+          city?: string | null;
+          province?: string | null;
+          latitude?: number | null;
+          longitude?: number | null;
           display_order?: number;
           created_at?: string;
         };

@@ -1,0 +1,195 @@
+---
+import Layout from "../layouts/Layout.astro";
+import SchoolMap from "../components/SchoolMap.astro";
+import { supabaseAdmin } from "../lib";
+import type { School } from "../types/database";
+
+/**
+ * Scholen Pagina
+ * ==============
+ * Toont een interactieve kaart van alle deelnemende scholen
+ */
+
+// Haal alle scholen op
+const { data: schoolsData } = await supabaseAdmin
+    .from("schools")
+    .select("*")
+    .order("display_order", { ascending: true });
+
+const schools = (schoolsData || []) as School[];
+
+// Groepeer scholen per provincie voor de lijst onderaan
+const schoolsByProvince = schools.reduce(
+    (acc, school) => {
+        const province = school.province || "Overig";
+        if (!acc[province]) acc[province] = [];
+        acc[province].push(school);
+        return acc;
+    },
+    {} as Record<string, School[]>,
+);
+
+const provinces = Object.keys(schoolsByProvince).sort();
+---
+
+<Layout
+    title="Samenwerkende Scholen"
+    description="Bekijk alle scholen die meedoen aan het FABOK project op onze interactieve kaart."
+>
+    <!-- Hero Sectie -->
+    <section class="relative bg-firda-blue-900 py-20 overflow-hidden">
+        <div class="absolute inset-0 opacity-20">
+            <div
+                class="absolute inset-0 bg-gradient-to-b from-transparent to-firda-blue-900"
+            >
+            </div>
+        </div>
+
+        <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="max-w-3xl">
+                <span
+                    class="inline-block px-3 py-1 bg-firda-green-500 text-firda-blue-900 text-xs font-black uppercase tracking-widest rounded-md mb-6 animate-fade-in"
+                >
+                    Netwerk
+                </span>
+                <h1
+                    class="text-5xl lg:text-7xl font-black text-white mb-6 leading-[0.9] tracking-tighter animate-fade-in-up"
+                >
+                    SAMENWERKENDE <span class="text-firda-green-500"
+                        >SCHOLEN</span
+                    >
+                </h1>
+                <p
+                    class="text-xl text-firda-blue-100 mb-8 animate-fade-in-up"
+                    style="animation-delay: 0.1s"
+                >
+                    VABOK is een groeiend netwerk van onderwijsinstellingen die
+                    zich inzetten voor een betere aansluiting in de
+                    beroepskolom. Ontdek onze partners op de kaart.
+                </p>
+            </div>
+        </div>
+
+        <!-- Decoratief element -->
+        <div
+            class="absolute -bottom-10 -right-10 w-64 h-64 bg-firda-green-500/10 rounded-full blur-3xl"
+        >
+        </div>
+    </section>
+
+    <!-- Kaart Sectie -->
+    <section class="py-12 bg-white -mt-10 relative z-10">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <SchoolMap schools={schools} />
+        </div>
+    </section>
+
+    <!-- Overzicht Lijst -->
+    <section class="py-24 bg-firda-gray-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="mb-16">
+                <h2
+                    class="text-3xl font-black text-firda-gray-900 mb-4 tracking-tight"
+                >
+                    OVERZICHT PER REGIO
+                </h2>
+                <div class="w-16 h-1.5 bg-firda-blue-600 rounded-full"></div>
+            </div>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-12">
+                {
+                    provinces.map((province) => (
+                        <div class="group">
+                            <h3 class="text-xl font-black text-firda-blue-900 mb-6 flex items-center gap-3">
+                                <span class="w-2 h-8 bg-firda-green-500 rounded-full group-hover:scale-y-125 transition-transform" />
+                                {province}
+                            </h3>
+                            <ul class="space-y-4">
+                                {schoolsByProvince[province].map((school) => (
+                                    <li class="flex flex-col p-4 bg-white rounded-xl border border-firda-gray-200 shadow-sm hover:shadow-md transition-shadow">
+                                        <span class="font-bold text-firda-gray-900">
+                                            {school.name}
+                                        </span>
+                                        <span class="text-sm text-firda-gray-500">
+                                            {school.city ||
+                                                "Geen locatie bekend"}
+                                        </span>
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+                    ))
+                }
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA -->
+    <section class="py-20 bg-firda-blue-600 relative overflow-hidden">
+        <div
+            class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10"
+        >
+            <h2 class="text-3xl font-black text-white mb-6">
+                STAAT JOUW SCHOOL ER NOG NIET BIJ?
+            </h2>
+            <p class="text-firda-blue-100 text-lg mb-10">
+                Neem contact met ons op om onderdeel te worden van het FABOK
+                netwerk en werk samen aan de toekomst van het beroepsonderwijs.
+            </p>
+            <a
+                href="mailto:info@vabok.nl"
+                class="inline-flex items-center px-10 py-4 bg-firda-green-500 text-firda-blue-900 font-black rounded-xl hover:bg-white transition-all shadow-xl hover:scale-105 active:scale-95"
+            >
+                WORD PARTNER
+                <svg
+                    class="ml-2 w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2.5"
+                        d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+            </a>
+        </div>
+
+        <div
+            class="absolute top-0 right-0 w-96 h-96 bg-white/5 rounded-full -mr-48 -mt-48 blur-3xl"
+        >
+        </div>
+        <div
+            class="absolute bottom-0 left-0 w-64 h-64 bg-firda-green-500/10 rounded-full -ml-32 -mb-32 blur-3xl"
+        >
+        </div>
+    </section>
+</Layout>
+
+<style>
+    .animate-fade-in {
+        animation: fadeIn 0.8s ease-out forwards;
+    }
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s ease-out forwards;
+    }
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>

@@ -1,0 +1,298 @@
+---
+import type { School } from "../types/database";
+
+interface Props {
+    schools: School[];
+}
+
+const { schools } = Astro.props;
+
+// Filter scholen die coördinaten hebben
+const mapSchools = schools.filter((s) => s.latitude && s.longitude);
+
+// GeoJSON data voor de kaart
+const geojson = {
+    type: "FeatureCollection",
+    features: mapSchools.map((school) => ({
+        type: "Feature",
+        properties: {
+            id: school.id,
+            name: school.name,
+            city: school.city,
+            address: school.address,
+            province: school.province,
+        },
+        geometry: {
+            type: "Point",
+            coordinates: [school.longitude, school.latitude],
+        },
+    })),
+};
+---
+
+<div
+    class="relative w-full h-[600px] rounded-2xl overflow-hidden shadow-2xl border border-firda-gray-200"
+>
+    <!-- Map Container -->
+    <div id="school-map" class="w-full h-full bg-firda-gray-100"></div>
+
+    <!-- Province Filters Overlay -->
+    <div
+        class="absolute top-4 left-4 right-4 flex flex-wrap gap-2 pointer-events-none"
+    >
+        <div
+            class="flex flex-wrap gap-2 p-2 bg-white/80 backdrop-blur-md rounded-xl shadow-lg border border-white/50 pointer-events-auto"
+        >
+            <button
+                data-province="all"
+                class="province-btn px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-firda-blue-600 text-white shadow-md hover:scale-105"
+            >
+                Alle Scholen
+            </button>
+            <button
+                data-province="Friesland"
+                data-lat="53.1642"
+                data-lon="5.7818"
+                data-zoom="9"
+                class="province-btn px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-white text-firda-blue-900 border border-firda-gray-200 hover:bg-firda-blue-50 hover:scale-105"
+            >
+                Friesland
+            </button>
+            <button
+                data-province="Groningen"
+                data-lat="53.2192"
+                data-lon="6.5667"
+                data-zoom="9"
+                class="province-btn px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-white text-firda-blue-900 border border-firda-gray-200 hover:bg-firda-blue-50 hover:scale-105"
+            >
+                Groningen
+            </button>
+            <button
+                data-province="Drenthe"
+                data-lat="52.9475"
+                data-lon="6.6231"
+                data-zoom="9"
+                class="province-btn px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition-all bg-white text-firda-blue-900 border border-firda-gray-200 hover:bg-firda-blue-50 hover:scale-105"
+            >
+                Drenthe
+            </button>
+        </div>
+    </div>
+
+    <!-- Map Legend / Info -->
+    <div
+        class="absolute bottom-4 left-4 p-3 bg-firda-blue-900/90 backdrop-blur-md text-white rounded-xl shadow-xl border border-white/10 max-w-[200px]"
+    >
+        <div class="flex items-center gap-2 mb-1">
+            <div class="w-3 h-3 bg-firda-green-500 rounded-full"></div>
+            <span class="text-[10px] font-black uppercase tracking-wider"
+                >FABOK Partner</span
+            >
+        </div>
+        <p class="text-[10px] opacity-80 leading-tight">
+            Klik op een cluster of school voor meer informatie.
+        </p>
+    </div>
+</div>
+
+<!-- Load MapLibre CSS -->
+<link
+    href="https://unpkg.com/maplibre-gl@latest/dist/maplibre-gl.css"
+    rel="stylesheet"
+/>
+
+<script define:vars={{ geojson }}>
+    import maplibregl from "maplibre-gl";
+
+    // Wacht tot de DOM geladen is
+    document.addEventListener("DOMContentLoaded", () => {
+        const map = new maplibregl.Map({
+            container: "school-map",
+            style: "https://tiles.openfreemap.org/styles/liberty", // OpenFreeMap style
+            center: [5.8, 52.8], // Center op Noord-Nederland
+            zoom: 7.5,
+            attributionControl: false,
+        });
+
+        // Voeg navigatie controls toe
+        map.addControl(new maplibregl.NavigationControl(), "bottom-right");
+
+        map.on("load", () => {
+            // Voeg de GeoJSON data toe als bron met clustering
+            map.addSource("schools", {
+                type: "geojson",
+                data: geojson,
+                cluster: true,
+                clusterMaxZoom: 14,
+                clusterRadius: 50,
+            });
+
+            // Layer voor clusters (de cirkels)
+            map.addLayer({
+                id: "clusters",
+                type: "circle",
+                source: "schools",
+                filter: ["has", "point_count"],
+                paint: {
+                    "circle-color": [
+                        "step",
+                        ["get", "point_count"],
+                        "#22c55e", // Kleur voor kleine clusters (groen)
+                        5,
+                        "#16a34a", // Middel
+                        15,
+                        "#15803d", // Groot
+                    ],
+                    "circle-radius": [
+                        "step",
+                        ["get", "point_count"],
+                        20, // Straal voor kleine clusters
+                        5,
+                        25,
+                        15,
+                        30,
+                    ],
+                    "circle-stroke-width": 4,
+                    "circle-stroke-color": "rgba(255,255,255,0.5)",
+                },
+            });
+
+            // Layer voor cluster aantallen (de tekst)
+            map.addLayer({
+                id: "cluster-count",
+                type: "symbol",
+                source: "schools",
+                filter: ["has", "point_count"],
+                layout: {
+                    "text-field": "{point_count}",
+                    "text-font": ["Open Sans Bold", "Arial Unicode MS Bold"],
+                    "text-size": 14,
+                },
+                paint: {
+                    "text-color": "#ffffff",
+                },
+            });
+
+            // Layer voor individuele scholen (niet geclusterd)
+            map.addLayer({
+                id: "unclustered-point",
+                type: "circle",
+                source: "schools",
+                filter: ["!", ["has", "point_count"]],
+                paint: {
+                    "circle-color": "#1e3a8a",
+                    "circle-radius": 8,
+                    "circle-stroke-width": 3,
+                    "circle-stroke-color": "#22c55e",
+                },
+            });
+
+            // Interactie: Klik op cluster om in te zoomen
+            map.on("click", "clusters", (e) => {
+                const features = map.queryRenderedFeatures(e.point, {
+                    layers: ["clusters"],
+                });
+                const clusterId = features[0].properties.cluster_id;
+                map.getSource("schools").getClusterExpansionZoom(
+                    clusterId,
+                    (err, zoom) => {
+                        if (err) return;
+                        map.easeTo({
+                            center: features[0].geometry.coordinates,
+                            zoom: zoom,
+                        });
+                    },
+                );
+            });
+
+            // Interactie: Klik op losse school voor popup
+            map.on("click", "unclustered-point", (e) => {
+                const coordinates = e.features[0].geometry.coordinates.slice();
+                const { name, city, address } = e.features[0].properties;
+
+                new maplibregl.Popup({ className: "firda-popup" })
+                    .setLngLat(coordinates)
+                    .setHTML(
+                        `
+            <div class="p-2">
+              <h3 class="font-black text-firda-blue-900 text-lg leading-tight mb-1">${name}</h3>
+              <p class="text-sm text-firda-gray-600">${address}, ${city}</p>
+              <div class="mt-3 flex gap-2">
+                <a href="https://www.google.com/maps/dir/?api=1&destination=${encodeURIComponent(name + " " + city)}" 
+                   target="_blank" 
+                   class="text-[10px] bg-firda-gray-100 px-2 py-1 rounded-md font-bold uppercase hover:bg-firda-gray-200 transition-colors">
+                  Route
+                </a>
+              </div>
+            </div>
+          `,
+                    )
+                    .addTo(map);
+            });
+
+            // Hover effecten
+            map.on("mouseenter", "clusters", () => {
+                map.getCanvas().style.cursor = "pointer";
+            });
+            map.on("mouseleave", "clusters", () => {
+                map.getCanvas().style.cursor = "";
+            });
+            map.on("mouseenter", "unclustered-point", () => {
+                map.getCanvas().style.cursor = "pointer";
+            });
+            map.on("mouseleave", "unclustered-point", () => {
+                map.getCanvas().style.cursor = "";
+            });
+        });
+
+        // Province Filter Logica
+        const buttons = document.querySelectorAll(".province-btn");
+        buttons.forEach((btn) => {
+            btn.addEventListener("click", () => {
+                const province = btn.getAttribute("data-province");
+
+                // Update UI
+                buttons.forEach((b) => {
+                    b.classList.remove("bg-firda-blue-600", "text-white");
+                    b.classList.add("bg-white", "text-firda-blue-900");
+                });
+                btn.classList.add("bg-firda-blue-600", "text-white");
+                btn.classList.remove("bg-white", "text-firda-blue-900");
+
+                if (province === "all") {
+                    map.easeTo({ center: [5.8, 52.8], zoom: 7.5 });
+                    map.setFilter("clusters", ["has", "point_count"]);
+                    map.setFilter("unclustered-point", [
+                        "!",
+                        ["has", "point_count"],
+                    ]);
+                    return;
+                }
+
+                const lat = parseFloat(btn.getAttribute("data-lat"));
+                const lon = parseFloat(btn.getAttribute("data-lon"));
+                const zoom = parseFloat(btn.getAttribute("data-zoom"));
+
+                map.easeTo({ center: [lon, lat], zoom: zoom });
+
+                // Filter de kaart (optioneel, maar we laten alles staan voor context)
+                // map.setFilter('clusters', ['all', ['has', 'point_count'], ['==', ['get', 'province'], province]]);
+            });
+        });
+    });
+</script>
+
+<style is:global>
+    .firda-popup .maplibregl-popup-content {
+        border-radius: 12px;
+        padding: 12px;
+        box-shadow:
+            0 10px 25px -5px rgba(0, 0, 0, 0.1),
+            0 8px 10px -6px rgba(0, 0, 0, 0.1);
+        border: 1px solid rgba(0, 0, 0, 0.05);
+    }
+    .firda-popup .maplibregl-popup-close-button {
+        padding: 4px 8px;
+        font-size: 16px;
+    }
+</style>
