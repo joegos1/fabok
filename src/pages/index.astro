@@ -13,6 +13,7 @@ import { Image } from "astro:assets";
 import CollageVabok from "../assets/collage-vabok.png";
 import type { School } from "../types/database";
 import AgendaSection from "../components/agenda/AgendaSection.astro";
+import SchoolMap from "../components/SchoolMap.astro";
 
 // Haal landingpage content op
 const { data: landingContent } = await supabaseAdmin
@@ -315,6 +316,46 @@ const content = landingContent || {
             onderwijsverbetering.
           </p>
         </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Voor wie is VABOK kaart (Map Section) -->
+  <section class="py-20 bg-white">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="text-center mb-12">
+        <h2
+          class="text-3xl lg:text-4xl font-black text-firda-gray-900 mb-4 tracking-tight"
+        >
+          ONZE <span class="text-firda-blue-600">IMPACT</span> OP DE KAART
+        </h2>
+        <p class="text-lg text-firda-gray-600 max-w-2xl mx-auto">
+          Ontdek alle scholen die onderdeel zijn van het FABOK netwerk en
+          samenwerken aan onderwijsvernieuwing.
+        </p>
+      </div>
+
+      <SchoolMap schools={schools} />
+
+      <div class="mt-8 text-center">
+        <a
+          href="/scholen"
+          class="text-firda-blue-600 font-bold hover:text-firda-blue-800 transition-colors flex items-center justify-center gap-2"
+        >
+          Bekijk volledige lijst en details
+          <svg
+            class="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              stroke-linecap="round"
+              stroke-linejoin="round"
+              stroke-width="2"
+              d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
+          </svg>
+        </a>
       </div>
     </div>
   </section>
