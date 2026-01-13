@@ -128,57 +128,78 @@ import Layout from "../layouts/Layout.astro";
             </button>
         </div>
 
-        <!-- Hero Content -->
+        <!-- Hero Content (Editorial Style) -->
         <div class="relative h-full flex items-end">
-            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 w-full">
-                <span
-                    class="inline-block px-3 py-1 bg-firda-green-500/20 text-firda-green-400 text-xs font-bold tracking-wider uppercase rounded-full mb-4 backdrop-blur-sm border border-firda-green-500/30"
-                >
-                    De makers
-                </span>
-                <h1
-                    class="text-4xl sm:text-5xl lg:text-6xl font-extrabold text-white mb-4 leading-tight"
-                >
-                    Over Ons
-                </h1>
-                <p class="text-xl text-firda-blue-100 max-w-2xl">
-                    De studenten achter VABOK
-                </p>
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-20 w-full">
+                <div class="relative z-10">
+                    <span
+                        class="inline-block px-2 py-0.5 bg-firda-green-500 text-firda-blue-900 text-[10px] font-bold uppercase tracking-[0.3em] mb-6"
+                    >
+                        De makers
+                    </span>
+                    <h1
+                        class="text-6xl sm:text-8xl lg:text-9xl font-black text-white mb-2 leading-[0.8] tracking-tighter"
+                    >
+                        OVER<br /><span class="text-firda-green-500">ONS</span>
+                    </h1>
+                    <div class="w-24 h-2 bg-white mt-8 mb-4"></div>
+                    <p
+                        class="text-xl lg:text-2xl text-firda-blue-100 font-medium tracking-tight"
+                    >
+                        De studenten achter <span class="font-black italic"
+                            >VABOK</span
+                        >.
+                    </p>
+                </div>
             </div>
         </div>
     </section>
 
-    <!-- Introductie -->
-    <section class="py-16 bg-white">
-        <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="text-center mb-10">
-                <h2
-                    class="text-2xl lg:text-3xl font-bold text-firda-gray-900 mb-4"
-                >
-                    Gemaakt bij de <span class="text-firda-blue-600"
-                        >IT Innovation Gateway</span
+    <!-- Introductie (Modern Editorial Layout) -->
+    <section class="py-32 bg-white">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex flex-col lg:flex-row gap-16 items-start">
+                <!-- Linkerkant: Grote Quote/Headline -->
+                <div class="w-full lg:w-1/2">
+                    <h2
+                        class="text-4xl lg:text-6xl font-black text-firda-gray-900 leading-tight tracking-tighter mb-8"
                     >
-                </h2>
-                <div class="w-16 h-1 bg-firda-green-500 rounded-full mx-auto">
+                        Leren door te <span class="text-firda-blue-600 italic"
+                            >bouwen.</span
+                        >
+                    </h2>
+                    <div
+                        class="inline-block px-4 py-2 bg-firda-gray-100 border-l-4 border-firda-blue-600"
+                    >
+                        <p
+                            class="text-firda-gray-900 font-bold uppercase tracking-widest text-xs"
+                        >
+                            IT Innovation Gateway
+                        </p>
+                    </div>
                 </div>
-            </div>
 
-            <div
-                class="prose prose-lg max-w-none text-firda-gray-600 leading-relaxed text-center"
-            >
-                <p class="mb-6">
-                    Wij zijn Jorg en Jens, twee scholieren die deze website
-                    hebben ontwikkeld tijdens ons project bij de IT Innovation
-                    Gateway. Met passie voor technologie en een frisse blik
-                    hebben we VABOK tot leven gebracht.
-                </p>
-                <p>
-                    De IT Innovation Gateway biedt studenten de kans om echte
-                    projecten te realiseren en zo praktijkervaring op te doen.
-                    Dit platform is het resultaat van onze samenwerking en laat
-                    zien wat mogelijk is wanneer onderwijs en innovatie
-                    samenkomen.
-                </p>
+                <!-- Rechterkant: Verhalende Tekst -->
+                <div class="w-full lg:w-1/2 lg:pt-4">
+                    <div
+                        class="prose prose-xl max-w-none text-firda-gray-600 leading-relaxed font-medium"
+                    >
+                        <p class="mb-8 text-firda-gray-900 font-bold">
+                            Wij zijn Jorg en Jens, twee scholieren die deze
+                            website hebben ontwikkeld tijdens ons project bij de
+                            IT Innovation Gateway. Met passie voor technologie
+                            en een frisse blik hebben we VABOK tot leven
+                            gebracht.
+                        </p>
+                        <p class="text-lg">
+                            De IT Innovation Gateway biedt studenten de kans om
+                            echte projecten te realiseren en zo praktijkervaring
+                            op te doen. Dit platform is het resultaat van onze
+                            samenwerking en laat zien wat mogelijk is wanneer
+                            onderwijs en innovatie samenkomen.
+                        </p>
+                    </div>
+                </div>
             </div>
         </div>
     </section>
@@ -189,11 +210,11 @@ import Layout from "../layouts/Layout.astro";
             <!-- Grote Achtergrond Tekst (Editorial Style) -->
             <div class="relative mb-24 lg:mb-32">
                 <h2
-                    class="text-[12vw] font-black text-firda-gray-100 absolute -top-12 -left-4 select-none leading-none z-0"
+                    class="text-[15vw] lg:text-[12vw] font-black text-firda-gray-200 absolute -top-8 -left-4 select-none leading-none z-0 opacity-50 lg:opacity-100"
                 >
                     THE MAKERS
                 </h2>
-                <div class="relative z-10 pt-12 lg:pt-20 lg:pl-12">
+                <div class="relative z-10 pt-16 lg:pt-20 lg:pl-12">
                     <span
                         class="inline-block px-2 py-0.5 bg-firda-blue-600 text-white text-[10px] font-bold uppercase tracking-[0.3em] mb-4"
                     >
@@ -235,32 +256,35 @@ import Layout from "../layouts/Layout.astro";
                         </div>
                         <!-- Naam die over de foto loopt -->
                         <div
-                            class="absolute -bottom-8 -right-4 lg:-right-12 z-20"
+                            class="absolute -bottom-6 -right-2 lg:-bottom-8 lg:-right-12 z-20"
                         >
                             <h4
-                                class="text-6xl lg:text-9xl font-black text-firda-gray-900 leading-none"
+                                class="text-5xl lg:text-9xl font-black text-firda-gray-900 leading-none"
                             >
                                 JORG
                             </h4>
                             <div
-                                class="inline-block px-3 py-1 bg-firda-green-500 text-firda-blue-900 text-xs font-black uppercase tracking-widest mt-2 ml-4"
+                                class="inline-block px-3 py-1 bg-firda-green-500 text-firda-blue-900 text-[10px] lg:text-xs font-black uppercase tracking-widest mt-2 ml-2 lg:ml-4"
                             >
                                 LEAD DEVELOPER
                             </div>
                         </div>
                     </div>
 
-                    <div class="w-full lg:w-1/2 lg:pt-32 lg:pl-12">
-                        <div class="max-w-md">
+                    <div class="w-full lg:w-1/2 pt-12 lg:pt-32 lg:pl-12">
+                        <div class="max-w-md mx-auto lg:mx-0">
                             <p
-                                class="text-2xl lg:text-3xl font-bold text-firda-gray-800 leading-tight mb-6"
+                                class="text-xl lg:text-3xl font-bold text-firda-gray-800 leading-tight mb-6 text-center lg:text-left"
                             >
                                 "Code is voor mij de manier om ideeën tastbaar
                                 te maken voor iedereen."
                             </p>
-                            <div class="w-12 h-1 bg-firda-blue-600 mb-6"></div>
+                            <div
+                                class="w-12 h-1 bg-firda-blue-600 mb-6 mx-auto lg:mx-0"
+                            >
+                            </div>
                             <p
-                                class="text-firda-gray-600 leading-relaxed text-lg italic"
+                                class="text-firda-gray-600 leading-relaxed text-base lg:text-lg italic text-center lg:text-left"
                             >
                                 [Vertel hier je verhaal over hoe je aan dit
                                 project bent begonnen en wat je het leukst vond
@@ -275,21 +299,21 @@ import Layout from "../layouts/Layout.astro";
                     class="relative flex flex-col-reverse lg:flex-row items-center lg:items-start gap-12 lg:gap-0"
                 >
                     <div
-                        class="w-full lg:w-1/2 lg:pt-32 lg:pr-12 lg:text-right flex flex-col items-center lg:items-end"
+                        class="w-full lg:w-1/2 pt-12 lg:pt-32 lg:pr-12 lg:text-right flex flex-col items-center lg:items-end"
                     >
-                        <div class="max-w-md">
+                        <div class="max-w-md mx-auto lg:mr-0 lg:ml-auto">
                             <p
-                                class="text-2xl lg:text-3xl font-bold text-firda-gray-800 leading-tight mb-6"
+                                class="text-xl lg:text-3xl font-bold text-firda-gray-800 leading-tight mb-6 text-center lg:text-right"
                             >
                                 "Het gaat niet alleen om de techniek, maar om de
                                 impact die we maken."
                             </p>
                             <div
-                                class="w-12 h-1 bg-firda-green-500 lg:ml-auto mb-6"
+                                class="w-12 h-1 bg-firda-green-500 mx-auto lg:ml-auto lg:mr-0 mb-6"
                             >
                             </div>
                             <p
-                                class="text-firda-gray-600 leading-relaxed text-lg italic"
+                                class="text-firda-gray-600 leading-relaxed text-base lg:text-lg italic text-center lg:text-right"
                             >
                                 [Jouw stukje tekst: Wat was de grootste
                                 uitdaging voor jou en waar ben je het meest
@@ -314,21 +338,21 @@ import Layout from "../layouts/Layout.astro";
                             </div>
                             <!-- Tape effect -->
                             <div
-                                class="absolute -top-2 left-1/2 -translate-x-1/2 w-24 h-8 bg-white/40 backdrop-blur-md rotate-2 z-20"
+                                class="absolute -top-2 left-1/2 -translate-x-1/2 w-24 h-8 bg-white/60 backdrop-blur-md rotate-2 z-20 shadow-sm"
                             >
                             </div>
                         </div>
                         <!-- Naam die over de foto loopt -->
                         <div
-                            class="absolute -bottom-8 -left-4 lg:-left-12 z-20"
+                            class="absolute -bottom-6 -left-2 lg:-bottom-8 lg:-left-12 z-20"
                         >
                             <h4
-                                class="text-6xl lg:text-9xl font-black text-firda-gray-900 leading-none"
+                                class="text-5xl lg:text-9xl font-black text-firda-gray-900 leading-none"
                             >
                                 JENS
                             </h4>
                             <div
-                                class="inline-block px-3 py-1 bg-firda-blue-600 text-white text-xs font-black uppercase tracking-widest mt-2 ml-4"
+                                class="inline-block px-3 py-1 bg-firda-blue-600 text-white text-[10px] lg:text-xs font-black uppercase tracking-widest mt-2 ml-2 lg:ml-4"
                             >
                                 TECHNICAL ARCHITECT
                             </div>
