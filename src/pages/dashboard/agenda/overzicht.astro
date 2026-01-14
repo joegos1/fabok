@@ -152,7 +152,7 @@ const message = url.searchParams.get('message');
                     (function() {
                       const dialogId = `DeleteDialog${eventId}`;
                       const form = document.getElementById(`delete-event-form-${eventId}`);
-                      const dialog = document.getElementById(dialogId) as HTMLDialogElement;
+                      const dialog = document.getElementById(dialogId);
                       const confirmBtn = document.getElementById(`${dialogId}-confirm`);
                       const deleteBtn = document.querySelector(`[data-event-id="${eventId}"]`);
 
