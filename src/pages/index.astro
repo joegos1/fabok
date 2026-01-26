@@ -30,6 +30,7 @@ const cookies = Astro.request.headers.get("cookie") || "";
 const accessToken = cookies.match(/sb-access-token=([^;]+)/)?.[1];
 const user = await getCurrentUser(accessToken);
 const profile = user ? await getUserProfile(user.id) : null;
+const isLoggedIn = !!user;
 const canViewRegistrations =
   profile && (isAdmin(profile.role) || isProjectEditor(profile.role));
 
@@ -144,47 +145,16 @@ const content = landingContent || {
           </div>
         </div>
 
-        <!-- Agenda Widget in Hero (Lowkey version) -->
+        <!-- Decorative elements (Image or similar) -->
         <div
-          class="lg:col-span-2 relative animate-fade-in-up"
+          class="lg:col-span-2 relative animate-fade-in-up flex items-center justify-center"
           style="animation-delay: 0.2s;"
         >
-          <!-- CTA Heading for Agenda -->
-          <div class="flex items-center gap-2 mb-3 px-1">
-            <span
-              class="flex h-2 w-2 rounded-full bg-firda-green-500 shadow-[0_0_10px_rgba(34,197,94,0.8)]"
-            ></span>
-            <p
-              class="text-[10px] font-black text-firda-blue-50 uppercase tracking-[0.2em]"
-            >
-              Benieuwd naar onze projecten?
-              <span class="text-firda-green-400">Bekijk de agenda</span>
-            </p>
-          </div>
-
-          <div
-            class="bg-white/5 backdrop-blur-sm rounded-2xl border border-white/10 p-1.5 shadow-2xl"
-          >
-            <div class="bg-white rounded-xl overflow-hidden shadow-inner">
-              <AgendaSection
-                events={events}
-                showProject={true}
-                title=""
-                fullWidth={true}
-                showList={false}
-              />
-            </div>
-          </div>
-
-          <!-- Decorative elements -->
-          <div
-            class="absolute -top-6 -right-6 w-24 h-24 bg-firda-green-500/20 rounded-full blur-3xl -z-10"
-          >
-          </div>
-          <div
-            class="absolute -bottom-10 -left-10 w-32 h-32 bg-firda-blue-400/20 rounded-full blur-3xl -z-10"
-          >
-          </div>
+          <Image
+            src={CollageVabok}
+            alt="VABOK"
+            class="w-full h-auto rounded-3xl shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 border-8 border-white/10"
+          />
         </div>
       </div>
     </div>
@@ -208,17 +178,91 @@ const content = landingContent || {
     )
   }
 
-  <!-- Collage -->
-  <div class="w-full bg-white py-8">
-    <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-      <Image
-        src={CollageVabok}
-        alt="VABOK Collage"
-        class="w-full h-auto rounded-xl shadow-sm"
-        loading="lazy"
-      />
+  <!-- Collage (Nu compacter binnenshuis) -->
+  <div class="w-full bg-white py-4 -mt-10 relative z-20">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <!-- Verwijderd hier, staat nu in de hero -->
     </div>
   </div>
+
+  <!-- Agenda Sectie -->
+  <section
+    class="py-20 bg-firda-gray-50 border-y border-firda-gray-100"
+    id="agenda-section"
+  >
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="grid lg:grid-cols-12 gap-12">
+        <!-- Linker kant: Tekst -->
+        <div class="lg:col-span-4 space-y-6">
+          <div>
+            <span
+              class="inline-block px-3 py-1 bg-firda-blue-100 text-firda-blue-700 text-[10px] font-black tracking-widest uppercase rounded-full mb-3"
+            >
+              Evenementen
+            </span>
+            <h2
+              class="text-3xl lg:text-4xl font-black text-firda-gray-900 leading-tight"
+            >
+              BLIJF OP DE <span class="text-firda-blue-600">HOOGTE</span>
+            </h2>
+          </div>
+          <p class="text-firda-gray-600 leading-relaxed">
+            Bekijk onze aankomende fysieke en online bijeenkomsten. Meld je
+            direct aan om deel te nemen aan onze projecten en kennisdeling
+            sessies.
+          </p>
+          <div class="pt-4">
+            <div
+              class="flex items-center gap-4 p-4 bg-white rounded-2xl border border-firda-gray-200 shadow-sm"
+            >
+              <div
+                class="w-12 h-12 rounded-xl bg-firda-green-500 text-white flex items-center justify-center shadow-lg shadow-firda-green-500/20"
+              >
+                <svg
+                  class="w-6 h-6"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                  ></path>
+                </svg>
+              </div>
+              <div>
+                <div
+                  class="text-[10px] font-black text-firda-gray-400 border-b border-firda-gray-100 mb-1 uppercase tracking-widest"
+                >
+                  Wist je dat?
+                </div>
+                <div class="text-sm font-bold text-firda-gray-800">
+                  Aanmelden is gratis voor iedereen.
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Rechter kant: Agenda -->
+        <div class="lg:col-span-8">
+          <div
+            class="bg-white p-6 rounded-3xl border border-firda-gray-200 shadow-xl overflow-hidden"
+          >
+            <AgendaSection
+              events={events}
+              showProject={true}
+              title=""
+              fullWidth={true}
+              showList={true}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 
   <!-- Over VABOK (CMS Body) -->
   <section class="py-20 bg-white">
@@ -454,11 +498,44 @@ const content = landingContent || {
 
         <!-- Documenten sidebar -->
         <div>
-          <div
-            class="bg-firda-gray-50 rounded-xl p-4 border border-firda-gray-200"
-          >
-            <PdfList pdfs={pdfs || []} title="" maxHeight="500px" />
-          </div>
+          {
+            isLoggedIn ? (
+              <div class="bg-firda-gray-50 rounded-xl p-4 border border-firda-gray-200">
+                <PdfList pdfs={pdfs || []} title="" maxHeight="500px" />
+              </div>
+            ) : (
+              <div class="p-8 bg-firda-blue-50 rounded-2xl border border-firda-blue-100 text-center">
+                <div class="w-12 h-12 bg-firda-blue-100 text-firda-blue-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                  <svg
+                    class="w-6 h-6"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      stroke-linecap="round"
+                      stroke-linejoin="round"
+                      stroke-width="2"
+                      d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z"
+                    />
+                  </svg>
+                </div>
+                <h3 class="font-bold text-firda-blue-900 mb-2">
+                  Beveiligde Documenten
+                </h3>
+                <p class="text-xs text-firda-blue-700 leading-relaxed mb-4">
+                  De PDF-documenten zijn alleen toegankelijk voor geverifieerde
+                  gebruikers. Log in om toegang te krijgen.
+                </p>
+                <a
+                  href="/login"
+                  class="inline-block px-6 py-2 bg-firda-blue-600 text-white text-xs font-bold rounded-lg hover:bg-firda-blue-700 transition"
+                >
+                  Log in
+                </a>
+              </div>
+            )
+          }
         </div>
       </div>
     </div>
