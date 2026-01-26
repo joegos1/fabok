@@ -5,15 +5,27 @@
  * Toont een enkel evenement in een lijst-weergave.
  */
 
-import type { ProjectEvent } from "../../types/database";
+import type { ProjectEvent, EventRegistration } from "../../types/database";
+import EventSignupModal from "./EventSignupModal.astro";
+import EventRegistrationsList from "./EventRegistrationsList.astro";
 
 interface Props {
     event: ProjectEvent;
     showProject?: boolean;
     projectName?: string;
+    registrationCount?: number;
+    registrations?: EventRegistration[];
+    canViewRegistrations?: boolean;
 }
 
-const { event, showProject = false, projectName } = Astro.props;
+const {
+    event,
+    showProject = false,
+    projectName,
+    registrationCount = 0,
+    registrations = [],
+    canViewRegistrations = false,
+} = Astro.props;
 
 const startDate = new Date(event.start_date);
 const day = startDate.getDate();
@@ -124,6 +136,42 @@ const isPast = startDate < now;
                     >
                     <span class="font-medium truncate">{location}</span>
                 </div>
+
+                <!-- Aanmeldingen Teller -->
+                <div
+                    class="flex items-center gap-2 text-xs text-firda-gray-500"
+                >
+                    <span
+                        class="text-[10px] font-black uppercase tracking-wider text-firda-gray-500"
+                        >Aanmeldingen:</span
+                    >
+                    <span
+                        class="font-bold flex items-center gap-1 text-firda-blue-600 bg-firda-blue-50 px-2 py-0.5 rounded-full"
+                    >
+                        {registrationCount}
+                    </span>
+                </div>
+            </div>
+
+            <!-- Action Area -->
+            <div class="mt-4 flex flex-col gap-3">
+                {
+                    !isPast && (
+                        <button
+                            onclick={`document.getElementById('signup-modal-${event.id}').showModal()`}
+                            class="w-full sm:w-auto self-start px-6 py-2.5 bg-firda-gray-900 text-white text-xs font-black uppercase tracking-widest rounded-lg hover:bg-firda-blue-600 hover:shadow-lg hover:shadow-firda-blue-600/20 transform hover:-translate-y-0.5 active:scale-95 transition-all duration-300"
+                        >
+                            Meld je aan
+                        </button>
+                    )
+                }
+
+                <!-- Registrations List (Project Leaders / Admins) -->
+                {
+                    canViewRegistrations && (
+                        <EventRegistrationsList registrations={registrations} />
+                    )
+                }
             </div>
         </div>
 
@@ -145,4 +193,11 @@ const isPast = startDate < now;
             </svg>
         </div>
     </div>
+
+    <!-- Modals -->
+    {
+        !isPast && (
+            <EventSignupModal eventId={event.id} eventTitle={event.title} />
+        )
+    }
 </div>

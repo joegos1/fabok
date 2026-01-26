@@ -277,6 +277,35 @@ export interface Database {
           updated_at?: string;
         };
       };
+      event_registrations: {
+        Row: {
+          id: string;
+          event_id: string;
+          first_name: string;
+          middle_name: string | null;
+          last_name: string;
+          email: string;
+          created_at: string;
+        };
+        Insert: {
+          id?: string;
+          event_id: string;
+          first_name: string;
+          middle_name?: string | null;
+          last_name: string;
+          email: string;
+          created_at?: string;
+        };
+        Update: {
+          id?: string;
+          event_id?: string;
+          first_name?: string;
+          middle_name?: string | null;
+          last_name?: string;
+          email?: string;
+          created_at?: string;
+        };
+      };
     };
     Views: {};
     Functions: {
@@ -299,3 +328,4 @@ export type PdfFile = Database['public']['Tables']['pdf_files']['Row'];
 export type AuditLog = Database['public']['Tables']['audit_log']['Row'];
 export type School = Database['public']['Tables']['schools']['Row'];
 export type ProjectEvent = Database['public']['Tables']['project_events']['Row'];
+export type EventRegistration = Database['public']['Tables']['event_registrations']['Row'];

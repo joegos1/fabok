@@ -9,7 +9,19 @@ import Layout from "../../layouts/Layout.astro";
 import PdfList from "../../components/pdf/PdfList.astro";
 import ImageMagnifier from "../../components/common/ImageMagnifier.astro";
 import AgendaSection from "../../components/agenda/AgendaSection.astro";
-import { supabaseAdmin } from "../../lib";
+import {
+  supabaseAdmin,
+  getCurrentUser,
+  getUserProfile,
+  isAdmin,
+  isProjectEditor,
+} from "../../lib";
+import type {
+  Project,
+  PdfFile,
+  ProjectEvent,
+  EventRegistration,
+} from "../../types/database";
 
 // Haal project ID uit URL
 const { id } = Astro.params;
@@ -18,31 +30,50 @@ if (!id) {
   return Astro.redirect("/projecten/lijst");
 }
 
+// Auth check voor PDF's en registraties
+const cookies = Astro.request.headers.get("cookie") || "";
+const accessToken = cookies.match(/sb-access-token=([^;]+)/)?.[1];
+const user = await getCurrentUser(accessToken);
+const profile = user ? await getUserProfile(user.id) : null;
+const isLoggedIn = !!user;
+
+// Mag de gebruiker registraties zien? (Admin of Projectleider)
+const canViewRegistrations =
+  profile && (isAdmin(profile.role) || isProjectEditor(profile.role));
+
 // Haal project op
-const { data: project, error: projectError } = await supabaseAdmin
+const { data: projectData, error: projectError } = await supabaseAdmin
   .from("projects")
   .select("*")
   .eq("id", id)
   .eq("status", "active")
   .single();
 
-if (projectError || !project) {
+if (projectError || !projectData) {
   return Astro.redirect("/projecten/lijst");
 }
 
-// Haal PDF's op voor dit project
-const { data: pdfs } = await supabaseAdmin
-  .from("pdf_files")
-  .select("*")
-  .eq("project_id", id)
-  .order("uploaded_at", { ascending: false });
+const project = projectData as Project;
+
+// Haal PDF's op voor dit project (alleen als ingelogd)
+let pdfs: PdfFile[] = [];
+if (isLoggedIn) {
+  const { data: pdfsData } = await supabaseAdmin
+    .from("pdf_files")
+    .select("*")
+    .eq("project_id", id)
+    .order("uploaded_at", { ascending: false });
+  pdfs = (pdfsData || []) as PdfFile[];
+}
 
 // Haal eigenaar info op
-const { data: owner } = await supabaseAdmin
+const { data: ownerData } = await supabaseAdmin
   .from("profiles")
   .select("full_name, email")
   .eq("id", project.owner_id)
   .single();
+
+const owner = ownerData as { full_name: string | null; email: string } | null;
 
 // Haal agenda op voor dit project
 const { data: projectEventsData } = await supabaseAdmin
@@ -51,7 +82,26 @@ const { data: projectEventsData } = await supabaseAdmin
   .eq("project_id", id)
   .order("start_date", { ascending: true });
 
-const projectEvents = (projectEventsData || []) as any[];
+// Haal alle registraties op voor deze events
+const eventIds = ((projectEventsData || []) as ProjectEvent[]).map((e) => e.id);
+const { data: allRegistrationsData } = await supabaseAdmin
+  .from("event_registrations")
+  .select("*")
+  .in("event_id", eventIds);
+
+const allRegistrations = (allRegistrationsData || []) as EventRegistration[];
+
+const projectEvents = ((projectEventsData || []) as ProjectEvent[]).map(
+  (event) => ({
+    ...event,
+    registrationCount: allRegistrations.filter((r) => r.event_id === event.id)
+      .length,
+    registrations: canViewRegistrations
+      ? allRegistrations.filter((r) => r.event_id === event.id)
+      : [],
+    canViewRegistrations,
+  }),
+) as any[];
 ---
 
 <Layout title={project.title}>
@@ -441,13 +491,33 @@ const projectEvents = (projectEventsData || []) as any[];
         }
 
         <!-- PDF documenten -->
-        <div class="sticky top-8">
-          <PdfList
-            pdfs={pdfs || []}
-            title="Projectdocumenten"
-            maxHeight="400px"
-          />
-        </div>
+        {
+          isLoggedIn && (
+            <div class="sticky top-8">
+              <PdfList
+                pdfs={pdfs || []}
+                title="Projectdocumenten"
+                maxHeight="400px"
+              />
+            </div>
+          )
+        }
+        {
+          !isLoggedIn && (
+            <div class="p-6 bg-firda-blue-50 rounded-xl border border-firda-blue-100 text-center">
+              <p class="text-sm font-medium text-firda-blue-800">
+                Projectdocumenten zijn alleen zichtbaar voor ingelogde
+                gebruikers.
+              </p>
+              <a
+                href="/login"
+                class="inline-block mt-3 text-sm font-bold text-firda-blue-600 hover:text-firda-blue-700 underline underline-offset-4"
+              >
+                Log in om PDF's te bekijken
+              </a>
+            </div>
+          )
+        }
       </aside>
     </div>
 

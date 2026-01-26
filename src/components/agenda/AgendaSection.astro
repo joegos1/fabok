@@ -91,6 +91,13 @@ const currentDate = new Date(currentYear, currentMonth, 1);
                                     event={event}
                                     showProject={showProject}
                                     projectName={event.projects?.title}
+                                    registrationCount={
+                                        (event as any).registrationCount
+                                    }
+                                    registrations={(event as any).registrations}
+                                    canViewRegistrations={
+                                        (event as any).canViewRegistrations
+                                    }
                                 />
                             ))}
                     </div>

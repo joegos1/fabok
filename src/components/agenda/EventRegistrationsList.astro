@@ -1,0 +1,117 @@
+---
+/**
+ * EventRegistrationsList Component
+ * ================================
+ * Toont een lijst van aanmeldingen voor een specifiek evenement.
+ * Alleen zichtbaar voor geautoriseerde gebruikers.
+ */
+
+import type { EventRegistration } from "../../types/database";
+
+interface Props {
+    registrations: EventRegistration[];
+}
+
+const { registrations } = Astro.props;
+
+// Formatting functies
+const formatName = (reg: EventRegistration) => {
+    return [reg.first_name, reg.middle_name, reg.last_name]
+        .filter(Boolean)
+        .join(" ");
+};
+
+const formatDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString("nl-NL", {
+        day: "2-digit",
+        month: "short",
+        year: "numeric",
+        hour: "2-digit",
+        minute: "2-digit",
+    });
+};
+---
+
+<div
+    class="mt-4 p-4 bg-firda-gray-50 rounded-xl border border-firda-gray-200 overflow-hidden"
+>
+    <div class="flex items-center justify-between mb-4">
+        <h4
+            class="text-xs font-black uppercase tracking-widest text-firda-gray-500 flex items-center gap-2"
+        >
+            <svg
+                class="w-4 h-4 text-firda-blue-600"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="2.5"
+                    d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                ></path>
+            </svg>
+            Aanmeldingen ({registrations.length})
+        </h4>
+
+        {
+            registrations.length > 0 && (
+                <button
+                    onclick="window.print()"
+                    class="text-[10px] font-bold text-firda-blue-600 hover:text-firda-blue-700 transition"
+                >
+                    Lijst printen
+                </button>
+            )
+        }
+    </div>
+
+    {
+        registrations.length > 0 ? (
+            <div class="overflow-x-auto">
+                <table class="w-full text-left text-sm border-collapse">
+                    <thead>
+                        <tr class="border-b border-firda-gray-200">
+                            <th class="py-2 font-bold text-firda-gray-700">
+                                Naam
+                            </th>
+                            <th class="py-2 font-bold text-firda-gray-700">
+                                Email
+                            </th>
+                            <th class="py-2 font-bold text-firda-gray-700 hidden sm:table-cell">
+                                Aangemeld op
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-firda-gray-100">
+                        {registrations.map((reg) => (
+                            <tr class="group hover:bg-white/50 transition-colors">
+                                <td class="py-2 font-medium text-firda-gray-900">
+                                    {formatName(reg)}
+                                </td>
+                                <td class="py-2 text-firda-gray-600">
+                                    <a
+                                        href={`mailto:${reg.email}`}
+                                        class="hover:text-firda-blue-600 transition underline decoration-firda-blue-200 underline-offset-2"
+                                    >
+                                        {reg.email}
+                                    </a>
+                                </td>
+                                <td class="py-2 text-firda-gray-400 text-xs hidden sm:table-cell">
+                                    {formatDate(reg.created_at)}
+                                </td>
+                            </tr>
+                        ))}
+                    </tbody>
+                </table>
+            </div>
+        ) : (
+            <div class="text-center py-6">
+                <p class="text-sm text-firda-gray-400 italic">
+                    Nog geen aanmeldingen voor dit evenement.
+                </p>
+            </div>
+        )
+    }
+</div>
