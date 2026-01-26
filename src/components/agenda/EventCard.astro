@@ -39,9 +39,15 @@ const time = startDate.toLocaleTimeString("nl-NL", {
 
 const location = event.location || "Locatie n.v.t.";
 
-// Check of het event in het verleden ligt
+// Check of het event in het verleden ligt (strikt voor vandaag)
 const now = new Date();
-const isPast = startDate < now;
+const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+const eventDate = new Date(
+    startDate.getFullYear(),
+    startDate.getMonth(),
+    startDate.getDate(),
+);
+const isPast = eventDate < today;
 ---
 
 <div

@@ -8,12 +8,30 @@
 import Layout from "../layouts/Layout.astro";
 import PdfList from "../components/pdf/PdfList.astro";
 import ProjectCard from "../components/project/ProjectCard.astro";
-import { supabaseAdmin } from "../lib";
 import { Image } from "astro:assets";
 import CollageVabok from "../assets/collage-vabok.png";
-import type { School } from "../types/database";
+import type {
+  School,
+  ProjectEvent,
+  EventRegistration,
+} from "../types/database";
+import {
+  supabaseAdmin,
+  getCurrentUser,
+  getUserProfile,
+  isAdmin,
+  isProjectEditor,
+} from "../lib";
 import AgendaSection from "../components/agenda/AgendaSection.astro";
 import SchoolMap from "../components/SchoolMap.astro";
+
+// Auth check voor registraties
+const cookies = Astro.request.headers.get("cookie") || "";
+const accessToken = cookies.match(/sb-access-token=([^;]+)/)?.[1];
+const user = await getCurrentUser(accessToken);
+const profile = user ? await getUserProfile(user.id) : null;
+const canViewRegistrations =
+  profile && (isAdmin(profile.role) || isProjectEditor(profile.role));
 
 // Haal landingpage content op
 const { data: landingContent } = await supabaseAdmin
@@ -51,7 +69,24 @@ const { data: eventsData } = await supabaseAdmin
   .select("*, projects(title)")
   .order("start_date", { ascending: true });
 
-const events = (eventsData || []) as any[];
+// Haal alle registraties op voor deze events
+const eventIds = ((eventsData || []) as any[]).map((e) => e.id);
+const { data: allRegistrationsData } = await supabaseAdmin
+  .from("event_registrations")
+  .select("*")
+  .in("event_id", eventIds);
+
+const allRegistrations = (allRegistrationsData || []) as EventRegistration[];
+
+const events = ((eventsData || []) as any[]).map((event) => ({
+  ...event,
+  registrationCount: allRegistrations.filter((r) => r.event_id === event.id)
+    .length,
+  registrations: canViewRegistrations
+    ? allRegistrations.filter((r) => r.event_id === event.id)
+    : [],
+  canViewRegistrations,
+}));
 
 const content = landingContent || {
   title: "VABOK - Versterken van de Aansluiting in de Beroepskolom",

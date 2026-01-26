@@ -158,6 +158,13 @@ const isToday = (day: number) =>
                         <div class="text-xs text-firda-gray-600 leading-relaxed">{e.description}</div>
                       </div>
                     )}
+
+                    <div class="mt-2 flex items-center gap-2">
+                        <span class="text-[10px] font-black text-firda-gray-500 uppercase tracking-widest">Aanmeldingen:</span>
+                        <span class="text-xs font-bold text-firda-blue-600 bg-firda-blue-50 px-2 py-0.5 rounded-full">
+                            {(e as any).registrationCount || 0}
+                        </span>
+                    </div>
                     
                     {showProject && e.projects?.title && (
                       <div class="mt-3 pt-3 border-t border-firda-gray-50">
