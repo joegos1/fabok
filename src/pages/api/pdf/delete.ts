@@ -16,7 +16,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
 
     const formData = await request.formData();
     const pdfId = formData.get('pdfId')?.toString();
-    const redirectTo = formData.get('redirectTo')?.toString() || '/dashboard';
+    const redirectTo = formData.get('redirectTo')?.toString() || '/dashboard/overzicht';
 
     if (!pdfId) {
       return redirect(`${redirectTo}?error=Ongeldige PDF`);
@@ -77,6 +77,6 @@ export const POST: APIRoute = async ({ request, redirect }) => {
     return redirect(`${redirectTo}?message=pdf_deleted`);
   } catch (error) {
     console.error('Error:', error);
-    return redirect('/dashboard?error=Er is een fout opgetreden');
+    return redirect('/dashboard/overzicht?error=Er is een fout opgetreden');
   }
 };

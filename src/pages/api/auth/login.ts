@@ -54,7 +54,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
 
     // Use Headers to properly set multiple Set-Cookie headers
     const headers = new Headers();
-    headers.set('Location', '/dashboard');
+    headers.set('Location', '/dashboard/overzicht');
     cookies.forEach(cookie => headers.append('Set-Cookie', cookie));
 
     // Use 303 See Other for POST->GET redirect (more appropriate than 302)
