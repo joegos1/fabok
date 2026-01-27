@@ -222,7 +222,11 @@ const formattedTime = startDate.toLocaleTimeString("nl-NL", {
         </div>
 
         <div class="p-0">
-            <EventRegistrationsList registrations={regList} />
+            <EventRegistrationsList
+                registrations={regList}
+                eventId={eventId}
+                canDelete={canAccess}
+            />
         </div>
     </div>
 

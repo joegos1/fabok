@@ -10,9 +10,11 @@ import type { EventRegistration } from "../../types/database";
 
 interface Props {
     registrations: EventRegistration[];
+    eventId?: string;
+    canDelete?: boolean;
 }
 
-const { registrations } = Astro.props;
+const { registrations, eventId, canDelete = false } = Astro.props;
 
 // Formatting functies
 const formatName = (reg: EventRegistration) => {
@@ -73,24 +75,29 @@ const formatDate = (dateStr: string) => {
                 <table class="w-full text-left text-sm border-collapse">
                     <thead>
                         <tr class="border-b border-firda-gray-200">
-                            <th class="py-2 font-bold text-firda-gray-700">
+                            <th class="py-2 px-2 font-bold text-firda-gray-700">
                                 Naam
                             </th>
-                            <th class="py-2 font-bold text-firda-gray-700">
+                            <th class="py-2 px-2 font-bold text-firda-gray-700">
                                 Email
                             </th>
-                            <th class="py-2 font-bold text-firda-gray-700 hidden sm:table-cell">
+                            <th class="py-2 px-2 font-bold text-firda-gray-700 hidden sm:table-cell">
                                 Aangemeld op
                             </th>
+                            {canDelete && (
+                                <th class="py-2 px-2 font-bold text-firda-gray-700 text-right">
+                                    Actie
+                                </th>
+                            )}
                         </tr>
                     </thead>
                     <tbody class="divide-y divide-firda-gray-100">
                         {registrations.map((reg) => (
                             <tr class="group hover:bg-white/50 transition-colors">
-                                <td class="py-2 font-medium text-firda-gray-900">
+                                <td class="py-2 px-2 font-medium text-firda-gray-900">
                                     {formatName(reg)}
                                 </td>
-                                <td class="py-2 text-firda-gray-600">
+                                <td class="py-2 px-2 text-firda-gray-600">
                                     <a
                                         href={`mailto:${reg.email}`}
                                         class="hover:text-firda-blue-600 transition underline decoration-firda-blue-200 underline-offset-2"
@@ -98,9 +105,49 @@ const formatDate = (dateStr: string) => {
                                         {reg.email}
                                     </a>
                                 </td>
-                                <td class="py-2 text-firda-gray-400 text-xs hidden sm:table-cell">
+                                <td class="py-2 px-2 text-firda-gray-400 text-xs hidden sm:table-cell">
                                     {formatDate(reg.created_at)}
                                 </td>
+                                {canDelete && (
+                                    <td class="py-2 px-2 text-right">
+                                        <form
+                                            action="/api/agenda/delete-registration"
+                                            method="POST"
+                                            onsubmit={`return confirm('Weet je zeker dat je de aanmelding van ${formatName(reg)} wilt verwijderen?')`}
+                                            class="inline-block"
+                                        >
+                                            <input
+                                                type="hidden"
+                                                name="registrationId"
+                                                value={reg.id}
+                                            />
+                                            <input
+                                                type="hidden"
+                                                name="eventId"
+                                                value={eventId}
+                                            />
+                                            <button
+                                                type="submit"
+                                                class="p-1.5 text-firda-gray-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition-all"
+                                                title="Verwijder aanmelding"
+                                            >
+                                                <svg
+                                                    class="w-4 h-4"
+                                                    fill="none"
+                                                    stroke="currentColor"
+                                                    viewBox="0 0 24 24"
+                                                >
+                                                    <path
+                                                        stroke-linecap="round"
+                                                        stroke-linejoin="round"
+                                                        stroke-width="2"
+                                                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
+                                                    />
+                                                </svg>
+                                            </button>
+                                        </form>
+                                    </td>
+                                )}
                             </tr>
                         ))}
                     </tbody>
