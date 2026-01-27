@@ -27,11 +27,13 @@ if (!id) {
 }
 
 // Haal evenement op
-const { data: event, error: eventError } = await supabaseAdmin
+const { data: eventData, error: eventError } = await supabaseAdmin
     .from("project_events")
     .select("*, projects(title)")
     .eq("id", id)
     .single();
+
+const event = eventData as any;
 
 if (eventError || !event) {
     console.error("Error fetching event:", eventError);
@@ -46,7 +48,8 @@ let query = supabaseAdmin
 if (!isAdmin) {
     query = query.eq("owner_id", profile.id);
 }
-const { data: projects } = await query.order("title", { ascending: true });
+const { data: projectsData } = await query.order("title", { ascending: true });
+const projects = (projectsData || []) as any[];
 
 // Formatteer datum en tijd voor de inputs
 const startDate = new Date(event.start_date);
@@ -101,7 +104,7 @@ const timeVal = startDate.toTimeString().split(" ")[0].substring(0, 5);
                     class="w-full px-4 py-2 border border-firda-gray-300 rounded-lg focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 bg-white"
                 >
                     {
-                        projects?.map((project) => (
+                        projects?.map((project: any) => (
                             <option
                                 value={project.id}
                                 selected={project.id === event.project_id}

@@ -31,7 +31,8 @@ if (!isAdmin) {
     query = query.eq("owner_id", profile.id);
 }
 
-const { data: projects } = await query.order("title", { ascending: true });
+const { data: projectsData } = await query.order("title", { ascending: true });
+const projects = (projectsData || []) as any[];
 
 // Tijdstip afronden op hele uren voor de default
 const defaultStart = new Date();
@@ -86,7 +87,7 @@ const defaultTime = defaultStart.toTimeString().split(" ")[0].substring(0, 5);
                 >
                     <option value="">Selecteer een project...</option>
                     {
-                        projects?.map((project) => (
+                        projects?.map((project: any) => (
                             <option value={project.id}>{project.title}</option>
                         ))
                     }

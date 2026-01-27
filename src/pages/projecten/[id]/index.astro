@@ -5,23 +5,23 @@
  * Toont alle informatie van één VABOK project
  */
 
-import Layout from "../../../layouts/Layout.astro";
-import PdfList from "../../../components/pdf/PdfList.astro";
-import ImageMagnifier from "../../../components/common/ImageMagnifier.astro";
-import AgendaSection from "../../../components/agenda/AgendaSection.astro";
+import Layout from "../../../../layouts/Layout.astro";
+import PdfList from "../../../../components/pdf/PdfList.astro";
+import ImageMagnifier from "../../../../components/common/ImageMagnifier.astro";
+import AgendaSection from "../../../../components/agenda/AgendaSection.astro";
 import {
   supabaseAdmin,
   getCurrentUser,
   getUserProfile,
   isAdmin,
   isProjectEditor,
-} from "../../../lib";
+} from "../../../../lib";
 import type {
   Project,
   PdfFile,
   ProjectEvent,
   EventRegistration,
-} from "../../../types/database";
+} from "../../../../types/database";
 
 // Haal project ID uit URL
 const { id } = Astro.params;
@@ -152,7 +152,7 @@ const projectEvents = ((projectEventsData || []) as ProjectEvent[]).map(
           {
             project.tags && project.tags.length > 0 && (
               <div class="flex flex-wrap gap-2 mb-6">
-                {project.tags.map((tag) => (
+                {project.tags.map((tag: string) => (
                   <span class="px-3 py-1 text-sm font-medium rounded-full bg-firda-blue-50 text-firda-blue-600">
                     {tag}
                   </span>
@@ -181,7 +181,7 @@ const projectEvents = ((projectEventsData || []) as ProjectEvent[]).map(
                 {project.full_description
                   .split("\n")
                   .map(
-                    (paragraph) =>
+                    (paragraph: string) =>
                       paragraph.trim() && <p class="mb-4">{paragraph}</p>,
                   )}
               </div>
@@ -211,7 +211,7 @@ const projectEvents = ((projectEventsData || []) as ProjectEvent[]).map(
               </h2>
               <div class="prose prose-lg max-w-none text-firda-gray-700">
                 {project.goals.split("\n").map(
-                  (goal) =>
+                  (goal: string) =>
                     goal.trim() && (
                       <div class="flex items-start mb-3">
                         <svg
@@ -555,7 +555,7 @@ const projectEvents = ((projectEventsData || []) as ProjectEvent[]).map(
     );
     if (!images || images.length === 0) return;
 
-    const applySmartFit = (img) => {
+    const applySmartFit = (img: HTMLImageElement) => {
       try {
         const w = img.naturalWidth;
         const h = img.naturalHeight;
@@ -576,7 +576,8 @@ const projectEvents = ((projectEventsData || []) as ProjectEvent[]).map(
       }
     };
 
-    images.forEach((img) => {
+    images.forEach((el) => {
+      const img = el as HTMLImageElement;
       if (img.complete) applySmartFit(img);
       else
         img.addEventListener("load", () => applySmartFit(img), { once: true });
