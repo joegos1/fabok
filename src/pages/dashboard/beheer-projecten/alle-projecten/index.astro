@@ -5,9 +5,9 @@
  * Overzicht van alle projecten voor administrators
  */
 
-import DashboardLayout from '../../../layouts/DashboardLayout.astro';
-import { requireAuth, supabaseAdmin } from '../../../lib';
-import ConfirmDialog from '../../../components/common/ConfirmDialog.astro';
+import DashboardLayout from '../../../../layouts/DashboardLayout.astro';
+import { requireAuth, supabaseAdmin } from '../../../../lib';
+import ConfirmDialog from '../../../../components/common/ConfirmDialog.astro';
 
 // Check authenticatie en autorisatie
 const auth = await requireAuth(Astro.request);

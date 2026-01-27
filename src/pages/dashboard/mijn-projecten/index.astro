@@ -4,9 +4,9 @@
  * ================================
  */
 
-import DashboardLayout from "../../layouts/DashboardLayout.astro";
-import { requireAuth, supabaseAdmin } from "../../lib";
-import type { Project } from "../../types/database";
+import DashboardLayout from "../../../layouts/DashboardLayout.astro";
+import { requireAuth, supabaseAdmin } from "../../../lib";
+import type { Project } from "../../../types/database";
 
 // Check authenticatie
 const auth = await requireAuth(Astro.request);

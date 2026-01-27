@@ -5,9 +5,9 @@
  * Beheer alle evenementen voor projecten.
  */
 
-import DashboardLayout from '../../../layouts/DashboardLayout.astro';
-import { requireAuth, supabaseAdmin } from '../../../lib';
-import ConfirmDialog from '../../../components/common/ConfirmDialog.astro';
+import DashboardLayout from '../../../../layouts/DashboardLayout.astro';
+import { requireAuth, supabaseAdmin } from '../../../../lib';
+import ConfirmDialog from '../../../../components/common/ConfirmDialog.astro';
 
 // Check authenticatie
 const auth = await requireAuth(Astro.request);

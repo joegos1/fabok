@@ -5,8 +5,8 @@
  * Login pagina met e-mail en wachtwoord
  */
 
-import Layout from "../layouts/Layout.astro";
-import { getCurrentUser } from "../lib";
+import Layout from "../../layouts/Layout.astro";
+import { getCurrentUser } from "../../lib";
 
 // Check of gebruiker al ingelogd is met een geldige token
 const cookies = Astro.request.headers.get("cookie") || "";

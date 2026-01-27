@@ -5,62 +5,97 @@
  * Registratie pagina voor nieuwe gebruikers
  */
 
-import Layout from '../layouts/Layout.astro';
-import { getCurrentUser } from '../lib';
+import Layout from "../../layouts/Layout.astro";
+import { getCurrentUser } from "../../lib";
 
 // Check of gebruiker al ingelogd is
-const cookies = Astro.request.headers.get('cookie') || '';
+const cookies = Astro.request.headers.get("cookie") || "";
 const accessTokenMatch = cookies.match(/sb-access-token=([^;]+)/);
 const accessToken = accessTokenMatch ? accessTokenMatch[1] : null;
 
 if (accessToken && accessToken.length > 0) {
   const user = await getCurrentUser(accessToken);
   if (user) {
-    return Astro.redirect('/dashboard/overzicht');
+    return Astro.redirect("/dashboard/overzicht");
   }
 }
 
 // Check voor error/success message in URL
 const url = new URL(Astro.request.url);
-const error = url.searchParams.get('error');
-const message = url.searchParams.get('message');
+const error = url.searchParams.get("error");
+const message = url.searchParams.get("message");
 ---
 
 <Layout title="Account aanvragen">
-  <div class="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
+  <div
+    class="min-h-[80vh] flex items-center justify-center py-12 px-4 sm:px-6 lg:px-8"
+  >
     <div class="max-w-md w-full">
       <div class="bg-white rounded-2xl shadow-lg p-8">
         <!-- Header -->
         <div class="text-center mb-8">
-          <div class="mx-auto w-16 h-16 bg-firda-blue-100 rounded-full flex items-center justify-center mb-4">
-            <svg class="w-8 h-8 text-firda-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"></path>
+          <div
+            class="mx-auto w-16 h-16 bg-firda-blue-100 rounded-full flex items-center justify-center mb-4"
+          >
+            <svg
+              class="w-8 h-8 text-firda-blue-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M18 9v3m0 0v3m0-3h3m-3 0h-3m-2-5a4 4 0 11-8 0 4 4 0 018 0zM3 20a6 6 0 0112 0v1H3v-1z"
+              ></path>
             </svg>
           </div>
-          <h1 class="text-2xl font-bold text-firda-gray-900">Account aanvragen</h1>
+          <h1 class="text-2xl font-bold text-firda-gray-900">
+            Account aanvragen
+          </h1>
           <p class="mt-2 text-firda-gray-600">
             Vraag toegang aan tot het VABOK dashboard
           </p>
         </div>
 
         <!-- Error message -->
-        {error && (
-          <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-            {error === 'password_mismatch' && 'Wachtwoorden komen niet overeen.'}
-            {error === 'server_error' && 'Er is een serverfout opgetreden. Probeer het later opnieuw.'}
-            {error === 'email_taken' && 'Dit e-mailadres is al in gebruik.'}
-            {!['password_mismatch', 'server_error', 'email_taken'].includes(error) && error}
-          </div>
-        )}
+        {
+          error && (
+            <div class="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
+              {error === "password_mismatch" &&
+                "Wachtwoorden komen niet overeen."}
+              {error === "server_error" &&
+                "Er is een serverfout opgetreden. Probeer het later opnieuw."}
+              {error === "email_taken" && "Dit e-mailadres is al in gebruik."}
+              {!["password_mismatch", "server_error", "email_taken"].includes(
+                error,
+              ) && error}
+            </div>
+          )
+        }
 
         <!-- Info message -->
-        <div class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-sm">
+        <div
+          class="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-lg text-blue-700 text-sm"
+        >
           <p class="flex gap-2">
-            <svg class="w-5 h-5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            <svg
+              class="w-5 h-5 flex-shrink-0"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"
+              ></path>
             </svg>
             <span>
-              Na registratie moet je account worden goedgekeurd door een beheerder voordat je kunt inloggen.
+              Na registratie moet je account worden goedgekeurd door een
+              beheerder voordat je kunt inloggen.
             </span>
           </p>
         </div>
@@ -68,7 +103,10 @@ const message = url.searchParams.get('message');
         <!-- Signup form -->
         <form action="/api/auth/signup" method="POST" class="space-y-6">
           <div>
-            <label for="full_name" class="block text-sm font-medium text-firda-gray-700 mb-1">
+            <label
+              for="full_name"
+              class="block text-sm font-medium text-firda-gray-700 mb-1"
+            >
               Volledige naam
             </label>
             <input
@@ -83,7 +121,10 @@ const message = url.searchParams.get('message');
           </div>
 
           <div>
-            <label for="email" class="block text-sm font-medium text-firda-gray-700 mb-1">
+            <label
+              for="email"
+              class="block text-sm font-medium text-firda-gray-700 mb-1"
+            >
               E-mailadres
             </label>
             <input
@@ -98,7 +139,10 @@ const message = url.searchParams.get('message');
           </div>
 
           <div>
-            <label for="password" class="block text-sm font-medium text-firda-gray-700 mb-1">
+            <label
+              for="password"
+              class="block text-sm font-medium text-firda-gray-700 mb-1"
+            >
               Wachtwoord
             </label>
             <input
@@ -125,7 +169,10 @@ const message = url.searchParams.get('message');
         <div class="mt-6 text-center text-sm text-firda-gray-600">
           <p>
             Heb je al een account?
-            <a href="/login" class="text-firda-blue-600 hover:text-firda-blue-700 font-medium">
+            <a
+              href="/login"
+              class="text-firda-blue-600 hover:text-firda-blue-700 font-medium"
+            >
               Inloggen
             </a>
           </p>

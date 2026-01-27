@@ -5,8 +5,8 @@
  * dashboard/CMS voor geauthenticeerde gebruikers.
  */
 
-import DashboardLayout from "../../layouts/DashboardLayout.astro";
-import { requireAuth, supabaseAdmin } from "../../lib";
+import DashboardLayout from "../../../layouts/DashboardLayout.astro";
+import { requireAuth, supabaseAdmin } from "../../../lib";
 
 // Check authenticatie
 const auth = await requireAuth(Astro.request);
