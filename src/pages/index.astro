@@ -31,8 +31,7 @@ const accessToken = cookies.match(/sb-access-token=([^;]+)/)?.[1];
 const user = await getCurrentUser(accessToken);
 const profile = user ? await getUserProfile(user.id) : null;
 const isLoggedIn = !!user;
-const canViewRegistrations =
-  profile && (isAdmin(profile.role) || isProjectEditor(profile.role));
+const canViewRegistrations = false; // Registraties nu alleen in dashboard te zien
 
 // Haal landingpage content op
 const { data: landingContent } = await supabaseAdmin
@@ -83,10 +82,8 @@ const events = ((eventsData || []) as any[]).map((event) => ({
   ...event,
   registrationCount: allRegistrations.filter((r) => r.event_id === event.id)
     .length,
-  registrations: canViewRegistrations
-    ? allRegistrations.filter((r) => r.event_id === event.id)
-    : [],
-  canViewRegistrations,
+  canViewRegistrations: false,
+  registrations: [],
 }));
 
 const content = landingContent || {

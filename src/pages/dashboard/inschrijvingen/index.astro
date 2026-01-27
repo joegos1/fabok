@@ -1,0 +1,206 @@
+---
+/**
+ * Dashboard Inschrijvingen Overzicht
+ * =================================
+ * Toont een overzicht van alle evenementen en het aantal inschrijvingen per event.
+ */
+
+import DashboardLayout from "../../../layouts/DashboardLayout.astro";
+import { requireAuth, supabaseAdmin, isAdmin, isProjectEditor } from "../../../lib";
+import type { ProjectEvent, EventRegistration } from "../../../types/database";
+
+// Check authenticatie
+const auth = await requireAuth(Astro.request);
+if (auth.redirect) {
+  return auth.redirect;
+}
+
+const { profile } = auth;
+if (!profile) {
+  return Astro.redirect("/login");
+}
+
+// Rollen check voor toegang tot deze pagina
+const canAccess = isAdmin(profile.role) || profile.role === "landingpage_editor" || isProjectEditor(profile.role);
+if (!canAccess) {
+  return Astro.redirect("/dashboard/overzicht");
+}
+
+// Haal alle evenementen op (met project info)
+let eventsQuery = supabaseAdmin
+  .from("project_events")
+  .select(`
+    *,
+    projects(title, owner_id)
+  `)
+  .order("start_date", { ascending: false });
+
+// Filter voor project_editors (alleen eigen events)
+if (profile.role === "project_editor" && !isAdmin(profile.role)) {
+  // We filteren later in JS omdat Supabase join filtering op deze manier soms lastig is zonder RLS complexiteit
+}
+
+const { data: rawEvents } = await eventsQuery;
+
+// Filter events in JS voor project editors
+const events = (rawEvents || [])
+  .filter(event => {
+    if (profile.role === "project_editor" && !isAdmin(profile.role)) {
+      return (event as any).projects?.owner_id === profile.id;
+    }
+    return true;
+  }) as (ProjectEvent & { projects: { title: string, owner_id: string } })[];
+
+// Haal alle registraties op voor deze events
+const eventIds = events.map(e => e.id);
+let registrations: EventRegistration[] = [];
+
+if (eventIds.length > 0) {
+  const { data: regData } = await supabaseAdmin
+    .from("event_registrations")
+    .select("*")
+    .in("event_id", eventIds);
+  registrations = regData || [];
+}
+
+// Bereken statistieken
+const totalRegistrations = registrations.length;
+const totalEvents = events.length;
+const eventsWithRegistrations = events.filter(e => 
+  registrations.some(r => r.event_id === e.id)
+).length;
+
+// Map events met hun registratie counts
+const eventsWithCounts = events.map(event => ({
+  ...event,
+  count: registrations.filter(r => r.event_id === event.id).length
+}));
+---
+
+<DashboardLayout title="Inschrijvingen" profile={profile}>
+  <!-- Header Section -->
+  <div class="relative overflow-hidden rounded-2xl bg-firda-blue-600 p-8 text-white mb-8">
+    <div class="absolute top-0 right-0 -mt-10 -mr-10 h-64 w-64 rounded-full bg-white/10 blur-3xl"></div>
+    <div class="relative z-10">
+      <h1 class="text-3xl font-black tracking-tight mb-2">Inschrijvingen Overzicht</h1>
+      <p class="text-firda-blue-100 max-w-xl">
+        Beheer en bekijk alle aanmeldingen voor jouw evenementen. Klik op een kaart om de volledige lijst met namen te zien.
+      </p>
+    </div>
+  </div>
+
+  <!-- Stats Grid -->
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+    <div class="bg-white p-6 rounded-2xl border border-firda-gray-100 shadow-sm hover:shadow-md transition-shadow">
+      <div class="text-[10px] font-black text-firda-gray-400 uppercase tracking-widest mb-1">Totaal Inschrijvingen</div>
+      <div class="text-4xl font-black text-firda-blue-600 animate-value" data-value={totalRegistrations}>
+        {totalRegistrations}
+      </div>
+      <div class="mt-2 h-1 w-12 bg-firda-green-500 rounded-full"></div>
+    </div>
+    
+    <div class="bg-white p-6 rounded-2xl border border-firda-gray-100 shadow-sm hover:shadow-md transition-shadow">
+      <div class="text-[10px] font-black text-firda-gray-400 uppercase tracking-widest mb-1">Aantal Evenementen</div>
+      <div class="text-4xl font-black text-firda-gray-900">{totalEvents}</div>
+      <div class="mt-2 h-1 w-12 bg-firda-blue-500 rounded-full"></div>
+    </div>
+
+    <div class="bg-white p-6 rounded-2xl border border-firda-gray-100 shadow-sm hover:shadow-md transition-shadow">
+      <div class="text-[10px] font-black text-firda-gray-400 uppercase tracking-widest mb-1">Bezetting</div>
+      <div class="text-4xl font-black text-firda-gray-900">{eventsWithRegistrations} <span class="text-xl text-firda-gray-400 font-medium">/ {totalEvents}</span></div>
+      <div class="mt-2 h-1 w-12 bg-firda-green-500 rounded-full"></div>
+    </div>
+  </div>
+
+  <!-- Events Grid -->
+  <div class="space-y-6">
+    <h2 class="text-xl font-bold text-firda-gray-900 flex items-center gap-3">
+      Filter evenementen
+      <span class="px-2 py-0.5 bg-firda-gray-100 text-firda-gray-500 text-xs rounded-md">Alle</span>
+    </h2>
+
+    {eventsWithCounts.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        {eventsWithCounts.map((event) => {
+          const startDate = new Date(event.start_date);
+          const day = startDate.getDate();
+          const month = startDate.toLocaleString("nl-NL", { month: "short" }).replace(".", "");
+          
+          return (
+            <a 
+              href={`/dashboard/inschrijvingen/${event.id}`}
+              class="group relative bg-white rounded-2xl border border-firda-gray-100 p-6 transition-all duration-300 hover:border-firda-green-400 hover:shadow-xl hover:shadow-firda-blue-500/5 overflow-hidden"
+            >
+              <!-- Hover Background Accent -->
+              <div class="absolute top-0 right-0 -mr-8 -mt-8 w-24 h-24 bg-firda-green-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-3xl"></div>
+              
+              <div class="relative z-10">
+                <div class="flex items-start justify-between mb-4">
+                  <!-- Date Badge -->
+                  <div class="flex-shrink-0 w-12 h-12 bg-firda-blue-50 rounded-xl flex flex-col items-center justify-center border border-firda-blue-100 group-hover:bg-firda-green-500 group-hover:border-firda-green-500 transition-colors">
+                    <span class="text-xl font-black text-firda-blue-600 group-hover:text-white leading-none">{day}</span>
+                    <span class="text-[9px] font-black text-firda-blue-400 group-hover:text-firda-green-50 uppercase tracking-wider">{month}</span>
+                  </div>
+                  
+                  <!-- Counter Badge -->
+                  <div class={`px-3 py-1.5 rounded-full text-xs font-black tracking-widest flex items-center gap-2 ${event.count > 0 ? 'bg-firda-green-100 text-firda-green-700' : 'bg-firda-gray-100 text-firda-gray-400'}`}>
+                    {event.count} {event.count === 1 ? 'AANMELDING' : 'AANMELDINGEN'}
+                  </div>
+                </div>
+
+                <div class="mb-1 uppercase tracking-widest text-[9px] font-black text-firda-gray-400">Project</div>
+                <div class="text-sm font-bold text-firda-blue-600 mb-3 truncate">{event.projects?.title || "Geen project"}</div>
+                
+                <h3 class="text-lg font-black text-firda-gray-900 group-hover:text-firda-blue-600 transition-colors leading-tight mb-4">
+                  {event.title}
+                </h3>
+
+                <div class="flex items-center gap-4 pt-4 border-t border-firda-gray-50">
+                  <div class="flex items-center gap-2 text-xs text-firda-gray-500 font-medium">
+                    <svg class="w-4 h-4 text-firda-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"></path>
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"></path>
+                    </svg>
+                    {event.location || "Niet opgegeven"}
+                  </div>
+                </div>
+              </div>
+
+              <!-- Arrow Icon -->
+              <div class="absolute bottom-6 right-6 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0 transition-all duration-300">
+                <svg class="w-5 h-5 text-firda-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+                </svg>
+              </div>
+            </a>
+          );
+        })}
+      </div>
+    ) : (
+      <div class="py-20 text-center bg-firda-gray-50 rounded-3xl border-2 border-dashed border-firda-gray-200">
+        <div class="w-20 h-20 bg-firda-gray-100 rounded-full flex items-center justify-center mx-auto mb-6">
+          <svg class="w-10 h-10 text-firda-gray-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v14a2 2 0 002 2z"></path>
+          </svg>
+        </div>
+        <h3 class="text-xl font-bold text-firda-gray-900 mb-2">Geen evenementen gevonden</h3>
+        <p class="text-firda-gray-500 mb-8 max-w-sm mx-auto">Er zijn momenteel geen evenementen om inschrijvingen voor te tonen.</p>
+        <a href="/dashboard/agenda/overzicht" class="inline-flex items-center px-6 py-3 bg-firda-blue-600 text-white font-bold rounded-xl hover:bg-firda-blue-700 transition">
+          Ga naar Agenda
+        </a>
+      </div>
+    )}
+  </div>
+</DashboardLayout>
+
+<style>
+  @keyframes countUp {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .animate-value {
+    display: inline-block;
+    animation: countUp 0.5s ease-out forwards;
+  }
+</style>

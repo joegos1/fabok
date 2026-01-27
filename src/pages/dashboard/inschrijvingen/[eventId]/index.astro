@@ -1,0 +1,264 @@
+---
+/**
+ * Dashboard Inschrijvingen Detail
+ * ===============================
+ * Toont de volledige lijst van inschrijvingen voor een specifiek evenement.
+ */
+
+import DashboardLayout from "../../../../layouts/DashboardLayout.astro";
+import {
+    requireAuth,
+    supabaseAdmin,
+    isAdmin,
+    isProjectEditor,
+} from "../../../../lib";
+import EventRegistrationsList from "../../../../components/agenda/EventRegistrationsList.astro";
+
+const { eventId } = Astro.params;
+
+if (!eventId) {
+    return Astro.redirect("/dashboard/inschrijvingen");
+}
+
+// Check authenticatie
+const auth = await requireAuth(Astro.request);
+if (auth.redirect) {
+    return auth.redirect;
+}
+
+const { profile } = auth;
+if (!profile) {
+    return Astro.redirect("/login");
+}
+
+// Haal event details op
+const { data: event, error: eventError } = await supabaseAdmin
+    .from("project_events")
+    .select(
+        `
+    *,
+    projects(id, title, owner_id)
+  `,
+    )
+    .eq("id", eventId)
+    .single();
+
+if (eventError || !event) {
+    return Astro.redirect("/dashboard/inschrijvingen");
+}
+
+// Rollen check voor toegang tot dit specifieke event
+const isOwner = (event as any).projects?.owner_id === profile.id;
+const canAccess =
+    isAdmin(profile.role) ||
+    profile.role === "landingpage_editor" ||
+    (isProjectEditor(profile.role) && isOwner);
+
+if (!canAccess) {
+    return Astro.redirect("/dashboard/inschrijvingen");
+}
+
+// Haal alle registraties op
+const { data: registrations } = await supabaseAdmin
+    .from("event_registrations")
+    .select("*")
+    .eq("event_id", eventId)
+    .order("created_at", { ascending: false });
+
+const regList = registrations || [];
+
+// Formatting
+const startDate = new Date(event.start_date);
+const formattedDate = startDate.toLocaleDateString("nl-NL", {
+    day: "numeric",
+    month: "long",
+    year: "numeric",
+});
+const formattedTime = startDate.toLocaleTimeString("nl-NL", {
+    hour: "2-digit",
+    minute: "2-digit",
+});
+---
+
+<DashboardLayout title={`Inschrijvingen - ${event.title}`} profile={profile}>
+    <div class="mb-8">
+        <a
+            href="/dashboard/inschrijvingen"
+            class="inline-flex items-center text-sm font-bold text-firda-gray-400 hover:text-firda-blue-600 transition-colors mb-6 group"
+        >
+            <svg
+                class="w-4 h-4 mr-2 transform group-hover:-translate-x-1 transition-transform"
+                fill="none"
+                stroke="currentColor"
+                viewBox="0 0 24 24"
+            >
+                <path
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    stroke-width="3"
+                    d="M15 19l-7-7 7-7"></path>
+            </svg>
+            Terug naar overzicht
+        </a>
+
+        <div
+            class="flex flex-col lg:flex-row lg:items-end justify-between gap-6"
+        >
+            <div>
+                <div class="flex items-center gap-3 mb-2">
+                    <span
+                        class="px-2.5 py-1 bg-firda-blue-100 text-firda-blue-700 text-[10px] font-black tracking-widest uppercase rounded-md"
+                    >
+                        Event Detail
+                    </span>
+                    <span class="text-firda-gray-300">•</span>
+                    <span class="text-sm font-bold text-firda-blue-600"
+                        >{(event as any).projects?.title}</span
+                    >
+                </div>
+                <h1
+                    class="text-3xl lg:text-4xl font-black text-firda-gray-900 tracking-tight leading-tight"
+                >
+                    {event.title}
+                </h1>
+            </div>
+
+            <div class="flex flex-wrap gap-4">
+                <div
+                    class="flex items-center gap-4 p-4 bg-firda-gray-50 rounded-2xl border border-firda-gray-100"
+                >
+                    <div
+                        class="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-firda-blue-600 border border-firda-blue-50"
+                    >
+                        <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2-2v14a2 2 0 002 2z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div
+                            class="text-[9px] font-black text-firda-gray-400 uppercase tracking-widest"
+                        >
+                            Datum & Tijd
+                        </div>
+                        <div class="text-sm font-bold text-firda-gray-800">
+                            {formattedDate} • {formattedTime}
+                        </div>
+                    </div>
+                </div>
+
+                <div
+                    class="flex items-center gap-4 p-4 bg-firda-gray-50 rounded-2xl border border-firda-gray-100"
+                >
+                    <div
+                        class="w-10 h-10 bg-white rounded-xl shadow-sm flex items-center justify-center text-firda-green-600 border border-firda-green-50"
+                    >
+                        <svg
+                            class="w-5 h-5"
+                            fill="none"
+                            stroke="currentColor"
+                            viewBox="0 0 24 24"
+                        >
+                            <path
+                                stroke-linecap="round"
+                                stroke-linejoin="round"
+                                stroke-width="2"
+                                d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+                            ></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <div
+                            class="text-[9px] font-black text-firda-gray-400 uppercase tracking-widest"
+                        >
+                            Totaal Aanmeldingen
+                        </div>
+                        <div class="text-sm font-bold text-firda-gray-800">
+                            {regList.length} personen
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div
+        class="bg-white rounded-3xl border border-firda-gray-100 shadow-xl shadow-firda-blue-500/5 overflow-hidden"
+    >
+        <div
+            class="p-8 border-b border-firda-gray-50 flex items-center justify-between"
+        >
+            <h2 class="text-xl font-black text-firda-gray-900 tracking-tight">
+                Deelnemerslijst
+            </h2>
+            <button
+                onclick="window.print()"
+                class="inline-flex items-center px-4 py-2 text-sm font-bold text-firda-blue-600 hover:bg-firda-blue-50 rounded-xl transition-colors"
+            >
+                <svg
+                    class="w-4 h-4 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                >
+                    <path
+                        stroke-linecap="round"
+                        stroke-linejoin="round"
+                        stroke-width="2"
+                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                    ></path>
+                </svg>
+                Print Lijst
+            </button>
+        </div>
+
+        <div class="p-0">
+            <EventRegistrationsList registrations={regList} />
+        </div>
+    </div>
+
+    {
+        event.description && (
+            <div class="mt-8 p-8 bg-firda-gray-50 rounded-3xl border border-firda-gray-100">
+                <h3 class="text-sm font-black text-firda-gray-400 uppercase tracking-widest mb-4">
+                    Event Omschrijving
+                </h3>
+                <p class="text-firda-gray-600 leading-relaxed max-w-3xl">
+                    {event.description}
+                </p>
+            </div>
+        )
+    }
+</DashboardLayout>
+
+<style is:global>
+    /* Verstop sidebar en header bij printen */
+    @media print {
+        aside,
+        nav,
+        .lg\:col-span-1,
+        .lg\:w-64,
+        header,
+        footer,
+        a[href="/dashboard/inschrijvingen"] {
+            display: none !important;
+        }
+        .max-w-7xl {
+            max-width: 100% !important;
+            padding: 0 !important;
+        }
+        .shadow-xl,
+        .shadow-sm {
+            box-shadow: none !important;
+        }
+    }
+</style>
