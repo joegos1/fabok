@@ -5,23 +5,23 @@
  * Toont alle informatie van één VABOK project
  */
 
-import Layout from "../../../../layouts/Layout.astro";
-import PdfList from "../../../../components/pdf/PdfList.astro";
-import ImageMagnifier from "../../../../components/common/ImageMagnifier.astro";
-import AgendaSection from "../../../../components/agenda/AgendaSection.astro";
+import Layout from "../../../layouts/Layout.astro";
+import PdfList from "../../../components/pdf/PdfList.astro";
+import ImageMagnifier from "../../../components/common/ImageMagnifier.astro";
+import AgendaSection from "../../../components/agenda/AgendaSection.astro";
 import {
   supabaseAdmin,
   getCurrentUser,
   getUserProfile,
   isAdmin,
   isProjectEditor,
-} from "../../../../lib";
+} from "../../../lib";
 import type {
   Project,
   PdfFile,
   ProjectEvent,
   EventRegistration,
-} from "../../../../types/database";
+} from "../../../types/database";
 
 // Haal project ID uit URL
 const { id } = Astro.params;
