@@ -146,22 +146,17 @@ const content = landingContent || {
   }
 
   <!-- VABOK Banner Transitie -->
-  <section class="relative z-30 -mt-8 sm:-mt-12 lg:-mt-16">
+  <section class="relative z-30 -mt-2 sm:-mt-4 lg:-mt-6">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="relative group">
-        <div
-          class="absolute -inset-1 bg-gradient-to-r from-firda-green-500/20 to-firda-blue-500/20 rounded-[2rem] lg:rounded-[3rem] blur-xl opacity-0 group-hover:opacity-100 transition duration-1000"
-        >
-        </div>
-        <div
-          class="relative bg-white rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] border-4 lg:border-[12px] border-white"
-        >
-          <Image
-            src={CollageVabok}
-            alt="VABOK Collage"
-            class="w-full h-auto object-cover max-h-[300px] sm:max-h-[400px] lg:max-h-[600px] hover:scale-105 transition-transform duration-[2s] ease-out"
-          />
-        </div>
+      <div
+        class="flex justify-center animate-fade-in-up"
+        style="animation-delay: 0.3s;"
+      >
+        <Image
+          src={CollageVabok}
+          alt="VABOK"
+          class="w-full max-w-4xl h-auto drop-shadow-xl"
+        />
       </div>
     </div>
   </section>
