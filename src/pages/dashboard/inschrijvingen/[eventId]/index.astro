@@ -66,6 +66,11 @@ const { data: registrations } = await supabaseAdmin
     .order("created_at", { ascending: false });
 
 const regList = registrations || [];
+const bccList = regList
+    .map((reg) => reg.email)
+    .filter(Boolean)
+    .join(",");
+const mailtoHref = bccList ? `mailto:?bcc=${encodeURIComponent(bccList)}` : "mailto:";
 
 // Formatting
 const startDate = new Date(event.start_date);
@@ -200,25 +205,49 @@ const formattedTime = startDate.toLocaleTimeString("nl-NL", {
             <h2 class="text-xl font-black text-firda-gray-900 tracking-tight">
                 Deelnemerslijst
             </h2>
-            <button
-                onclick="window.print()"
-                class="inline-flex items-center px-4 py-2 text-sm font-bold text-firda-blue-600 hover:bg-firda-blue-50 rounded-xl transition-colors"
-            >
-                <svg
-                    class="w-4 h-4 mr-2"
-                    fill="none"
-                    stroke="currentColor"
-                    viewBox="0 0 24 24"
+            <div class="flex items-center gap-3">
+                <a
+                    href={mailtoHref}
+                    aria-disabled={!bccList}
+                    class={`inline-flex items-center px-4 py-2 text-sm font-bold text-firda-blue-600 hover:bg-firda-blue-50 rounded-xl transition-colors ${
+                        bccList ? "" : "opacity-50 pointer-events-none"
+                    }`}
                 >
-                    <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
-                    ></path>
-                </svg>
-                Print Lijst
-            </button>
+                    <svg
+                        class="w-4 h-4 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8m-18 8h18a2 2 0 002-2V8a2 2 0 00-2-2H3a2 2 0 00-2 2v6a2 2 0 002 2z"
+                        ></path>
+                    </svg>
+                    Email lijst
+                </a>
+                <button
+                    onclick="window.print()"
+                    class="inline-flex items-center px-4 py-2 text-sm font-bold text-firda-blue-600 hover:bg-firda-blue-50 rounded-xl transition-colors"
+                >
+                    <svg
+                        class="w-4 h-4 mr-2"
+                        fill="none"
+                        stroke="currentColor"
+                        viewBox="0 0 24 24"
+                    >
+                        <path
+                            stroke-linecap="round"
+                            stroke-linejoin="round"
+                            stroke-width="2"
+                            d="M17 17h2a2 2 0 002-2v-4a2 2 0 00-2-2H5a2 2 0 00-2 2v4a2 2 0 002 2h2m2 4h6a2 2 0 002-2v-4a2 2 0 00-2-2H9a2 2 0 00-2 2v4a2 2 0 002 2zm8-12V5a2 2 0 00-2-2H9a2 2 0 00-2 2v4h10z"
+                        ></path>
+                    </svg>
+                    Print Lijst
+                </button>
+            </div>
         </div>
 
         <div class="p-0">
