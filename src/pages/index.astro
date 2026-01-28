@@ -72,69 +72,56 @@ const content = landingContent || {
     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent">
     </div>
 
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid gap-12 lg:grid-cols-5 lg:items-center">
-        <!-- Tekst content -->
-        <div class="lg:col-span-3 max-w-2xl animate-fade-in-up">
-          <h1
-            class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight"
-          >
-            {content.title}
-          </h1>
-          <p class="text-xl text-firda-blue-100 mb-10 leading-relaxed">
-            {content.intro}
-          </p>
-          <div class="flex flex-wrap gap-5">
-            <a
-              href="/projecten/lijst"
-              class="inline-flex items-center px-8 py-4 bg-firda-green-500 text-firda-blue-900 font-black rounded-xl hover:bg-firda-green-400 transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 text-lg"
-            >
-              Bekijk projecten
-              <svg
-                class="ml-2 w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2.5"
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-              </svg>
-            </a>
-            <a
-              href="/agenda"
-              class="inline-flex items-center px-8 py-4 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-all duration-300 border border-white/20 text-lg group"
-            >
-              Bekijk agenda
-              <svg
-                class="ml-2 w-5 h-5 group-hover:translate-x-1 transition-transform"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2.5"
-                  d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                ></path>
-              </svg>
-            </a>
-          </div>
-        </div>
-
-        <!-- Decorative elements (Image or similar) -->
-        <div
-          class="lg:col-span-2 relative animate-fade-in-up flex items-center justify-center"
-          style="animation-delay: 0.2s;"
+    <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="animate-fade-in-up">
+        <h1
+          class="text-4xl sm:text-5xl lg:text-7xl font-extrabold mb-8 leading-tight"
         >
-          <Image
-            src={CollageVabok}
-            alt="VABOK"
-            class="w-full h-auto rounded-3xl shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 border-8 border-white/10"
-          />
+          {content.title}
+        </h1>
+        <p
+          class="text-xl lg:text-2xl text-firda-blue-100 mb-12 max-w-3xl mx-auto leading-relaxed"
+        >
+          {content.intro}
+        </p>
+        <div class="flex flex-wrap justify-center gap-6">
+          <a
+            href="/projecten/lijst"
+            class="inline-flex items-center px-10 py-5 bg-firda-green-500 text-firda-blue-900 font-black rounded-2xl hover:bg-firda-green-400 transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 text-xl"
+          >
+            Bekijk projecten
+            <svg
+              class="ml-2 w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </a>
+          <a
+            href="/agenda"
+            class="inline-flex items-center px-10 py-5 bg-white/10 text-white font-bold rounded-2xl hover:bg-white/20 transition-all duration-300 border border-white/20 text-xl group"
+          >
+            Bekijk agenda
+            <svg
+              class="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
+            </svg>
+          </a>
         </div>
       </div>
     </div>
@@ -159,25 +146,22 @@ const content = landingContent || {
   }
 
   <!-- VABOK Banner Transitie -->
-  <section class="relative h-[400px] lg:h-[600px] overflow-hidden group">
-    <div
-      class="absolute inset-0 z-10 bg-gradient-to-b from-firda-blue-600 via-transparent to-white pointer-events-none"
-    >
-    </div>
-    <Image
-      src={CollageVabok}
-      alt="VABOK Collage"
-      class="w-full h-full object-cover scale-110 group-hover:scale-105 transition-transform duration-[3s] ease-out opacity-90"
-    />
-    <div class="absolute inset-0 z-20 flex items-center justify-center">
-      <div class="text-center space-y-4 px-4">
-        <div class="h-px w-20 bg-firda-green-500 mx-auto"></div>
-        <h3
-          class="text-white text-3xl font-black tracking-[0.2em] uppercase drop-shadow-2xl"
+  <section class="relative z-30 -mt-8 sm:-mt-12 lg:-mt-16">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="relative group">
+        <div
+          class="absolute -inset-1 bg-gradient-to-r from-firda-green-500/20 to-firda-blue-500/20 rounded-[2rem] lg:rounded-[3rem] blur-xl opacity-0 group-hover:opacity-100 transition duration-1000"
         >
-          Verbinden & Versterken
-        </h3>
-        <div class="h-px w-20 bg-firda-green-500 mx-auto"></div>
+        </div>
+        <div
+          class="relative bg-white rounded-[2rem] lg:rounded-[3rem] overflow-hidden shadow-[0_20px_50px_rgba(0,0,0,0.15)] border-4 lg:border-[12px] border-white"
+        >
+          <Image
+            src={CollageVabok}
+            alt="VABOK Collage"
+            class="w-full h-auto object-cover max-h-[300px] sm:max-h-[400px] lg:max-h-[600px] hover:scale-105 transition-transform duration-[2s] ease-out"
+          />
+        </div>
       </div>
     </div>
   </section>
