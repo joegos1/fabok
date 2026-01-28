@@ -10,19 +10,8 @@ import PdfList from "../components/pdf/PdfList.astro";
 import ProjectCard from "../components/project/ProjectCard.astro";
 import { Image } from "astro:assets";
 import CollageVabok from "../assets/collage-vabok.png";
-import type {
-  School,
-  ProjectEvent,
-  EventRegistration,
-} from "../types/database";
-import {
-  supabaseAdmin,
-  getCurrentUser,
-  getUserProfile,
-  isAdmin,
-  isProjectEditor,
-} from "../lib";
-import AgendaSection from "../components/agenda/AgendaSection.astro";
+import type { School } from "../types/database";
+import { supabaseAdmin, getCurrentUser, getUserProfile } from "../lib";
 import SchoolMap from "../components/SchoolMap.astro";
 
 // Auth check voor registraties
@@ -63,28 +52,9 @@ const { data: schoolsData } = await supabaseAdmin
 
 const schools = (schoolsData || []) as School[];
 
-// Haal aankomende en recente evenementen op voor de kalender
-const { data: eventsData } = await supabaseAdmin
-  .from("project_events")
-  .select("*, projects(title)")
-  .order("start_date", { ascending: true });
-
-// Haal alle registraties op voor deze events
-const eventIds = ((eventsData || []) as any[]).map((e) => e.id);
-const { data: allRegistrationsData } = await supabaseAdmin
-  .from("event_registrations")
-  .select("*")
-  .in("event_id", eventIds);
-
-const allRegistrations = (allRegistrationsData || []) as EventRegistration[];
-
-const events = ((eventsData || []) as any[]).map((event) => ({
-  ...event,
-  registrationCount: allRegistrations.filter((r) => r.event_id === event.id)
-    .length,
-  canViewRegistrations: false,
-  registrations: [],
-}));
+// Haal aankomende en recente evenementen op (enkel voor check of er events zijn voor de CTA indien gewenst, maar we houden het simpel)
+// const { data: eventsData } = ...
+// Registratie-gerelateerde code verwijderd, dit staat nu op /agenda
 
 const content = landingContent || {
   title: "VABOK - Versterken van de Aansluiting in de Beroepskolom",
@@ -102,56 +72,56 @@ const content = landingContent || {
     <div class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent">
     </div>
 
-    <div class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid gap-12 lg:grid-cols-5 lg:items-center">
-        <!-- Tekst content -->
-        <div class="lg:col-span-3 max-w-2xl animate-fade-in-up">
-          <h1
-            class="text-4xl sm:text-5xl lg:text-6xl font-extrabold mb-6 leading-tight"
-          >
-            {content.title}
-          </h1>
-          <p class="text-xl text-firda-blue-100 mb-10 leading-relaxed">
-            {content.intro}
-          </p>
-          <div class="flex flex-wrap gap-5">
-            <a
-              href="/projecten/lijst"
-              class="inline-flex items-center px-8 py-4 bg-firda-green-500 text-firda-blue-900 font-black rounded-xl hover:bg-firda-green-400 transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 text-lg"
-            >
-              Bekijk projecten
-              <svg
-                class="ml-2 w-6 h-6"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-              >
-                <path
-                  stroke-linecap="round"
-                  stroke-linejoin="round"
-                  stroke-width="2.5"
-                  d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
-              </svg>
-            </a>
-            <a
-              href="#documenten"
-              class="inline-flex items-center px-8 py-4 bg-white/10 text-white font-bold rounded-xl hover:bg-white/20 transition-all duration-300 border border-white/20 text-lg"
-            >
-              Documenten
-            </a>
-          </div>
-        </div>
-
-        <!-- Decorative elements (Image or similar) -->
-        <div
-          class="lg:col-span-2 relative animate-fade-in-up flex items-center justify-center"
-          style="animation-delay: 0.2s;"
+    <div class="relative max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="animate-fade-in-up">
+        <h1
+          class="text-4xl sm:text-5xl lg:text-7xl font-extrabold mb-8 leading-tight"
         >
-          <Image
-            src={CollageVabok}
-            alt="VABOK"
-            class="w-full h-auto rounded-3xl shadow-2xl rotate-2 hover:rotate-0 transition-transform duration-700 border-8 border-white/10"
-          />
+          {content.title}
+        </h1>
+        <p
+          class="text-xl lg:text-2xl text-firda-blue-100 mb-12 max-w-3xl mx-auto leading-relaxed"
+        >
+          {content.intro}
+        </p>
+        <div class="flex flex-wrap justify-center gap-6">
+          <a
+            href="/projecten/lijst"
+            class="inline-flex items-center px-10 py-5 bg-firda-green-500 text-firda-blue-900 font-black rounded-2xl hover:bg-firda-green-400 transition-all duration-300 shadow-xl hover:scale-105 active:scale-95 text-xl"
+          >
+            Bekijk projecten
+            <svg
+              class="ml-2 w-6 h-6"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M13 7l5 5m0 0l-5 5m5-5H6"></path>
+            </svg>
+          </a>
+          <a
+            href="/agenda"
+            class="inline-flex items-center px-10 py-5 bg-white/10 text-white font-bold rounded-2xl hover:bg-white/20 transition-all duration-300 border border-white/20 text-xl group"
+          >
+            Bekijk agenda
+            <svg
+              class="ml-2 w-6 h-6 group-hover:translate-x-1 transition-transform"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2.5"
+                d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+              ></path>
+            </svg>
+          </a>
         </div>
       </div>
     </div>
@@ -175,88 +145,11 @@ const content = landingContent || {
     )
   }
 
-  <!-- Collage (Nu compacter binnenshuis) -->
-  <div class="w-full bg-white py-4 -mt-10 relative z-20">
-    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <!-- Verwijderd hier, staat nu in de hero -->
-    </div>
-  </div>
-
-  <!-- Agenda Sectie -->
-  <section
-    class="py-20 bg-firda-gray-50 border-y border-firda-gray-100"
-    id="agenda-section"
-  >
+  <!-- VABOK Banner Transitie -->
+  <section class="relative z-30 py-10">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="grid lg:grid-cols-12 gap-12">
-        <!-- Linker kant: Tekst -->
-        <div class="lg:col-span-4 space-y-6">
-          <div>
-            <span
-              class="inline-block px-3 py-1 bg-firda-blue-100 text-firda-blue-700 text-[10px] font-black tracking-widest uppercase rounded-full mb-3"
-            >
-              Evenementen
-            </span>
-            <h2
-              class="text-3xl lg:text-4xl font-black text-firda-gray-900 leading-tight"
-            >
-              BLIJF OP DE <span class="text-firda-blue-600">HOOGTE</span>
-            </h2>
-          </div>
-          <p class="text-firda-gray-600 leading-relaxed">
-            Bekijk onze aankomende fysieke en online bijeenkomsten. Meld je
-            direct aan om deel te nemen aan onze projecten en kennisdeling
-            sessies.
-          </p>
-          <div class="pt-4">
-            <div
-              class="flex items-center gap-4 p-4 bg-white rounded-2xl border border-firda-gray-200 shadow-sm"
-            >
-              <div
-                class="w-12 h-12 rounded-xl bg-firda-green-500 text-white flex items-center justify-center shadow-lg shadow-firda-green-500/20"
-              >
-                <svg
-                  class="w-6 h-6"
-                  fill="none"
-                  stroke="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2.5"
-                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
-                  ></path>
-                </svg>
-              </div>
-              <div>
-                <div
-                  class="text-[10px] font-black text-firda-gray-400 border-b border-firda-gray-100 mb-1 uppercase tracking-widest"
-                >
-                  Wist je dat?
-                </div>
-                <div class="text-sm font-bold text-firda-gray-800">
-                  Aanmelden is gratis voor iedereen.
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Rechter kant: Agenda -->
-        <div class="lg:col-span-8">
-          <div
-            class="bg-white p-6 rounded-3xl border border-firda-gray-200 shadow-xl overflow-hidden"
-          >
-            <AgendaSection
-              events={events}
-              showProject={true}
-              title=""
-              fullWidth={true}
-              showList={true}
-            />
-          </div>
-        </div>
+      <div class="flex justify-center">
+        <Image src={CollageVabok} alt="VABOK" class="w-full max-w-5xl h-auto" />
       </div>
     </div>
   </section>

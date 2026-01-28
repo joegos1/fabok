@@ -1,0 +1,133 @@
+---
+/**
+ * Agenda Pagina
+ * =============
+ * Overzicht van alle aankomende en recente evenementen
+ */
+
+import Layout from "../../layouts/Layout.astro";
+import { supabaseAdmin, getCurrentUser, getUserProfile } from "../../lib";
+import AgendaSection from "../../components/agenda/AgendaSection.astro";
+import type { EventRegistration } from "../../types/database";
+
+// Auth check
+const cookies = Astro.request.headers.get("cookie") || "";
+const accessToken = cookies.match(/sb-access-token=([^;]+)/)?.[1];
+const user = await getCurrentUser(accessToken);
+const profile = user ? await getUserProfile(user.id) : null;
+
+// Haal alle evenementen op
+const { data: eventsData } = await supabaseAdmin
+    .from("project_events")
+    .select("*, projects(title)")
+    .order("start_date", { ascending: true });
+
+// Haal alle registraties op voor deze events
+const eventIds = ((eventsData || []) as any[]).map((e) => e.id);
+const { data: allRegistrationsData } = await supabaseAdmin
+    .from("event_registrations")
+    .select("*")
+    .in("event_id", eventIds);
+
+const allRegistrations = (allRegistrationsData || []) as EventRegistration[];
+
+const events = ((eventsData || []) as any[]).map((event) => ({
+    ...event,
+    registrationCount: allRegistrations.filter((r) => r.event_id === event.id)
+        .length,
+    canViewRegistrations: false,
+    registrations: [],
+}));
+---
+
+<Layout
+    title="Agenda"
+    description="Blijf op de hoogte van alle FABOK evenementen en bijeenkomsten."
+>
+    <section
+        class="relative bg-firda-blue-600 text-white py-20 overflow-hidden"
+    >
+        <div
+            class="absolute inset-0 bg-gradient-to-br from-white/5 to-transparent"
+        >
+        </div>
+        <div
+            class="relative max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center"
+        >
+            <h1
+                class="text-5xl lg:text-7xl font-black mb-6 tracking-tight animate-fade-in-up"
+            >
+                AGENDA
+            </h1>
+            <p
+                class="text-xl text-firda-blue-100 max-w-2xl mx-auto leading-relaxed animate-fade-in-up"
+                style="animation-delay: 0.1s;"
+            >
+                Bekijk onze aankomende fysieke en online bijeenkomsten. Meld je
+                direct aan om een van onze evenementen bij te wonen.
+            </p>
+        </div>
+    </section>
+
+    <section class="py-16 bg-white min-h-[60vh]">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div
+                class="bg-white p-2 sm:p-8 rounded-[2.5rem] border border-firda-gray-200 shadow-2xl overflow-hidden -mt-20 relative z-20"
+            >
+                <AgendaSection
+                    events={events}
+                    showProject={true}
+                    title=""
+                    fullWidth={true}
+                    showList={true}
+                />
+            </div>
+
+            {
+                events.length === 0 && (
+                    <div class="text-center py-20">
+                        <div class="w-20 h-20 bg-firda-gray-100 rounded-full flex items-center justify-center mx-auto mb-6 text-firda-gray-400">
+                            <svg
+                                class="w-10 h-10"
+                                fill="none"
+                                stroke="currentColor"
+                                viewBox="0 0 24 24"
+                            >
+                                <path
+                                    stroke-linecap="round"
+                                    stroke-linejoin="round"
+                                    stroke-width="2"
+                                    d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"
+                                />
+                            </svg>
+                        </div>
+                        <h2 class="text-2xl font-bold text-firda-gray-900 mb-2">
+                            Geen evenementen gepland
+                        </h2>
+                        <p class="text-firda-gray-600">
+                            Er zijn momenteel geen actieve evenementen in de
+                            agenda. Kom binnenkort terug!
+                        </p>
+                    </div>
+                )
+            }
+        </div>
+    </section>
+</Layout>
+
+<style>
+    .animate-fade-in-up {
+        animation: fadeInUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+</style>
