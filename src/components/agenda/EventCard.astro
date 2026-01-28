@@ -51,26 +51,20 @@ const isPast = eventDate < today;
 ---
 
 <div
-    class={`group relative bg-white rounded-xl border p-4 transition-all duration-300 overflow-hidden ${isPast ? "border-firda-gray-200 bg-firda-gray-50/50 grayscale-[0.5] opacity-80" : "border-firda-gray-200 hover:border-firda-green-400 hover:shadow-lg hover:shadow-firda-blue-500/5"}`}
+    class={`relative bg-white rounded-xl border p-4 overflow-hidden cursor-default ${isPast ? "border-firda-gray-200 bg-firda-gray-50/50 grayscale-[0.5] opacity-80" : "border-firda-gray-200"}`}
 >
-    <!-- Background Accent -->
-    {
-        !isPast && (
-            <div class="absolute top-0 right-0 -mr-8 -mt-8 w-16 h-16 bg-firda-green-50 rounded-full opacity-0 group-hover:opacity-100 transition-opacity duration-500 blur-2xl" />
-        )
-    }
 
     <div class="flex items-start gap-4 relative z-10">
         <!-- Datum badge -->
         <div
-            class={`flex-shrink-0 w-12 h-12 rounded-lg flex flex-col items-center justify-center border transition-all duration-300 ${isPast ? "bg-firda-gray-100 border-firda-gray-200" : "bg-white border-firda-blue-50 group-hover:border-firda-green-500 group-hover:bg-firda-green-500 shadow-sm"}`}
+            class={`flex-shrink-0 w-12 h-12 rounded-lg flex flex-col items-center justify-center border ${isPast ? "bg-firda-gray-100 border-firda-gray-200" : "bg-white border-firda-blue-50 shadow-sm"}`}
         >
             <span
-                class={`text-xl font-black leading-none tracking-tight ${isPast ? "text-firda-gray-500" : "text-firda-blue-600 group-hover:text-white"}`}
+                class={`text-xl font-black leading-none tracking-tight ${isPast ? "text-firda-gray-500" : "text-firda-blue-600"}`}
                 >{day}</span
             >
             <span
-                class={`text-[10px] font-black uppercase tracking-[0.1em] mt-0.5 ${isPast ? "text-firda-gray-400" : "text-firda-blue-400 group-hover:text-firda-green-50"}`}
+                class={`text-[10px] font-black uppercase tracking-[0.1em] mt-0.5 ${isPast ? "text-firda-gray-400" : "text-firda-blue-400"}`}
                 >{month}</span
             >
         </div>
@@ -84,7 +78,7 @@ const isPast = eventDate < today;
                 {
                     showProject && projectName && (
                         <span
-                            class={`font-bold transition-colors ${isPast ? "text-firda-gray-500" : "text-firda-green-600"}`}
+                            class={`font-bold ${isPast ? "text-firda-gray-500" : "text-firda-green-600"}`}
                         >
                             {projectName}
                         </span>
@@ -98,7 +92,7 @@ const isPast = eventDate < today;
                 Onderwerp
             </div>
             <h3
-                class={`text-lg font-bold leading-snug transition-all duration-300 ${isPast ? "text-firda-gray-500" : "text-firda-gray-900 group-hover:text-[19px] group-hover:text-firda-blue-600"}`}
+                class={`text-lg font-bold leading-snug ${isPast ? "text-firda-gray-500" : "text-firda-gray-900"}`}
             >
                 {event.title}
             </h3>
@@ -123,7 +117,7 @@ const isPast = eventDate < today;
             >
                 <!-- Tijd -->
                 <div
-                    class={`flex items-center gap-2 font-bold px-2.5 py-1 rounded-md border text-xs transition-colors ${isPast ? "bg-firda-gray-100 border-firda-gray-200 text-firda-gray-400" : "bg-firda-blue-50/50 border-firda-blue-100/50 text-firda-blue-600 group-hover:bg-firda-green-50 group-hover:border-firda-green-200 group-hover:text-firda-green-700"}`}
+                    class={`flex items-center gap-2 font-bold px-2.5 py-1 rounded-md border text-xs ${isPast ? "bg-firda-gray-100 border-firda-gray-200 text-firda-gray-400" : "bg-firda-blue-50/50 border-firda-blue-100/50 text-firda-blue-600"}`}
                 >
                     <span
                         class="text-[10px] font-black uppercase tracking-wider text-firda-blue-500"
@@ -181,23 +175,7 @@ const isPast = eventDate < today;
             </div>
         </div>
 
-        <!-- Arrow indicator (Subtle premium detail) -->
-        <div
-            class="hidden sm:flex items-center justify-center w-8 h-8 rounded-full bg-firda-gray-50 text-firda-gray-400 group-hover:bg-firda-green-500 group-hover:text-white transition-all duration-300 opacity-0 group-hover:opacity-100 transform translate-x-2 group-hover:translate-x-0"
-        >
-            <svg
-                class="w-5 h-5"
-                fill="none"
-                stroke="currentColor"
-                viewBox="0 0 24 24"
-            >
-                <path
-                    stroke-linecap="round"
-                    stroke-linejoin="round"
-                    stroke-width="2.5"
-                    d="M9 5l7 7-7 7"></path>
-            </svg>
-        </div>
+        
     </div>
 
     <!-- Modals -->
