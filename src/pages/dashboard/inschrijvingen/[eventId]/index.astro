@@ -209,6 +209,8 @@ const formattedTime = startDate.toLocaleTimeString("nl-NL", {
                 <a
                     href={mailtoHref}
                     aria-disabled={!bccList}
+                    target="_blank"
+                    rel="noopener"
                     class={`inline-flex items-center px-4 py-2 text-sm font-bold text-firda-blue-600 hover:bg-firda-blue-50 rounded-xl transition-colors ${
                         bccList ? "" : "opacity-50 pointer-events-none"
                     }`}
