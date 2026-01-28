@@ -50,65 +50,67 @@ const currentDate = new Date(currentYear, currentMonth, 1);
         )
     }
 
-    <!-- Kalender weergave -->
-    <AgendaCalendar
-        events={events}
-        currentDate={currentDate}
-        showProject={showProject}
-    />
+    <div class={showList ? "grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start" : ""}>
+        <!-- Kalender weergave -->
+        <AgendaCalendar
+            events={events}
+            currentDate={currentDate}
+            showProject={showProject}
+        />
 
-    <!-- Lijst met evenementen voor de geselecteerde maand -->
-    {
-        showList && (
-            <div class="space-y-4">
-                <h4 class="text-sm font-bold text-firda-gray-400 uppercase tracking-widest text-center">
-                    Evenementen in deze maand
-                </h4>
+        <!-- Lijst met evenementen voor de geselecteerde maand -->
+        {
+            showList && (
+                <div class="space-y-4">
+                    <h4 class="text-sm font-bold text-firda-gray-400 uppercase tracking-widest text-center">
+                        Evenementen in deze maand
+                    </h4>
 
-                {events.filter((e) => {
-                    const d = new Date(e.start_date);
-                    return (
-                        d.getMonth() === currentMonth &&
-                        d.getFullYear() === currentYear
-                    );
-                }).length > 0 ? (
-                    <div class="grid gap-4">
-                        {events
-                            .filter((e) => {
-                                const d = new Date(e.start_date);
-                                return (
-                                    d.getMonth() === currentMonth &&
-                                    d.getFullYear() === currentYear
-                                );
-                            })
-                            .sort(
-                                (a, b) =>
-                                    new Date(a.start_date).getTime() -
-                                    new Date(b.start_date).getTime(),
-                            )
-                            .map((event) => (
-                                <EventCard
-                                    event={event}
-                                    showProject={showProject}
-                                    projectName={event.projects?.title}
-                                    registrationCount={
-                                        (event as any).registrationCount
-                                    }
-                                    registrations={(event as any).registrations}
-                                    canViewRegistrations={
-                                        (event as any).canViewRegistrations
-                                    }
-                                />
-                            ))}
-                    </div>
-                ) : (
-                    <div class="py-10 px-6 text-center bg-white rounded-2xl border border-firda-gray-100 shadow-sm">
-                        <p class="text-firda-gray-500 font-medium">
-                            Geen evenementen gevonden voor deze maand.
-                        </p>
-                    </div>
-                )}
-            </div>
-        )
-    }
+                    {events.filter((e) => {
+                        const d = new Date(e.start_date);
+                        return (
+                            d.getMonth() === currentMonth &&
+                            d.getFullYear() === currentYear
+                        );
+                    }).length > 0 ? (
+                        <div class="grid gap-4">
+                            {events
+                                .filter((e) => {
+                                    const d = new Date(e.start_date);
+                                    return (
+                                        d.getMonth() === currentMonth &&
+                                        d.getFullYear() === currentYear
+                                    );
+                                })
+                                .sort(
+                                    (a, b) =>
+                                        new Date(a.start_date).getTime() -
+                                        new Date(b.start_date).getTime(),
+                                )
+                                .map((event) => (
+                                    <EventCard
+                                        event={event}
+                                        showProject={showProject}
+                                        projectName={event.projects?.title}
+                                        registrationCount={
+                                            (event as any).registrationCount
+                                        }
+                                        registrations={(event as any).registrations}
+                                        canViewRegistrations={
+                                            (event as any).canViewRegistrations
+                                        }
+                                    />
+                                ))}
+                        </div>
+                    ) : (
+                        <div class="py-10 px-6 text-center bg-white rounded-2xl border border-firda-gray-100 shadow-sm">
+                            <p class="text-firda-gray-500 font-medium">
+                                Geen evenementen gevonden voor deze maand.
+                            </p>
+                        </div>
+                    )}
+                </div>
+            )
+        }
+    </div>
 </div>
