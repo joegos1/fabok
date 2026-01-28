@@ -67,9 +67,6 @@ const { data: registrations } = await supabaseAdmin
 
 const regList = registrations || [];
 
-// Verzamel alle emails voor bulk mail functie
-const allEmails = regList.map((r) => r.email).filter(Boolean);
-
 // Formatting
 const startDate = new Date(event.start_date);
 const formattedDate = startDate.toLocaleDateString("nl-NL", {
@@ -203,32 +200,10 @@ const formattedTime = startDate.toLocaleTimeString("nl-NL", {
             <h2 class="text-xl font-black text-firda-gray-900 tracking-tight">
                 Deelnemerslijst
             </h2>
-            <div class="flex items-center gap-2">
-                {regList.length > 0 && (
-                    <button
-                        id="openMailModal"
-                        class="inline-flex items-center px-4 py-2 text-sm font-bold text-white bg-firda-green-600 hover:bg-firda-green-700 rounded-xl transition-colors shadow-sm"
-                    >
-                        <svg
-                            class="w-4 h-4 mr-2"
-                            fill="none"
-                            stroke="currentColor"
-                            viewBox="0 0 24 24"
-                        >
-                            <path
-                                stroke-linecap="round"
-                                stroke-linejoin="round"
-                                stroke-width="2"
-                                d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
-                            ></path>
-                        </svg>
-                        Mail Iedereen ({regList.length})
-                    </button>
-                )}
-                <button
-                    onclick="window.print()"
-                    class="inline-flex items-center px-4 py-2 text-sm font-bold text-firda-blue-600 hover:bg-firda-blue-50 rounded-xl transition-colors"
-                >
+            <button
+                onclick="window.print()"
+                class="inline-flex items-center px-4 py-2 text-sm font-bold text-firda-blue-600 hover:bg-firda-blue-50 rounded-xl transition-colors"
+            >
                 <svg
                     class="w-4 h-4 mr-2"
                     fill="none"
@@ -244,7 +219,6 @@ const formattedTime = startDate.toLocaleTimeString("nl-NL", {
                 </svg>
                 Print Lijst
             </button>
-            </div>
         </div>
 
         <div class="p-0">
@@ -268,168 +242,7 @@ const formattedTime = startDate.toLocaleTimeString("nl-NL", {
             </div>
         )
     }
-
-    <!-- Mail Modal -->
-    {regList.length > 0 && (
-        <div
-            id="mailModal"
-            class="fixed inset-0 z-50 hidden"
-            role="dialog"
-            aria-modal="true"
-            aria-labelledby="mailModalTitle"
-        >
-            <!-- Backdrop -->
-            <div class="fixed inset-0 bg-black/50 backdrop-blur-sm" id="mailModalBackdrop"></div>
-            
-            <!-- Modal -->
-            <div class="fixed inset-0 overflow-y-auto">
-                <div class="flex min-h-full items-center justify-center p-4">
-                    <div class="relative w-full max-w-lg bg-white rounded-2xl shadow-2xl">
-                        <!-- Header -->
-                        <div class="flex items-center justify-between p-6 border-b border-firda-gray-100">
-                            <div class="flex items-center gap-3">
-                                <div class="w-10 h-10 bg-firda-green-100 rounded-xl flex items-center justify-center">
-                                    <svg class="w-5 h-5 text-firda-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
-                                    </svg>
-                                </div>
-                                <div>
-                                    <h3 id="mailModalTitle" class="text-lg font-bold text-firda-gray-900">
-                                        Mail alle deelnemers
-                                    </h3>
-                                    <p class="text-sm text-firda-gray-500">{regList.length} ontvangers</p>
-                                </div>
-                            </div>
-                            <button
-                                type="button"
-                                id="closeMailModal"
-                                class="p-2 text-firda-gray-400 hover:text-firda-gray-600 hover:bg-firda-gray-100 rounded-lg transition-colors"
-                            >
-                                <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
-                                </svg>
-                            </button>
-                        </div>
-                        
-                        <!-- Body -->
-                        <div class="p-6 space-y-4">
-                            <div>
-                                <label for="mailSubject" class="block text-sm font-bold text-firda-gray-700 mb-2">
-                                    Onderwerp
-                                </label>
-                                <input
-                                    type="text"
-                                    id="mailSubject"
-                                    placeholder={`${event.title} - `}
-                                    class="w-full px-4 py-3 border border-firda-gray-200 rounded-xl focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 transition-colors"
-                                />
-                            </div>
-                            
-                            <div>
-                                <label for="mailBody" class="block text-sm font-bold text-firda-gray-700 mb-2">
-                                    Bericht (optioneel)
-                                </label>
-                                <textarea
-                                    id="mailBody"
-                                    rows="5"
-                                    placeholder="Typ hier je bericht..."
-                                    class="w-full px-4 py-3 border border-firda-gray-200 rounded-xl focus:ring-2 focus:ring-firda-blue-500 focus:border-firda-blue-500 transition-colors resize-none"
-                                ></textarea>
-                            </div>
-                            
-                            <div class="bg-firda-blue-50 border border-firda-blue-100 rounded-xl p-4">
-                                <div class="flex items-start gap-3">
-                                    <svg class="w-5 h-5 text-firda-blue-600 flex-shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-                                    </svg>
-                                    <div class="text-sm text-firda-blue-700">
-                                        <p class="font-medium">Privacy-vriendelijk</p>
-                                        <p class="text-firda-blue-600">Alle ontvangers worden in BCC geplaatst zodat emailadressen niet zichtbaar zijn voor andere deelnemers.</p>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                        
-                        <!-- Footer -->
-                        <div class="flex items-center justify-end gap-3 p-6 border-t border-firda-gray-100 bg-firda-gray-50 rounded-b-2xl">
-                            <button
-                                type="button"
-                                id="cancelMailModal"
-                                class="px-5 py-2.5 text-sm font-bold text-firda-gray-600 hover:bg-firda-gray-200 rounded-xl transition-colors"
-                            >
-                                Annuleren
-                            </button>
-                            <button
-                                type="button"
-                                id="sendMailBtn"
-                                class="px-5 py-2.5 text-sm font-bold text-white bg-firda-green-600 hover:bg-firda-green-700 rounded-xl transition-colors shadow-sm inline-flex items-center gap-2"
-                            >
-                                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8"></path>
-                                </svg>
-                                Open in Mail App
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    )}
 </DashboardLayout>
-
-<script define:vars={{ allEmails, eventTitle: event.title }}>
-    // Mail Modal Logic
-    const openBtn = document.getElementById('openMailModal');
-    const closeBtn = document.getElementById('closeMailModal');
-    const cancelBtn = document.getElementById('cancelMailModal');
-    const backdrop = document.getElementById('mailModalBackdrop');
-    const modal = document.getElementById('mailModal');
-    const sendBtn = document.getElementById('sendMailBtn');
-    const subjectInput = document.getElementById('mailSubject');
-    const bodyInput = document.getElementById('mailBody');
-
-    function openModal() {
-        if (modal) {
-            modal.classList.remove('hidden');
-            document.body.style.overflow = 'hidden';
-            subjectInput?.focus();
-        }
-    }
-
-    function closeModal() {
-        if (modal) {
-            modal.classList.add('hidden');
-            document.body.style.overflow = '';
-        }
-    }
-
-    function sendMail() {
-        const subject = encodeURIComponent(subjectInput?.value || eventTitle);
-        const body = encodeURIComponent(bodyInput?.value || '');
-        const bcc = allEmails.join(',');
-        
-        // Maak mailto link met BCC voor privacy
-        const mailtoLink = `mailto:?bcc=${bcc}&subject=${subject}&body=${body}`;
-        
-        // Open in mail client
-        window.location.href = mailtoLink;
-        closeModal();
-    }
-
-    // Event listeners
-    openBtn?.addEventListener('click', openModal);
-    closeBtn?.addEventListener('click', closeModal);
-    cancelBtn?.addEventListener('click', closeModal);
-    backdrop?.addEventListener('click', closeModal);
-    sendBtn?.addEventListener('click', sendMail);
-
-    // ESC key to close
-    document.addEventListener('keydown', (e) => {
-        if (e.key === 'Escape' && modal && !modal.classList.contains('hidden')) {
-            closeModal();
-        }
-    });
-</script>
 
 <style is:global>
     /* Verstop sidebar en header bij printen */
