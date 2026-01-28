@@ -27,3 +27,8 @@ public/
 
 # jetbrains setting folder
 .idea/
+
+# cursor rules folder
+.cursor/
+
+.gitignore/
