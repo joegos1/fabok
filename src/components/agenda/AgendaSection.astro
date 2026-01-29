@@ -95,9 +95,12 @@ const eventsNextMonth = events.filter((e) => {
                             const startDate = new Date(event.start_date);
                             const day = startDate.getDate();
                             const monthShort = startDate.toLocaleString("nl-NL", { month: "short" }).replace(".", "");
+                            const eventMonth = startDate.getMonth() + 1;
+                            const eventYear = startDate.getFullYear();
+                            const navLink = `?month=${eventMonth}&year=${eventYear}#agenda`;
                             
                             return (
-                                <div class="group flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-xl p-2.5 border border-white hover:border-firda-blue-200 hover:bg-white transition-all hover:shadow-sm cursor-default">
+                                <a href={navLink} class="group flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-xl p-2.5 border border-white hover:border-firda-blue-200 hover:bg-white transition-all hover:shadow-sm cursor-pointer">
                                     <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-firda-blue-500 to-firda-blue-600 flex flex-col items-center justify-center shadow-sm">
                                         <span class="text-sm font-black text-white leading-none">{day}</span>
                                         <span class="text-[8px] font-bold text-firda-blue-200 uppercase tracking-wide">{monthShort}</span>
@@ -117,7 +120,7 @@ const eventsNextMonth = events.filter((e) => {
                                             <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
                                         </svg>
                                     </div>
-                                </div>
+                                </a>
                             );
                         })}
                     </div>
