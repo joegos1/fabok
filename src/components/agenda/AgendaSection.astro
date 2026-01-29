@@ -35,6 +35,23 @@ const urlYear = url.searchParams.get("year");
 const currentMonth = urlMonth ? parseInt(urlMonth) - 1 : new Date().getMonth();
 const currentYear = urlYear ? parseInt(urlYear) : new Date().getFullYear();
 const currentDate = new Date(currentYear, currentMonth, 1);
+
+// Bereken volgende maand
+const nextMonthDate = new Date(currentYear, currentMonth + 1, 1);
+const nextMonth = nextMonthDate.getMonth();
+const nextYear = nextMonthDate.getFullYear();
+
+// Nederlandse maandnamen
+const monthNames = [
+    "Januari", "Februari", "Maart", "April", "Mei", "Juni",
+    "Juli", "Augustus", "September", "Oktober", "November", "December"
+];
+
+// Filter events voor volgende maand
+const eventsNextMonth = events.filter((e) => {
+    const d = new Date(e.start_date);
+    return d.getMonth() === nextMonth && d.getFullYear() === nextYear;
+}).sort((a, b) => new Date(a.start_date).getTime() - new Date(b.start_date).getTime());
 ---
 
 <div
@@ -51,12 +68,70 @@ const currentDate = new Date(currentYear, currentMonth, 1);
     }
 
     <div class={showList ? "grid gap-6 lg:grid-cols-[1.1fr_0.9fr] lg:items-start" : ""}>
-        <!-- Kalender weergave -->
-        <AgendaCalendar
-            events={events}
-            currentDate={currentDate}
-            showProject={showProject}
-        />
+        <!-- Kalender weergave + Volgende maand preview -->
+        <div class="space-y-4">
+            <AgendaCalendar
+                events={events}
+                currentDate={currentDate}
+                showProject={showProject}
+            />
+
+            <!-- Vooruitblik: Evenementen volgende maand -->
+            {eventsNextMonth.length > 0 && (
+                <div class="bg-gradient-to-br from-firda-blue-50 to-firda-green-50/30 rounded-2xl border border-firda-blue-100/50 p-4 shadow-sm">
+                    <div class="flex items-center gap-2 mb-3">
+                        <div class="w-6 h-6 rounded-lg bg-firda-blue-600 flex items-center justify-center">
+                            <svg class="w-3.5 h-3.5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                            </svg>
+                        </div>
+                        <h4 class="text-xs font-black text-firda-blue-600 uppercase tracking-widest">
+                            Vooruitblik {monthNames[nextMonth]}
+                        </h4>
+                    </div>
+                    
+                    <div class="space-y-2">
+                        {eventsNextMonth.slice(0, 4).map((event) => {
+                            const startDate = new Date(event.start_date);
+                            const day = startDate.getDate();
+                            const monthShort = startDate.toLocaleString("nl-NL", { month: "short" }).replace(".", "");
+                            
+                            return (
+                                <div class="group flex items-center gap-3 bg-white/80 backdrop-blur-sm rounded-xl p-2.5 border border-white hover:border-firda-blue-200 hover:bg-white transition-all hover:shadow-sm cursor-default">
+                                    <div class="flex-shrink-0 w-10 h-10 rounded-lg bg-gradient-to-br from-firda-blue-500 to-firda-blue-600 flex flex-col items-center justify-center shadow-sm">
+                                        <span class="text-sm font-black text-white leading-none">{day}</span>
+                                        <span class="text-[8px] font-bold text-firda-blue-200 uppercase tracking-wide">{monthShort}</span>
+                                    </div>
+                                    <div class="flex-grow min-w-0">
+                                        <div class="text-sm font-bold text-firda-gray-900 truncate group-hover:text-firda-blue-600 transition-colors">
+                                            {event.title}
+                                        </div>
+                                        {showProject && event.projects?.title && (
+                                            <div class="text-[10px] font-semibold text-firda-green-600 uppercase tracking-wider truncate">
+                                                {event.projects.title}
+                                            </div>
+                                        )}
+                                    </div>
+                                    <div class="flex-shrink-0 opacity-0 group-hover:opacity-100 transition-opacity">
+                                        <svg class="w-4 h-4 text-firda-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+                                        </svg>
+                                    </div>
+                                </div>
+                            );
+                        })}
+                    </div>
+                    
+                    {eventsNextMonth.length > 4 && (
+                        <div class="mt-3 pt-2 border-t border-firda-blue-100/50 text-center">
+                            <span class="text-xs font-bold text-firda-blue-500">
+                                + {eventsNextMonth.length - 4} meer in {monthNames[nextMonth].toLowerCase()}
+                            </span>
+                        </div>
+                    )}
+                </div>
+            )}
+        </div>
 
         <!-- Lijst met evenementen voor de geselecteerde maand -->
         {
