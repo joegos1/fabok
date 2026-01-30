@@ -1,6 +1,6 @@
 TESTING.md (uitgebreider)
 1. Inleiding
-Dit document beschrijft de teststrategie voor de Fabok webapplicatie, met als doel de kwaliteit, stabiliteit en gebruiksvriendelijkheid van het platform te borgen gedurende de volledige ontwikkelcyclus.
+Dit document beschrijft de teststrategie voor de Vabok webapplicatie, met als doel de kwaliteit, stabiliteit en gebruiksvriendelijkheid van het platform te borgen gedurende de volledige ontwikkelcyclus.
 ​
 De focus ligt op het gestructureerd testen van zowel de functionaliteit (werken de features zoals bedoeld) als de technische aspecten (performance, beveiliging, betrouwbaarheid).
 ​
@@ -9,10 +9,10 @@ De focus ligt op het gestructureerd testen van zowel de functionaliteit (werken 
 De belangrijkste doelen van het testtraject zijn:
 ​
 
-Valideren dat alle kernfunctionaliteiten (projectbeheer, agenda, documenten, dashboard) correct functioneren volgens de specificaties.
+Valideren dat alle kernfunctionaliteiten (projectbeheer, agenda, documenten, dashboard) correct werken volgens de documentatie.
 ​
 
-Waarborgen dat wijzigingen en nieuwe features geen bestaande functionaliteit breken (regressietests).
+Waarborgen dat wijzigingen en nieuwe features geen bestaande functionaliteiten niet kapot maken .
 ​
 
 Beoordelen of de performance voldoende is voor de verwachte aantallen gebruikers en data.
@@ -29,7 +29,7 @@ Unit tests richten zich op individuele functies, services of componenten binnen 
 Doel: Logica valideren in isolatie (bijvoorbeeld validatie van projectvelden, datumcalculaties voor de agenda).
 ​
 
-Scope: Backend-services (API endpoints, database-interacties) en front-end componenten (formuliervalidatie, UI-state).
+Scope: Backend-services en front-end componenten (formuliervalidatie).
 ​
 
 3.2 Integratietests
