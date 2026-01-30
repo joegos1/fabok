@@ -43,7 +43,7 @@ export const POST: APIRoute = async ({ request, redirect }) => {
                     `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`,
                     {
                         headers: {
-                            'User-Agent': 'FABOK-App-Geocoding/1.0'
+                            'User-Agent': 'VABOK-App-Geocoding/1.0'
                         }
                     }
                 );
