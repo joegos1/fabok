@@ -1,6 +1,6 @@
-# Overdrachtsrapportage: Project Fabok (VABOK)
+# Overdrachtsrapportage: Project Vabok (VABOK)
 
-Dit document dient als overdracht voor het project **FABOK** (Versterken van de Aansluiting in de Beroepskolom). Het beschrijft de huidige staat van het project, de technische architectuur, en de belangrijkste functionaliteiten.
+Dit document dient als overdracht voor het project **VABOK** (Versterken van de Aansluiting in de Beroepskolom). Het beschrijft de huidige staat van het project, de technische architectuur, en de belangrijkste functionaliteiten.
 
 ## 1. Project Overzicht
 VABOK is een platform ontworpen om de samenwerking en aansluiting tussen verschillende onderwijsinstellingen (VO, MBO, HBO) te verbeteren. Het biedt een centraal punt voor informatie over projecten, evenementen, en documentatiedeling.
