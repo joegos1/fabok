@@ -8,10 +8,10 @@ De architectuur ondersteunt zowel een publiek portaal als een beveiligd dashboar
 2. Backend & Frontend Stack
 De applicatie is gebouwd met moderne webtechnologieën:
 
-Framework: Astro 5 (SSR & Static generation).
+Framework: Astro 5.
 
 
-Database & Auth: Supabase (PostgreSQL, Auth, Storage).
+Database & Auth: Supabase (Auth en Storage).
 
 
 Styling: Tailwind CSS.
